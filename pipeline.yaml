@@ -1,10 +1,3 @@
-trigger:
-  - master
-  - develop
-pr:
-  - master
-  - develop
-
 parameters:
   containerServiceEndpoint: ''
   registry: ''
