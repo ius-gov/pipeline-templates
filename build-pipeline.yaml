@@ -29,7 +29,7 @@ steps:
       azureContainerRegistry: ${{ parameters.registry }}
       dockerFile: application/Dockerfile
       imageName: ${{ parameters.project }}
-      arguments: ${{ format('--build-arg version=${{ parameters.version'}} }}
+      arguments: ${{ format('--build-arg version=${{ parameters.version'}}) }}
   - task: Docker@1
     displayName: Tag image
     inputs:
