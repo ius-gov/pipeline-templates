@@ -1,5 +1,4 @@
 parameters:
-  vmImage: ''
   version: ''
   semVersion: ''
   containerServiceEndpoint: ''
@@ -8,11 +7,6 @@ parameters:
   helmChartLocation: ''
   latestName: ''
   imageName: ''
-
-jobs:
-  - job: ${{ parameters.name }}
-    pool:
-      vmImage: ${{ parameters.vmImage }}
 
 steps:
   - task: Docker@1

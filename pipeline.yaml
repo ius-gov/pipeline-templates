@@ -6,7 +6,6 @@ parameters:
   majorVersion: 0
   stateCode: 0
 
-
 jobs:
   - job: Linux
     pool:
@@ -22,8 +21,6 @@ jobs:
         displayName: Set Version Variable
       - template: build-pipeline.yaml
         parameters:
-          name: 'Linux'
-          vmImage: 'Ubuntu-16.04'
           version: '$(version)'
           semVersion: '$(semVersion)'
           containerServiceEndpoint: '${{ parameters.containerServiceEndpoint }}'
