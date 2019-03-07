@@ -1,0 +1,70 @@
+parameters:
+  vmImage: ''
+  version: ''
+  semVersion: ''
+  containerServiceEndpoint: ''
+  registry: ''
+  project: ''
+  helmChartLocation: ''
+  latestName: ''
+  imageName: ''
+
+jobs:
+  - job: ${{ parameters.name }}
+    pool:
+      vmImage: ${{ parameters.vmImage }}
+
+steps:
+  - task: Docker@1
+    displayName: Container registry login
+    inputs:
+      azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
+      azureContainerRegistry: ${{ parameters.registry }}
+      command: login
+  - task: Docker@1
+    displayName: Build image
+    inputs:
+      command: build
+      azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
+      azureContainerRegistry: ${{ parameters.registry }}
+      dockerFile: application/Dockerfile
+      imageName: ${{ parameters.project }}
+      arguments: ${{ format('--build-arg version=${{ parameters.version') }}
+  - task: Docker@1
+    displayName: Tag image
+    inputs:
+      command: tag
+      azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
+      azureContainerRegistry: ${{ parameters.registry }}
+      imageName: ${{ parameters.latestName }}
+      arguments: ${{ parameters.imageName }}
+  - task: Docker@1
+    displayName: Push version image
+    inputs:
+      command: push
+      azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
+      azureContainerRegistry: ${{ parameters.registry }}
+      imagename: ${{ parameters.imageName }}
+  - task: Docker@1
+    displayName: Push latest image
+    inputs:
+      command: push
+      azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
+      azureContainerRegistry: ${{ parameters.registry }}
+      imagename: ${{ parameters.latestName }}
+  - task: AzureCLI@1
+    displayName: package helm chart
+    inputs:
+      azureSubscription : ${{ parameters.containerServiceEndpoint }}
+      scriptLocation: inlineScript
+      inlineScript: |
+        echo "Setting version to ${{ parameters.semVersion }}"
+        sed -i 's/0\.0\.0-INTERNAL/${{ parameters.semVersion }}/g' ${{ parameters.helmChartLocation }}/Chart.yaml
+        # The values contains the version of the docker image, which is the full version
+        sed -i 's/0\.0\.0-INTERNAL/${{ parameters.version/g' ${{ parameters.helmChartLocation }}/values.yaml
+        cat ${{ parameters.helmChartLocation }}/Chart.yaml
+        cat ${{ parameters.helmChartLocation }}/values.yaml
+        helm package ${{ parameters.helmChartLocation }} --save=false
+        az acr helm push -n iusdev claimantportal-web-${{ parameters.semVersion }}.tgz
+
+    
