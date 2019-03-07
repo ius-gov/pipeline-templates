@@ -9,27 +9,27 @@ parameters:
 
 jobs:
   - job: Linux
-  pool:
-    vmImage: 'Ubuntu-16.04'
-  variables:
-    version: 0.0.0
-    semVersion: 0.0.0
-  steps:
-    - powershell: |
-      Write-Host "##vso[task.setvariable variable=version]${{ parameters.state_code }}.${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
-      Write-Host "##vso[task.setvariable variable=semVersion]${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
-      Write-Host "Version = $(version)"
-    displayName: Set Version Variable
-    - template: build-pipeline.yaml
-    parameters:
-      name: 'Linux'
+    pool:
       vmImage: 'Ubuntu-16.04'
-      version: '$(version)'
-      semVersion: '$(semVersion)'
-      containerServiceEndpoint: '${{ parameters.containerServiceEndpoint }}'
-      registry: '${{ parameters.registry }}'
-      project: '${{ parameters.project }}'
-      helmChartLocation: '${{ parameters.helmChartLocation }}'
-      latestName: '$(registry)/$(project):latest'
-      imageName: '$(registry)/$(project):$(version)'
+    variables:
+      version: 0.0.0
+      semVersion: 0.0.0
+    steps:
+      - powershell: |
+        Write-Host "##vso[task.setvariable variable=version]${{ parameters.state_code }}.${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
+        Write-Host "##vso[task.setvariable variable=semVersion]${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
+        Write-Host "Version = $(version)"
+      displayName: Set Version Variable
+      - template: build-pipeline.yaml
+      parameters:
+        name: 'Linux'
+        vmImage: 'Ubuntu-16.04'
+        version: '$(version)'
+        semVersion: '$(semVersion)'
+        containerServiceEndpoint: '${{ parameters.containerServiceEndpoint }}'
+        registry: '${{ parameters.registry }}'
+        project: '${{ parameters.project }}'
+        helmChartLocation: '${{ parameters.helmChartLocation }}'
+        latestName: '$(registry)/$(project):latest'
+        imageName: '$(registry)/$(project):$(version)'
 
