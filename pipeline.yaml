@@ -10,7 +10,6 @@ parameters:
   registry: ''
   project: ''
   helmChartLocation: ''
-  latestName: ''
   majorVersion: 0
   stateCode: 0
 
