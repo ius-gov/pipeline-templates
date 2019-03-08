@@ -1,0 +1,14 @@
+parameters:
+  Name : 'DacPac'
+  dacpacProject: ''
+  nugetConfigPath : 'application/NuGet.Config'
+
+jobs:
+  - job: ${{ parameters.Name }}
+    pool:
+      vmImage: 'vs2017-win2016'
+    steps:
+      - script: msbuild15  ${{ parameters.dacpacProject }} /p:OutputPath=$(Build.ArtifactStagingDirectory)/${{ parameter.Name }}
+        displayName: Build DacPac
+      
+  

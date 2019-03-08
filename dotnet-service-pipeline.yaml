@@ -1,9 +1,10 @@
 parameters:
+  Name : 'DotNet_ServiceBuild'
   serviceProject : ''
   nugetConfigPath : 'application/NuGet.Config'
 
 jobs:
-  - job: DotNet_ServiceBuild
+  - job: ${{ parameters.Name }}
     pool:
       vmImage: 'Ubuntu-16.04'
     steps:
@@ -14,14 +15,16 @@ jobs:
           projects: 'application/**/*.csproj'
           feedsToUse: config
           nugetConfigPath: ${{ parameters.nugetConfigPath }}
-      - script: dotnet build ${{ parameters.serviceProject }} --configuration release -o $(Build.ArtifactStagingDirectory)/service 
+      - script: dotnet build ${{ parameters.serviceProject }} --configuration Release
         displayName: Build
       - task: DotNetCoreCLI@2
         displayName: Run Tests
         inputs:
           command: test
           projects: '**/*Tests/*.csproj'
-          arguments: '--configuration release'
+          arguments: '--configuration Release'
+      - script: dotnet publish ${{ parameters.serviceProject }} --configuration Release --output  -o $(Build.ArtifactStagingDirectory)/service 
+        displayName: Publish
 
 
   
