@@ -34,6 +34,9 @@ steps:
       azureContainerRegistry: ${{ parameters.registry }}
       imageName: ${{ parameters.latestName }}
       arguments: ${{ parameters.imageName }}
+  - task: Bash@3
+    displayName: create appsettings.Consortium.Local
+    scripts: echo '{}' > appsettings.Consortium.Local
   - task: Docker@1
     displayName: Run Image
     inputs:
@@ -41,6 +44,10 @@ steps:
       azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
       azureContainerRegistry: ${{ parameters.registry }}
       imageName: ${{ parameters.latestName }}
+      envVars:
+        - APPSETTING_LOCATION:/data/appsettings
+      volumes:
+        - appsettings.Consortium.Local:/data/appsettings
   - task: Docker@1
     displayName: Push version image
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
