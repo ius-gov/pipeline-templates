@@ -50,6 +50,7 @@ steps:
       azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
       azureContainerRegistry: ${{ parameters.registry }}
       imageName: ${{ parameters.latestName }}
+      condition: and(succeeded(), eq(variables['HEALTH_CHECK_DEBUG'], 'true'))
       envVars:
         APPSETTING_LOCATION:/data/appsettings
       volumes:
@@ -58,6 +59,7 @@ steps:
         80:80
   - task: AzureCLI@1
     displayName: Running Health Check
+    condition: and(succeeded(), eq(variables['HEALTH_CHECK_DEBUG'], 'true'))
     inputs:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
