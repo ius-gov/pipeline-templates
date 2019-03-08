@@ -11,8 +11,6 @@ jobs:
         inputs:
           command: restore
           projects: '**/*.csproj'
-          feedsToUse: config
-          nugetConfigPath: application/NuGet.config
       - script: dotnet build --configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/service
         displayName: Build
       - task: DotNetCoreCLI@2
