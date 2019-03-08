@@ -36,7 +36,7 @@ steps:
       arguments: ${{ parameters.imageName }}
   - task: Bash@3
     displayName: create appsettings.Consortium.Production
-    scripts: 
+    script: 
       mkdir appsettings
       echo '{}' > appsettings/appsettings.Consortium.Production.json
   - task: Docker@1
@@ -54,7 +54,8 @@ steps:
         80:80
   - task: Bash@3
     displayName: Health Check
-    scripts:
+    script:
+      echo 'Testing Health'
       curl http://localhost/health
   - task: Docker@1
     displayName: Push version image
