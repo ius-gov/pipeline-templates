@@ -18,7 +18,7 @@ steps:
       inlineScript: |
         echo 'Creating Appsettings folder at $(Build.ArtifactStagingDirectory)'
         mkdir $(Build.ArtifactStagingDirectory)/appsettings
-        echo '{}' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
+        echo '{ "AppSettings" : { "URLs" : { "IdentityServer" : "https://iusidentityservier.azurewebsites.net" } } }' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
   - task: Docker@1
     displayName: Container registry login
     inputs:
@@ -50,7 +50,6 @@ steps:
       azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
       azureContainerRegistry: ${{ parameters.registry }}
       imageName: ${{ parameters.latestName }}
-      condition: and(succeeded(), eq(variables['HEALTH_CHECK_DEBUG'], 'true'))
       envVars:
         APPSETTING_LOCATION:/data/appsettings
       volumes:
@@ -59,7 +58,6 @@ steps:
         80:80
   - task: AzureCLI@1
     displayName: Running Health Check
-    condition: and(succeeded(), eq(variables['HEALTH_CHECK_DEBUG'], 'true'))
     inputs:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
