@@ -36,9 +36,10 @@ steps:
       arguments: ${{ parameters.imageName }}
   - task: Bash@3
     displayName: create appsettings.Consortium.Production
-    script: 
-      mkdir appsettings
-      echo '{}' > appsettings/appsettings.Consortium.Production.json
+    inputs:
+      script: 
+        mkdir appsettings
+        echo '{}' > appsettings/appsettings.Consortium.Production.json
   - task: Docker@1
     displayName: Run Image
     inputs:
@@ -54,9 +55,10 @@ steps:
         80:80
   - task: Bash@3
     displayName: Health Check
-    script:
-      echo 'Testing Health'
-      curl http://localhost/health
+    inputs:
+      script:
+        echo 'Testing Health'
+        curl http://localhost/health
   - task: Docker@1
     displayName: Push version image
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
