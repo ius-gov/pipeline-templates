@@ -2,7 +2,7 @@ parameters:
   serviceProject : ''
 
 jobs:
-  - job: Linux
+  - job: DotNet-ServiceBuild
     pool:
       vmImage: 'Ubuntu-16.04'
     steps:

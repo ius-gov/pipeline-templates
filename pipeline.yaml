@@ -8,7 +8,7 @@ parameters:
   stateCode: 0
 
 jobs:
-  - job: Linux
+  - job: DockerBuilds
     pool:
       vmImage: 'Ubuntu-16.04'
     variables:
