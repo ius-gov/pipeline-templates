@@ -35,8 +35,10 @@ steps:
       imageName: ${{ parameters.latestName }}
       arguments: ${{ parameters.imageName }}
   - task: Bash@3
-    displayName: create appsettings.Consortium.Local
-    scripts: echo '{}' > appsettings.Consortium.Local
+    displayName: create appsettings.Consortium.Production
+    scripts: 
+      mkdir appsettings
+      echo '{}' > appsettings/appsettings.Consortium.Production.json
   - task: Docker@1
     displayName: Run Image
     inputs:
@@ -47,7 +49,12 @@ steps:
       envVars:
         - APPSETTING_LOCATION:/data/appsettings
       volumes:
-        - appsettings.Consortium.Local:/data/appsettings
+        - appsettings:/data/appsettings
+      ports: 80:80
+  - task: Bash@3
+    displayName: Health Check
+    scripts:
+      curl: http://localhost
   - task: Docker@1
     displayName: Push version image
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
