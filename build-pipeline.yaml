@@ -5,6 +5,7 @@ parameters:
   registry: ''
   project: ''
   helmChartLocation: ''
+  helmChartName : ''
   latestName: ''
   imageName: ''
 
@@ -64,12 +65,12 @@ steps:
       scriptLocation: inlineScript
       inlineScript: |
         echo "Setting version to ${{ parameters.semVersion }}"
-        sed -i 's/0\.0\.0-INTERNAL/${{ parameters.semVersion }}/g' ${{ parameters.helmChartLocation }}/Chart.yaml
+        sed -i 's/0\.0\.0-INTERNAL/${{ parameters.semVersion }}/g' ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/Chart.yaml
         # The values contains the version of the docker image, which is the full version
-        sed -i 's/0\.0\.0-INTERNAL/${{ parameters.version }}/g' ${{ parameters.helmChartLocation }}/values.yaml
-        cat ${{ parameters.helmChartLocation }}/Chart.yaml
-        cat ${{ parameters.helmChartLocation }}/values.yaml
-        helm package ${{ parameters.helmChartLocation }} --save=false
-        az acr helm push -n iusdev ${{ parameters.project }}-${{ parameters.semVersion }}.tgz
+        sed -i 's/0\.0\.0-INTERNAL/${{ parameters.version }}/g' ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/values.yaml
+        cat ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/Chart.yaml
+        cat ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/values.yaml
+        helm package ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }} --save=false
+        az acr helm push -n iusdev ${{ parameters.helmChartName }}-${{ parameters.semVersion }}.tgz
 
     

@@ -3,6 +3,7 @@ parameters:
   registry: ''
   project: ''
   helmChartLocation: ''
+  helmChartName: ''
   majorVersion: 0
   stateCode: 0
 
@@ -27,6 +28,7 @@ jobs:
           registry: '${{ parameters.registry }}'
           project: '${{ parameters.project }}'
           helmChartLocation: '${{ parameters.helmChartLocation }}'
+          helmChartName : '${{ parameters.helmChartName }}'
           latestName: '$(registry)/$(project):latest'
           imageName: '$(registry)/$(project):$(version)'
 
