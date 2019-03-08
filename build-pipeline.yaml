@@ -10,6 +10,13 @@ parameters:
   imageName: ''
 
 steps:
+  - task: Bash@3
+    displayName: create appsettings.Consortium.Production
+    inputs:
+      script: 
+        echo 'Creating Appsettings folder at $(Build.ArtifactStagingDirectory)'
+        mkdir $(Build.ArtifactStagingDirectory)/appsettings
+        echo '{}' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
   - task: Docker@1
     displayName: Container registry login
     inputs:
@@ -34,13 +41,6 @@ steps:
       azureContainerRegistry: ${{ parameters.registry }}
       imageName: ${{ parameters.latestName }}
       arguments: ${{ parameters.imageName }}
-  - task: Bash@3
-    displayName: create appsettings.Consortium.Production
-    inputs:
-      script: 
-        echo 'Creating Appsettings folder at $(Build.ArtifactStagingDirectory)'
-        mkdir $(Build.ArtifactStagingDirectory)/appsettings
-        echo '{}' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
   - task: Docker@1
     displayName: Run Image
     inputs:
