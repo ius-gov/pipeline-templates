@@ -70,6 +70,6 @@ steps:
         cat ${{ parameters.helmChartLocation }}/Chart.yaml
         cat ${{ parameters.helmChartLocation }}/values.yaml
         helm package ${{ parameters.helmChartLocation }} --save=false
-        az acr helm push -n iusdev claimantportal-web-${{ parameters.semVersion }}.tgz
+        az acr helm push -n iusdev ${{ parameters.project }}-${{ parameters.semVersion }}.tgz
 
     
