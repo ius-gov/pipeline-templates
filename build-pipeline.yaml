@@ -34,6 +34,13 @@ steps:
       imageName: ${{ parameters.latestName }}
       arguments: ${{ parameters.imageName }}
   - task: Docker@1
+    displayName: Run Image
+    inputs:
+      command: run
+      azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
+      azureContainerRegistry: ${{ parameters.registry }}
+      imageName: ${{ parameters.latestName }}
+  - task: Docker@1
     displayName: Push version image
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     inputs:
