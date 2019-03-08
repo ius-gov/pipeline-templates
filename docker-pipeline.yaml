@@ -62,6 +62,7 @@ steps:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
       inlineScript: |
+        docker ps -a
         echo 'Testing Health'
         curl http://localhost/health
   - task: Docker@1
