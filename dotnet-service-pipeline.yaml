@@ -1,22 +1,26 @@
 parameters:
   serviceProject : ''
 
-steps:
-  - task: DotNetCoreCLI@2
-    displayName: Restore
-    inputs:
-      command: restore
-      projects: '**/*.csproj'
-      feedsToUse: config
-      nugetConfigPath: NuGet.config
-  - script: dotnet build --configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/service
-    displayName: Build
-  - task: DotNetCoreCLI@2
-    displayName: Run Tests
-    inputs:
-      command: test
-      projects: '**/*Tests/*.csproj'
-      arguments: '--configuration $(buildConfiguration)'
+jobs:
+  - job: Linux
+    pool:
+      vmImage: 'Ubuntu-16.04'
+    steps:
+      - task: DotNetCoreCLI@2
+        displayName: Restore
+        inputs:
+          command: restore
+          projects: '**/*.csproj'
+          feedsToUse: config
+          nugetConfigPath: NuGet.config
+      - script: dotnet build --configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/service
+        displayName: Build
+      - task: DotNetCoreCLI@2
+        displayName: Run Tests
+        inputs:
+          command: test
+          projects: '**/*Tests/*.csproj'
+          arguments: '--configuration $(buildConfiguration)'
 
 
   
