@@ -25,6 +25,10 @@ jobs:
           arguments: '--configuration Release'
       - script: dotnet publish ${{ parameters.serviceProject }} --configuration Release --output  -o $(Build.ArtifactStagingDirectory)/service 
         displayName: Publish
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathtoPublish : '$(Build.ArtifactStagingDirectory)'
+          artifactName: artifacts
 
 
   

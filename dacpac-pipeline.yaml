@@ -8,7 +8,14 @@ jobs:
     pool:
       vmImage: 'vs2017-win2016'
     steps:
-      - script: msbuild15  ${{ parameters.dacpacProject }} /p:OutputPath=$(Build.ArtifactStagingDirectory)/${{ parameter.Name }}
-        displayName: Build DacPac
+      - task: MSBuild@1
+        inputs:
+          configuration: Release
+          solution: ${{ parameters.dacpacProject}}
+          msbuildArguments:  /p:OutputPath=$(Build.ArtifactStagingDirectory)/${{ parameter.Name }}
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathtoPublish : '$(Build.ArtifactStagingDirectory)'
+          artifactName: artifacts
       
   
