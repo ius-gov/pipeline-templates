@@ -35,6 +35,7 @@ steps:
       arguments: ${{ parameters.imageName }}
   - task: Docker@1
     displayName: Push version image
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     inputs:
       command: push
       azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
@@ -42,6 +43,7 @@ steps:
       imagename: ${{ parameters.imageName }}
   - task: Docker@1
     displayName: Push latest image
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     inputs:
       command: push
       azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
@@ -49,6 +51,7 @@ steps:
       imagename: ${{ parameters.latestName }}
   - task: AzureCLI@1
     displayName: package helm chart
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     inputs:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
