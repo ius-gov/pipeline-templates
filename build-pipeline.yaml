@@ -38,8 +38,8 @@ steps:
     displayName: create appsettings.Consortium.Production
     inputs:
       script: 
-        mkdir appsettings
-        echo '{}' > appsettings/appsettings.Consortium.Production.json
+        mkdir $(Build.ArtifactStagingDirectory)/appsettings
+        echo '{}' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
   - task: Docker@1
     displayName: Run Image
     inputs:
@@ -50,7 +50,7 @@ steps:
       envVars:
         APPSETTING_LOCATION:/data/appsettings
       volumes:
-        appsettings:/data/appsettings
+        $(Build.ArtifactStagingDirectory)/appsettings:/data/appsettings
       ports: 
         80:80
   - task: Bash@3
