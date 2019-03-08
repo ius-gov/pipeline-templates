@@ -38,6 +38,7 @@ steps:
     displayName: create appsettings.Consortium.Production
     inputs:
       script: 
+        echo 'Creating Appsettings folder at $(Build.ArtifactStagingDirectory)'
         mkdir $(Build.ArtifactStagingDirectory)/appsettings
         echo '{}' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
   - task: Docker@1
