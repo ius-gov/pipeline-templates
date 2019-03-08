@@ -47,9 +47,9 @@ steps:
       azureContainerRegistry: ${{ parameters.registry }}
       imageName: ${{ parameters.latestName }}
       envVars:
-        - APPSETTING_LOCATION:/data/appsettings
+        APPSETTING_LOCATION:/data/appsettings
       volumes:
-        - appsettings:/data/appsettings
+        appsettings:/data/appsettings
       ports: 
         80:80
   - task: Bash@3
