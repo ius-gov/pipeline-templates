@@ -10,10 +10,12 @@ parameters:
   imageName: ''
 
 steps:
-  - task: Bash@3
-    displayName: create appsettings.Consortium.Production
+  - task: AzureCLI@1
+    displayName: Create appsettings folder
     inputs:
-      script: 
+      azureSubscription : ${{ parameters.containerServiceEndpoint }}
+      scriptLocation: inlineScript
+      inlineScript: |
         echo 'Creating Appsettings folder at $(Build.ArtifactStagingDirectory)'
         mkdir $(Build.ArtifactStagingDirectory)/appsettings
         echo '{}' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
@@ -54,10 +56,12 @@ steps:
         $(Build.ArtifactStagingDirectory)/appsettings:/data/appsettings
       ports: 
         80:80
-  - task: Bash@3
-    displayName: Health Check
+  - task: AzureCLI@1
+    displayName: Running Health Check
     inputs:
-      script:
+      azureSubscription : ${{ parameters.containerServiceEndpoint }}
+      scriptLocation: inlineScript
+      inlineScript: |
         echo 'Testing Health'
         curl http://localhost/health
   - task: Docker@1
