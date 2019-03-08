@@ -1,5 +1,6 @@
 parameters:
   serviceProject : ''
+  nugetConfigPath : 'application/NuGet.Config'
 
 jobs:
   - job: DotNet_ServiceBuild
@@ -11,8 +12,9 @@ jobs:
         inputs:
           command: restore
           projects: 'application/**/*.csproj'
-          nugetConfigPath: application/NuGet.Config
-      - script: dotnet build --configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/service
+          feedsToUse: config
+          nugetConfigPath: ${{ parameters.nugetConfigPath }}
+      - script: dotnet build ${{ parameters.serviceProject }} --configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/service 
         displayName: Build
       - task: DotNetCoreCLI@2
         displayName: Run Tests
