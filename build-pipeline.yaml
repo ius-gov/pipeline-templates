@@ -51,7 +51,7 @@ steps:
       volumes:
         - appsettings:/data/appsettings
       ports: 
-        - 80:80
+        80:80
   - task: Bash@3
     displayName: Health Check
     scripts:
