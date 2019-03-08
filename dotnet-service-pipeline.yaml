@@ -14,14 +14,14 @@ jobs:
           projects: 'application/**/*.csproj'
           feedsToUse: config
           nugetConfigPath: ${{ parameters.nugetConfigPath }}
-      - script: dotnet build ${{ parameters.serviceProject }} --configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/service 
+      - script: dotnet build ${{ parameters.serviceProject }} --configuration release -o $(Build.ArtifactStagingDirectory)/service 
         displayName: Build
       - task: DotNetCoreCLI@2
         displayName: Run Tests
         inputs:
           command: test
           projects: '**/*Tests/*.csproj'
-          arguments: '--configuration $(buildConfiguration)'
+          arguments: '--configuration release'
 
 
   
