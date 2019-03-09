@@ -45,7 +45,9 @@ steps:
         echo '{ "AppSettings" : { "URLs" : { "IdentityServer" : "https://iusidentityservier.azurewebsites.net" } } }' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
         echo 'Starting Docker Image ${{ parameters.latestName }}'
         docker run -d -e "APPSETTING_LOCATION=/data/appsettings" -v $(Build.ArtifactStagingDirectory)/appsettings:/data/appsettings  -p 80:80 ${{ parameters.latestName }}
+        sleep 10
         docker ps -a
+        docker logs $(docker ps | grep "ius.factfinding.service" | awk '{print $1}')
         echo 'Testing Health'
         curl http://localhost/health
   - task: Docker@1
