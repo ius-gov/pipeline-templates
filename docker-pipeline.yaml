@@ -10,15 +10,6 @@ parameters:
   imageName: ''
 
 steps:
-  - task: AzureCLI@1
-    displayName: Create appsettings folder
-    inputs:
-      azureSubscription : ${{ parameters.containerServiceEndpoint }}
-      scriptLocation: inlineScript
-      inlineScript: |
-        echo 'Creating Appsettings folder at $(Build.ArtifactStagingDirectory)'
-        mkdir $(Build.ArtifactStagingDirectory)/appsettings
-        echo '{ "AppSettings" : { "URLs" : { "IdentityServer" : "https://iusidentityservier.azurewebsites.net" } } }' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
   - task: Docker@1
     displayName: Container registry login
     inputs:
@@ -49,10 +40,12 @@ steps:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
       inlineScript: |
+        echo 'Creating Appsettings folder at $(Build.ArtifactStagingDirectory)'
+        mkdir $(Build.ArtifactStagingDirectory)/appsettings
+        echo '{ "AppSettings" : { "URLs" : { "IdentityServer" : "https://iusidentityservier.azurewebsites.net" } } }' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
         echo 'Starting Docker Image ${{ parameters.latestName }}'
         docker run -d -e "APPSETTING_LOCATION=/data/appsettings" -v $(Build.ArtifactStagingDirectory)/appsettings:/data/appsettings  -p 80:80 ${{ parameters.latestName }}
-        echo 'Waiting for docker image to start'
-        docker wait ${{ parameters.latestName }}
+        docker ps -a
         echo 'Testing Health'
         curl http://localhost/health
   - task: Docker@1
