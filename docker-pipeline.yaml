@@ -49,8 +49,10 @@ steps:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
       inlineScript: |
-        echo 'Starting Docker Image'
+        echo 'Starting Docker Image ${{ parameters.latestName }}'
         docker run -d -e "APPSETTING_LOCATION=/data/appsettings" -v $(Build.ArtifactStagingDirectory)/appsettings:/data/appsettings  -p 80:80 ${{ parameters.latestName }}
+        echo 'Waiting for docker image to start'
+        docker wait ${{ parameters.latestName }}
         echo 'Testing Health'
         curl http://localhost/health
   - task: Docker@1
