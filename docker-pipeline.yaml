@@ -43,26 +43,14 @@ steps:
       azureContainerRegistry: ${{ parameters.registry }}
       imageName: ${{ parameters.latestName }}
       arguments: ${{ parameters.imageName }}
-  - task: Docker@1
-    displayName: Run Image
-    inputs:
-      command: run
-      azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
-      azureContainerRegistry: ${{ parameters.registry }}
-      imageName: ${{ parameters.latestName }}
-      envVars:
-        APPSETTING_LOCATION:/data/appsettings
-      volumes:
-        $(Build.ArtifactStagingDirectory)/appsettings:/data/appsettings
-      ports: 
-        80:80
   - task: AzureCLI@1
     displayName: Running Health Check
     inputs:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
       inlineScript: |
-        docker ps -a
+        echo 'Starting Docker Image'
+        docker run -d -e "APPSETTING_LOCATION=/data/appsettings" -v $(Build.ArtifactStagingDirectory)/appsettings:/data/appsettings  -p 80:80 ${{ parameters.latestName }}
         echo 'Testing Health'
         curl http://localhost/health
   - task: Docker@1
