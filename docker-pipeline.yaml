@@ -50,8 +50,6 @@ steps:
         docker logs $(docker ps | grep "ius.factfinding.service" | awk '{print $1}')
         echo 'Testing Health'
         curl http://localhost/health
-        # sleep again to wait for curl to print to screen
-        sleep 2
   - task: Docker@1
     displayName: Push version image
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
