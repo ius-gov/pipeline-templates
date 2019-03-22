@@ -32,5 +32,5 @@ jobs:
           quiet: False
       - task: PublishBuildArtifacts@1
         inputs:
-          pathtoPublish : '$(Build.ArtifactStagingDirectory)/Web.Zip'
+          pathtoPublish : '$(Build.ArtifactStagingDirectory)/Web.zip'
           artifactName: artifacts
