@@ -44,7 +44,7 @@ steps:
         mkdir $(Build.ArtifactStagingDirectory)/appsettings
         echo '{ "AppSettings" : { "URLs" : { "IdentityServer" : "https://iusidentityservier.azurewebsites.net" } } }' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
         echo 'Starting Docker Image ${{ parameters.latestName }}'
-        docker run -d -e "APPSETTING_LOCATION=/data/appsettings" -v $(Build.ArtifactStagingDirectory)/appsettings:/data/appsettings  -p 80:80 ${{ parameters.latestName }}
+        docker run -d -e "APPSETTING_LOCATION=/data/appsettings;ASPNETCORE_ENVIRONMENT=Build" -v $(Build.ArtifactStagingDirectory)/appsettings:/data/appsettings  -p 80:80 ${{ parameters.latestName }}
         sleep 5
         docker ps -a
         docker logs $(docker ps -a | grep "${{ parameters.latestName }}" | awk '{print $1}')
@@ -81,5 +81,3 @@ steps:
         cat ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/values.yaml
         helm package ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }} --save=false
         az acr helm push -n iusdev ${{ parameters.helmChartName }}-${{ parameters.semVersion }}.tgz
-
-    
