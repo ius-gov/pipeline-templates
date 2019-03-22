@@ -27,7 +27,7 @@ jobs:
         displayName: Publish
       - task: ArchiveFiles@2
         inputs:
-          rootFolderOrFile: $(Build.ArtifactStagingDirectory)/Web
+          rootFolderOrFile: $(Build.ArtifactStagingDirectory)/Web/*
           archiveFile: $(Build.ArtifactStagingDirectory)/Web.zip
           quiet: False
       - task: PublishBuildArtifacts@1
