@@ -23,12 +23,9 @@ jobs:
           command: test
           projects: '**/*Tests/*.csproj'
           arguments: '--configuration Release'
-      - script: dotnet publish ${{ parameters.webProject }} --configuration Release --output  -o $(Build.ArtifactStagingDirectory)/web 
+      - script: dotnet publish ${{ parameters.webProject }} --configuration Release --output  -o $(Build.ArtifactStagingDirectory)/web
         displayName: Publish
       - task: PublishBuildArtifacts@1
         inputs:
-          pathtoPublish : '$(Build.ArtifactStagingDirectory)'
-          artifactName: artifacts
-
-
-  
+          pathtoPublish : '$(Build.ArtifactStagingDirectory)/web'
+          artifactName: web
