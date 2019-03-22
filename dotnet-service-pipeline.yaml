@@ -29,7 +29,8 @@ jobs:
         inputs:
           rootFolderOrFile: $(Build.ArtifactStagingDirectory)/Service
           archiveFile: $(Build.ArtifactStagingDirectory)/Service.zip
-          quiet: False
+          quiet: false
+          includeRootFolder: false
       - task: PublishBuildArtifacts@1
         inputs:
           pathtoPublish : '$(Build.ArtifactStagingDirectory)/Service.zip'
