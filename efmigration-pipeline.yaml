@@ -8,7 +8,7 @@ jobs:
     pool:
       vmImage: 'Ubuntu-16.04'
     steps:
-      - script: dotnet ef migrations script --output $(Build.ArtifactStagingDirectory) --idempotent
+      - script: dotnet ef migrations script --output $(Build.ArtifactStagingDirectory) --idempotent --project $(Project)
         displayName: Generate EF Migration Script
       - task: PublishBuildArtifacts@1
         inputs:
