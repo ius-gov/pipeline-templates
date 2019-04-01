@@ -11,7 +11,7 @@ jobs:
     steps:
       - script: dotnet ef database update --project ${{ parameters.Project }} --verbose
         displayName: Updating the Local Database
-      - script: dotnet ef migrations script --output $(Build.ArtifactStagingDirectory)/$(build.buildId).sql --idempotent --project ${{ parameters.Project }} --context ${{ parameters.DBContext }} --verbose
+      - script: dotnet ef migrations script --output $(Build.ArtifactStagingDirectory)/$(build.buildId).sql --idempotent --context ${{ parameters.DBContext }} --verbose
         displayName: Generate EF Migration Script
         workingDirectory: ${{ parameters.ProjectDirectory }}
       - task: PublishBuildArtifacts@1
