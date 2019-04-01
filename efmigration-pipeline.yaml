@@ -8,6 +8,10 @@ jobs:
     pool:
       vmImage: 'Ubuntu-16.04'
     steps:
+      - script: dotnet --version
+        displayName: Print version
+      - script: dotnet ef database scripts --help
+        displayName: Print Help
       - script: dotnet ef database update --project ${{ parameters.Project }}
         displayName: Updating the Local Database
       - script: dotnet ef migrations script --output $(Build.ArtifactStagingDirectory)/$(build.buildId).sql --idempotent --project ${{ parameters.Project }} --context ${{ parameters.DBContext }}
