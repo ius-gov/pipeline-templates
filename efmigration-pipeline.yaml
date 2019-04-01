@@ -1,6 +1,7 @@
 parameters:
   Name : 'EFMigration'
   Project: '' # The full path to the csproj (including the *.cspoj name)
+  ProjectDirectory : ''
   DBContext: '' # The name of the file that implements the DbContext without the namespace
 
 jobs:
@@ -12,6 +13,7 @@ jobs:
         displayName: Updating the Local Database
       - script: dotnet ef migrations script --output $(Build.ArtifactStagingDirectory)/$(build.buildId).sql --idempotent --project ${{ parameters.Project }} --context ${{ parameters.DBContext }} --verbose
         displayName: Generate EF Migration Script
+        workingDirectory: ${{ parameters.ProjectDirectory }}
       - task: PublishBuildArtifacts@1
         inputs:
           pathtoPublish : '$(Build.ArtifactStagingDirectory)'
