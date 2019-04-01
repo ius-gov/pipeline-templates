@@ -12,7 +12,10 @@ jobs:
       - script: dotnet build
         workingDirectory: ${{ parameters.ProjectDirectory }}
         displayName: "Building Project"
-      - script: dotnet ef migrations script --output $(Build.ArtifactStagingDirectory)/$(build.buildId).sql --idempotent --context ${{ parameters.DBContext }} --verbose --no-build
+      - script: dotnet ef database update --no-build
+        displayName: Update database
+        workingDirectory: ${{ parameters.ProjectDirectory }}
+      - script: dotnet ef migrations script --output $(Build.ArtifactStagingDirectory)/$(build.buildId).sql --context ${{ parameters.DBContext }} --verbose --no-build
         displayName: Generate EF Migration Script
         workingDirectory: ${{ parameters.ProjectDirectory }}
       - task: PublishBuildArtifacts@1
