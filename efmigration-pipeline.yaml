@@ -10,7 +10,7 @@ jobs:
     steps:
       - script: dotnet --version
         displayName: Print version
-      - script: dotnet ef database scripts --help
+      - script: dotnet ef database script --help
         displayName: Print Help
       - script: dotnet ef database update --project ${{ parameters.Project }}
         displayName: Updating the Local Database
