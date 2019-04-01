@@ -9,7 +9,10 @@ jobs:
     pool:
       vmImage: 'windows-2019'
     steps:
-      - script: dotnet ef migrations script --output $(Build.ArtifactStagingDirectory)/$(build.buildId).sql --idempotent --context ${{ parameters.DBContext }} --verbose
+      - script: dotnet build
+        workingDirectory: ${{ parameters.ProjectDirectory }}
+        displayName: "Building Project"
+      - script: dotnet ef migrations script --output $(Build.ArtifactStagingDirectory)/$(build.buildId).sql --idempotent --context ${{ parameters.DBContext }} --verbose --no-build
         displayName: Generate EF Migration Script
         workingDirectory: ${{ parameters.ProjectDirectory }}
       - task: PublishBuildArtifacts@1
