@@ -1,14 +1,16 @@
 parameters:
   Name : 'EFMigration'
-  Project: ''
-  nugetConfigPath : 'application/NuGet.Config'
+  Project: '' # The full path to the csproj (including the *.cspoj name)
+  DBContext: '' # The name of the file that implements the DbContext without the namespace
 
 jobs:
   - job: ${{ parameters.Name }}
     pool:
       vmImage: 'Ubuntu-16.04'
     steps:
-      - script: dotnet ef migrations script --output $(Build.ArtifactStagingDirectory) --idempotent --project $(Project)
+      - script: dotnet ef database update --project $(Project)
+        displayName: Updating the Local Database
+      - script: dotnet ef migrations script --output $(Build.ArtifactStagingDirectory)/$(build.buildId).sql --idempotent --project $(Project) --context $(DBContext)
         displayName: Generate EF Migration Script
       - task: PublishBuildArtifacts@1
         inputs:
