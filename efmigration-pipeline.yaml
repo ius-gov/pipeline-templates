@@ -15,7 +15,7 @@ jobs:
       - script: dotnet ef database update --no-build
         displayName: Update database
         workingDirectory: ${{ parameters.ProjectDirectory }}
-      - script: dotnet ef migrations script --output $(Build.ArtifactStagingDirectory)/$(build.buildId).sql --context ${{ parameters.DBContext }} --verbose --no-build
+      - script: dotnet ef migrations script --output $(Build.ArtifactStagingDirectory)/$(build.buildId).sql --context ${{ parameters.DBContext }} --verbose --no-build --idempotent
         displayName: Generate EF Migration Script
         workingDirectory: ${{ parameters.ProjectDirectory }}
       - task: PublishBuildArtifacts@1
