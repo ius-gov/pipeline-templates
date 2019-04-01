@@ -1,6 +1,6 @@
 parameters:
   Name : 'EFMigration'
-  Project: '' # The full path to the csproj (including the *.cspoj name)
+  ProjectPath: '' # The full path to the csproj (including the *.cspoj name)
   DBContext: '' # The name of the file that implements the DbContext without the namespace
 
 jobs:
@@ -8,7 +8,7 @@ jobs:
     pool:
       vmImage: 'Ubuntu-16.04'
     steps:
-      - script: dotnet ef database update --project $(Project)
+      - script: dotnet ef database update --project $(ProjectPath)
         displayName: Updating the Local Database
       - script: dotnet ef migrations script --output $(Build.ArtifactStagingDirectory)/$(build.buildId).sql --idempotent --project $(Project) --context $(DBContext)
         displayName: Generate EF Migration Script
