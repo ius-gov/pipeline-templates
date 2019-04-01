@@ -11,7 +11,7 @@ jobs:
     steps:
       - script: dotnet build
         workingDirectory: ${{ parameters.ProjectDirectory }}
-        displayName: "Building Projecty"
+        displayName: "Building Project"
       - script: dotnet ef migrations script --output $(Build.ArtifactStagingDirectory)/$(build.buildId).sql --idempotent --context ${{ parameters.DBContext }} --verbose --no-build --startup-project ${{ parameters.Project }}
         displayName: Generate EF Migration Script
         workingDirectory: ${{ parameters.ProjectDirectory }}
