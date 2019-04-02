@@ -1,6 +1,6 @@
 parameters:
   Name : 'DotNet_ServiceBuild'
-  serviceProject : ''
+  Project : ''
   nugetConfigPath : 'application/NuGet.Config'
 
 jobs:
@@ -15,7 +15,7 @@ jobs:
           projects: 'application/**/*.csproj'
           feedsToUse: config
           nugetConfigPath: ${{ parameters.nugetConfigPath }}
-      - script: dotnet build ${{ parameters.serviceProject }} --configuration Release
+      - script: dotnet build ${{ parameters.Project }} --configuration Release
         displayName: Build
       - task: DotNetCoreCLI@2
         displayName: Run Tests
@@ -23,7 +23,7 @@ jobs:
           command: test
           projects: '**/*Tests/*.csproj'
           arguments: '--configuration Release'
-      - script: dotnet publish ${{ parameters.serviceProject }} --configuration Release --output  -o $(Build.ArtifactStagingDirectory)/Service
+      - script: dotnet publish ${{ parameters.Project }} --configuration Release --output  -o $(Build.ArtifactStagingDirectory)/Service
         displayName: Publish
       - task: ArchiveFiles@2
         inputs:
