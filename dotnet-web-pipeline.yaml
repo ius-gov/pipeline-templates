@@ -1,6 +1,7 @@
 parameters:
   Name : 'DotNet_WebBuild'
   Project : ''
+  webProject : ''
   nugetConfigPath : 'application/NuGet.Config'
 
 jobs:
@@ -15,7 +16,7 @@ jobs:
           projects: 'application/**/*.csproj'
           feedsToUse: config
           nugetConfigPath: ${{ parameters.nugetConfigPath }}
-      - script: dotnet build ${{ parameters.Project }} --configuration Release
+      - script: dotnet build ${{ parameters.Project }}${{ parameters.webProject }} --configuration Release
         displayName: Build
       - task: DotNetCoreCLI@2
         displayName: Run Tests
@@ -23,7 +24,7 @@ jobs:
           command: test
           projects: '**/*Tests/*.csproj'
           arguments: '--configuration Release'
-      - script: dotnet publish ${{ parameters.Project }} --configuration Release --output  -o $(Build.ArtifactStagingDirectory)/Web
+      - script: dotnet publish ${{ parameters.Project }}${{ parameters.webProject }} --configuration Release --output  -o $(Build.ArtifactStagingDirectory)/Web
         displayName: Publish
       - task: ArchiveFiles@2
         inputs:
