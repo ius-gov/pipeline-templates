@@ -11,8 +11,8 @@ jobs:
       - task: MSBuild@1
         inputs:
           configuration: Release
-          solution: ${{ parameters.dacpacProject}}
-          msbuildArguments:  /p:OutputPath=$(Build.ArtifactStagingDirectory)/${{ parameter.Name }}
+          solution: ${{ parameters.dacpacProject }}
+          msbuildArguments:  /p:OutputPath=$(Build.ArtifactStagingDirectory)/${{ parameters.Name }}
       - task: PublishBuildArtifacts@1
         inputs:
           pathtoPublish : '$(Build.ArtifactStagingDirectory)'
