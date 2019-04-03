@@ -1,0 +1,37 @@
+parameters:
+  Name : 'DotNet_GatewayBuild'
+  Project : ''
+  nugetConfigPath : 'application/NuGet.Config'
+
+jobs:
+  - job: ${{ parameters.Name }}
+    pool:
+      vmImage: 'Ubuntu-16.04'
+    steps:
+      - task: DotNetCoreCLI@2
+        displayName: Restore
+        inputs:
+          command: restore
+          projects: 'application/**/*.csproj'
+          feedsToUse: config
+          nugetConfigPath: ${{ parameters.nugetConfigPath }}
+      - script: dotnet build ${{ parameters.Project }} --configuration Release
+        displayName: Build
+      - task: DotNetCoreCLI@2
+        displayName: Run Tests
+        inputs:
+          command: test
+          projects: '**/*Tests/*.csproj'
+          arguments: '--configuration Release'
+      - script: dotnet publish ${{ parameters.Project }} --configuration Release --output  -o $(Build.ArtifactStagingDirectory)/Service
+        displayName: Publish
+      - task: ArchiveFiles@2
+        inputs:
+          rootFolderOrFile: $(Build.ArtifactStagingDirectory)/Service
+          archiveFile: $(Build.ArtifactStagingDirectory)/Service.zip
+          quiet: false
+          includeRootFolder: false
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathtoPublish : '$(Build.ArtifactStagingDirectory)/Service.zip'
+          artifactName: artifacts
