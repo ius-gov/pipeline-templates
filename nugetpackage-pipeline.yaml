@@ -1,0 +1,22 @@
+parameters:
+  Name : 'NugetPackage'
+  Project: '' # The full path to the csproj (including the *.cspoj name)
+  FeedName: '' # The Feed name to publish to
+
+jobs:
+  - job: ${{ parameters.Name }}
+    pool:
+      vmImage: 'Ubuntu-16.04'
+    steps:
+      - script: dotnet build ${{ parameters.Project }}
+        displayName: "Building Project"
+      - task: NuGetCommand@2
+        inputs:
+          command: pack
+          packagesToPack: '${{ parameters.Project }}'
+      - task: NuGetCommand@2
+        displayName: 'NuGet push'
+        inputs:
+          command: push
+          publishVstsFeed: '${{ parameters.FeedName}}'
+          allowPackageConflicts: false
