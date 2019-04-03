@@ -16,6 +16,7 @@ jobs:
           packagesToPack: '${{ parameters.Project }}'
       - task: NuGetCommand@2
         displayName: 'NuGet push'
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
         inputs:
           command: push
           publishVstsFeed: '${{ parameters.FeedName}}'
