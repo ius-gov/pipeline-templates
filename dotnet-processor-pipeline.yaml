@@ -1,0 +1,38 @@
+parameters:
+  Name : 'DotNet_ProcessorBuild'
+  Project : ''
+  serviceProject: ''
+  nugetConfigPath : 'application/NuGet.Config'
+
+jobs:
+  - job: ${{ parameters.Name }}
+    pool:
+      vmImage: 'Ubuntu-16.04'
+    steps:
+      - task: DotNetCoreCLI@2
+        displayName: Restore
+        inputs:
+          command: restore
+          projects: 'application/**/*.csproj'
+          feedsToUse: config
+          nugetConfigPath: ${{ parameters.nugetConfigPath }}
+      - script: dotnet build ${{ parameters.Project }}${{ parameters.serviceProject }} --configuration Release
+        displayName: Build
+      - task: DotNetCoreCLI@2
+        displayName: Run Tests
+        inputs:
+          command: test
+          projects: '**/*Tests/*.csproj'
+          arguments: '--configuration Release'
+      - script: dotnet publish ${{ parameters.Project }}${{ parameters.serviceProject }} --configuration Release --output  -o $(Build.ArtifactStagingDirectory)/Processor
+        displayName: Publish
+      - task: ArchiveFiles@2
+        inputs:
+          rootFolderOrFile: $(Build.ArtifactStagingDirectory)/Processor
+          archiveFile: $(Build.ArtifactStagingDirectory)/Processor.zip
+          quiet: false
+          includeRootFolder: false
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathtoPublish : '$(Build.ArtifactStagingDirectory)/Processor.zip'
+          artifactName: artifacts
