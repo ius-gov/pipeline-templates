@@ -23,7 +23,7 @@ jobs:
               eq(variables['Build.SourceBranch'], 'refs/heads/master'),
               and
               (
-                variables['UsingDevelopBranch'],
+                eq(variables['UsingDevelopBranch'], 'true'),
                 eq(variables['Build.SourceBranch'], 'refs/heads/master'),
               )
             )
