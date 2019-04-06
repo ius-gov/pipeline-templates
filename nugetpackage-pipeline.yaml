@@ -14,7 +14,20 @@ jobs:
         displayName: Nuget Pack
       - task: NuGetCommand@2
         displayName: 'NuGet push'
-        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+        condition: |
+          and
+          (
+            succeeded(),
+            or
+            (
+              eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+              and
+              (
+                variables['UsingDevelopBranch'],
+                eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+              )
+            )
+          )
         inputs:
           command: push
           publishVstsFeed: '${{ parameters.FeedName}}'

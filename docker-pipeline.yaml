@@ -52,7 +52,20 @@ steps:
         curl http://localhost/health
   - task: Docker@1
     displayName: Push version image
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    condition: |
+      and
+      (
+        succeeded(),
+        or
+        (
+          eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+          and
+          (
+            variables['UsingDevelopBranch'],
+            eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+          )
+        )
+      )
     inputs:
       command: push
       azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
@@ -60,7 +73,20 @@ steps:
       imagename: ${{ parameters.imageName }}
   - task: Docker@1
     displayName: Push latest image
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    condition: |
+      and
+      (
+        succeeded(),
+        or
+        (
+          eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+          and
+          (
+            variables['UsingDevelopBranch'],
+            eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+          )
+        )
+      )
     inputs:
       command: push
       azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
@@ -68,7 +94,20 @@ steps:
       imagename: ${{ parameters.latestName }}
   - task: AzureCLI@1
     displayName: package helm chart
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    condition: |
+      and
+      (
+        succeeded(),
+        or
+        (
+          eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+          and
+          (
+            variables['UsingDevelopBranch'],
+            eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+          )
+        )
+      )
     inputs:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
