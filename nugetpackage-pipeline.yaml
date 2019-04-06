@@ -14,7 +14,7 @@ jobs:
         displayName: Nuget Pack
       - task: NuGetCommand@2
         displayName: 'NuGet push'
-        condition: |
+        condition:
           and
           (
             succeeded(),
@@ -24,7 +24,7 @@ jobs:
               and
               (
                 eq(variables['UsingDevelopBranch'], 'true'),
-                eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+                eq(variables['Build.SourceBranch'], 'refs/heads/devlop')
               )
             )
           )
