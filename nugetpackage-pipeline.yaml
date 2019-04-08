@@ -14,9 +14,17 @@ jobs:
       version: 0.0.0
       semVersion: 0.0.0
     steps:
-      - template steps/set-version-variable.yaml
-      - template steps/set-project-version.yaml
-      - script: dotnet build ${{ parameters.Project }} -c Release
+      - powershell: |
+          Write-Host "##vso[task.setvariable variable=version]${{ parameters.stateCode }}.${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
+          Write-Host "##vso[task.setvariable variable=semVersion]${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
+          Write-Host "Version = $(version)"
+        displayName: Set Version Variable
+      - script: |
+          echo "Setting csproj Version To $version"
+          find src/ -type f -iname '*.csproj' -exec  sed -i "s/0\.0\.0\-INTERNAL/$version/g" "{}" \;
+          grep "<VersionPrefix>.*</VersionPrefix>" -R .
+        displayName: Set Project Version
+      - script: dotnet build ${{ parameters.Project }}
         displayName: Building Project
       - script : dotnet pack ${{ parameters.Project}} -c Release --include-symbols --include-source -o $(Build.ArtifactStagingDirectory)/dist
         displayName: Nuget Pack
