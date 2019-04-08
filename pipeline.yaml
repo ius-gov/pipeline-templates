@@ -15,10 +15,16 @@ jobs:
       version: 0.0.0
       semVersion: 0.0.0
     steps:
-      - template: steps/set-version-variable.yaml
-        parameters:
-          majorVersion: ${{ parameters.majorVersion }}
-          stateCode: ${{ parameters.stateCode }}
+      - powershell: |
+          Write-Host "##vso[task.setvariable variable=version]${{ parameters.stateCode }}.${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
+          Write-Host "##vso[task.setvariable variable=semVersion]${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
+          Write-Host "Version = $(version)"
+        displayName: Set Version Variable
+      - script: |
+          echo "Setting csproj Version To $version"
+          find src/ -type f -iname '*.csproj' -exec  sed -i "s/0\.0\.0\-INTERNAL/$version/g" "{}" \;
+          grep "<VersionPrefix>.*</VersionPrefix>" -R .
+        displayName: Set Project Version
       - template: docker-pipeline.yaml
         parameters:
           version: '$(version)'
