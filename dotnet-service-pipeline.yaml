@@ -15,7 +15,6 @@ jobs:
         parameters:
           majorVersion: ${{ parameters.majorVersion }}
           stateCode: ${{ parameters.stateCode }}
-      - template: steps/set-project-version.yaml
       - task: DotNetCoreCLI@2
         displayName: Restore
         inputs:

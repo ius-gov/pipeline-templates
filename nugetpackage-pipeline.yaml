@@ -18,7 +18,6 @@ jobs:
         parameters:
           majorVersion: ${{ parameters.majorVersion }}
           stateCode: ${{ parameters.stateCode }}
-      - template: steps/set-project-version.yaml
       - script: dotnet build ${{ parameters.Project }} -c Release
         displayName: Building Project
       - script : dotnet pack ${{ parameters.Project}} -c Release --include-symbols --include-source -o $(Build.ArtifactStagingDirectory)/dist
