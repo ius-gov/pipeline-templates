@@ -8,6 +8,8 @@ jobs:
     pool:
       vmImage: 'Ubuntu-16.04'
     steps:
+      - template steps/set-version-variable.yaml
+      - template steps/set-project-version.yaml
       - task: DotNetCoreCLI@2
         displayName: Restore
         inputs:

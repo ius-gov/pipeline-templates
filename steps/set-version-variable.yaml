@@ -1,0 +1,7 @@
+steps:
+  - powershell: |
+      Write-Host "##vso[task.setvariable variable=version]${{ parameters.stateCode }}.${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
+      Write-Host "##vso[task.setvariable variable=semVersion]${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
+      Write-Host "Version = $(version)"
+    displayName: Set Version Variable
+
