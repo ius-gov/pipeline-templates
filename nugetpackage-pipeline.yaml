@@ -1,7 +1,8 @@
 parameters:
   Name : 'NugetPackage'
   Project: '' # The full path to the csproj (including the *.cspoj name)
-  FeedName: '' # The Feed name to publish to
+  FeedName: '' # DEPRECATED
+  Feed: '' # The Feed name to publish to
   majorVersion: 0
   stateCode: 0
 
@@ -45,5 +46,5 @@ jobs:
           )
         inputs:
           command: push
-          publishVstsFeed: '${{ parameters.FeedName}}'
+          publishVstsFeed: '${{ parameters.FeedName}}${{ parameters.Feed}}'
           allowPackageConflicts: false
