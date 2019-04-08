@@ -8,6 +8,9 @@ parameters:
 
 jobs:
   - job: ${{ parameters.Name }}
+    variables:
+      version: 0.0.0
+      semVersion: 0.0.0
     pool:
       vmImage: 'Ubuntu-16.04'
     steps:
