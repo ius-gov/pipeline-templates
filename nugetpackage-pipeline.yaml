@@ -26,7 +26,7 @@ jobs:
         displayName: Set Project Version
       - script: dotnet build ${{ parameters.Project }}
         displayName: Building Project
-      - script : dotnet pack ${{ parameters.Project}}
+      - script : dotnet pack ${{ parameters.Project}} -c Release -v detailed --include-symbols --include-source -o $(Build.ArtifactStagingDirectory)/dist
         displayName: Nuget Pack
       - task: NuGetCommand@2
         displayName: 'NuGet push'
