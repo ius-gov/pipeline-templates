@@ -14,8 +14,8 @@ jobs:
       version: 0.0.0
       semVersion: 0.0.0
     steps:
-      - template steps/set-version-variable.yaml
-      - template steps/set-project-version.yaml
+      - template: steps/set-version-variable.yaml
+      - template: steps/set-project-version.yaml
       - script: dotnet build ${{ parameters.Project }} -c Release
         displayName: Building Project
       - script : dotnet pack ${{ parameters.Project}} -c Release --include-symbols --include-source -o $(Build.ArtifactStagingDirectory)/dist
