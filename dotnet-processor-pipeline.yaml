@@ -3,6 +3,8 @@ parameters:
   Project : ''
   serviceProject: ''
   nugetConfigPath : 'application/NuGet.Config'
+  majorVersion: 0
+  stateCode: 0
 
 jobs:
   - job: ${{ parameters.Name }}
@@ -10,6 +12,9 @@ jobs:
       vmImage: 'Ubuntu-16.04'
     steps:
       - template: steps/set-version-variable.yaml
+        parameters:
+          majorVersion: ${{ parameters.majorVersion }}
+          stateCode: ${{ parameters.stateCode }}
       - template: steps/set-project-version.yaml
       - task: DotNetCoreCLI@2
         displayName: Restore

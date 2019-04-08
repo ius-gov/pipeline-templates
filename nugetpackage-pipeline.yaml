@@ -14,6 +14,9 @@ jobs:
       semVersion: 0.0.0
     steps:
       - template: steps/set-version-variable.yaml
+        parameters:
+          majorVersion: ${{ parameters.majorVersion }}
+          stateCode: ${{ parameters.stateCode }}
       - template: steps/set-project-version.yaml
       - script: dotnet build ${{ parameters.Project }} -c Release
         displayName: Building Project

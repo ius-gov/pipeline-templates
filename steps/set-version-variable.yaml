@@ -1,3 +1,7 @@
+parameters:
+  majorVersion: 0
+  stateCode: 0
+
 steps:
   - powershell: |
       Write-Host "##vso[task.setvariable variable=version]${{ parameters.stateCode }}.${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
