@@ -44,7 +44,7 @@ steps:
         mkdir $(Build.ArtifactStagingDirectory)/appsettings
         echo '{ "AppSettings" : { "URLs" : { "IdentityServer" : "https://iusidentityservier.azurewebsites.net" } } }' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
         echo 'Starting Docker Image ${{ parameters.latestName }}'
-        docker run -d -e "APPSETTING_LOCATION=/data/appsettings" -e "BuildServer=true" -v $(Build.ArtifactStagingDirectory)/appsettings:/data/appsettings  -p 80:80 ${{ parameters.latestName }}
+        docker run -e "APPSETTING_LOCATION=/data/appsettings" -e "BuildServer=true" -v $(Build.ArtifactStagingDirectory)/appsettings:/data/appsettings  -p 80:80 ${{ parameters.latestName }}
         sleep 5
         docker ps -a
         latest_guid="$(docker ps -a | grep "${{ parameters.latestName }}" | awk '{print $1}')"
