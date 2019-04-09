@@ -47,7 +47,7 @@ steps:
         docker run -d -e "APPSETTING_LOCATION=/data/appsettings" -e "BuildServer=true" -v $(Build.ArtifactStagingDirectory)/appsettings:/data/appsettings  -p 80:80 ${{ parameters.imageName }}
         sleep 5
         docker ps -a
-        latest_guid="$(docker ps -a | grep "${{ parameters.latestName }}" | awk '{print $1}')"
+        latest_guid="$(docker ps -a | grep "${{ parameters.imageName }}" | awk '{print $1}')"
         echo "Checking logs for $latest_guid"
         docker logs $latest_guid
         echo 'Testing Health'
