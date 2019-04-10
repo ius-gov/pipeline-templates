@@ -42,25 +42,27 @@ steps:
       inlineScript: |
         echo 'Creating Appsettings folder at $(Build.ArtifactStagingDirectory)'
         mkdir $(Build.ArtifactStagingDirectory)/appsettings
-        echo '{
-          "AppSettings" : {
-             "URLs" : {
-               "IdentityServer" : "https://iusidentityservier.azurewebsites.net"
-             }
-          },
-          "Data": {
-            "Queue": {
-              "Password": "$(QueuePassword)",
-              "Port": "5672",
-              "ServerName": "$(QueueUrl)",
-              "Threads": {
-                "Global": 0
-              },
-              "UserName": "$(QueueUserName)",
-              "VirtualHost": "BuildServer"
-              }
-            }
+        echo '{ \
+          "AppSettings" : {\
+             "URLs" : { \
+               "IdentityServer" : "https://iusidentityservier.azurewebsites.net" \
+             }\
+          }, \
+          "Data": { \
+            "Queue": { \
+              "Password": "zI%2lRsTtyM3hke1", \
+              "Port": "5672", \
+              "ServerName": "iusqueue.westus.cloudapp.azure.com", \
+              "Threads": { \
+                "Global": 0 \
+              }, \
+              "UserName": "VermontDevelopment", \
+              "VirtualHost": "BuildServer"\
+              } \
+            }\
          }' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
+        echo 'Using AppSettings'
+        cat $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
         echo 'Starting Docker Image ${{ parameters.latestName }}'
         docker run -d -e "APPSETTING_LOCATION=/data/appsettings" -e "BuildServer=true" -v $(Build.ArtifactStagingDirectory)/appsettings:/data/appsettings  -p 80:80 ${{ parameters.imageName }}
         sleep 5
