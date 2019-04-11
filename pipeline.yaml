@@ -12,13 +12,10 @@ jobs:
     pool:
       vmImage: 'Ubuntu-16.04'
     variables:
-      version: 0.0.0
-      semVersion: 0.0.0
+      version: ${{ parameters.stateCode }}.${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)
+      semVersion: ${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)
     steps:
       - powershell: |
-          Write-Host "Setting Version From StateCode: ${{ parameters.stateCode}}, Major Version: ${{ parameters.majorVersion }}, and buildId $(build.BuildId) to ${{ parameters.stateCode }}.${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
-          Write-Host "##vso[task.setvariable variable=version]${{ parameters.stateCode }}.${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
-          Write-Host "##vso[task.setvariable variable=semVersion]${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
           Write-Host "Version = $(version)"
         displayName: Set Version Variable
       - script: |
