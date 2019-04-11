@@ -83,7 +83,7 @@ steps:
           eq(variables['Build.SourceBranch'], 'refs/heads/master'),
           and
           (
-            eq(variables['UsingDevelopBranch'], 'true'),
+            eq($(UsingDevelopBranch), 'true'),
             eq(variables['Build.SourceBranch'], 'refs/heads/devlop')
           )
         )
@@ -104,7 +104,7 @@ steps:
           eq(variables['Build.SourceBranch'], 'refs/heads/master'),
           and
           (
-            eq(variables['UsingDevelopBranch'], 'true'),
+            eq($(UsingDevelopBranch), 'true'),
             eq(variables['Build.SourceBranch'], 'refs/heads/devlop')
           )
         )
@@ -125,7 +125,7 @@ steps:
           eq(variables['Build.SourceBranch'], 'refs/heads/master'),
           and
           (
-            eq(variables['UsingDevelopBranch'], 'true'),
+            eq($(UsingDevelopBranch), 'true'),
             eq(variables['Build.SourceBranch'], 'refs/heads/devlop')
           )
         )
