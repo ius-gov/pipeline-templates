@@ -8,16 +8,10 @@ parameters:
 jobs:
   - job: ${{ parameters.Name }}
     variables:
-      version: 0.0.0
-      semVersion: 0.0.0
+      version: ${{ parameters.stateCode }}.${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)
     pool:
       vmImage: 'Ubuntu-16.04'
     steps:
-      - powershell: |
-          Write-Host "##vso[task.setvariable variable=version]${{ parameters.stateCode }}.${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
-          Write-Host "##vso[task.setvariable variable=semVersion]${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
-          Write-Host "Version = $(version)"
-        displayName: Set Version Variable
       - script: |
           echo "Setting csproj Version To $version"
           find src/ -type f -iname '*.csproj' -exec  sed -i "s/0\.0\.0\-INTERNAL/$version/g" "{}" \;

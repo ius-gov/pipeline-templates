@@ -15,9 +15,6 @@ jobs:
       version: ${{ parameters.stateCode }}.${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)
       semVersion: ${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)
     steps:
-      - powershell: |
-          Write-Host "Version = $(version)"
-        displayName: Set Version Variable
       - script: |
           echo "Setting csproj Version To $version"
           find src/ -type f -iname '*.csproj' -exec  sed -i "s/0\.0\.0\-INTERNAL/$version/g" "{}" \;
