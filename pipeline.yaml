@@ -16,6 +16,7 @@ jobs:
       semVersion: 0.0.0
     steps:
       - powershell: |
+          Write-Host "Setting Version From StateCode: ${{ parameters.stateCode}}, Major Version: ${{ parameters.majorVersion }}, and buildId $(build.BuildId)"
           Write-Host "##vso[task.setvariable variable=version]${{ parameters.stateCode }}.${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
           Write-Host "##vso[task.setvariable variable=semVersion]${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
           Write-Host "Version = $(version)"
@@ -36,4 +37,3 @@ jobs:
           helmChartName : '${{ parameters.helmChartName }}'
           latestName: '$(registry)/$(project):latest'
           imageName: '$(registry)/$(project):$(version)'
-
