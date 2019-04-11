@@ -12,10 +12,12 @@ jobs:
     pool:
       vmImage: 'Ubuntu-16.04'
     variables:
-      version: ${{ format('{0}.{1}.{2}.{3}', parameters.stateCode, parameters.majorVersion, $([math]::floor($(build.buildId)/10000)), $($(build.buildId)%10000)) }}
-      semVersion: ${{ format('{0}.{1}.{2}', parameters.majorVersion, $([math]::floor($(build.buildId)/10000)), $($(build.buildId)%10000)) }}
+      version: 0.0.0.0
+      semVersion: 0.0.0
     steps:
       - script: |
+          ##vso[task.setvariable variable=version]${{ parameters.stateCode }}.${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)
+          ##vso[task.setvariable variable=semVersion]${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)
           echo "Setting csproj Version To $version"
           find application/ -type f -iname '*.csproj' -exec  sed -i "s/0\.0\.0\-INTERNAL/$version/g" "{}" \;
           grep "<VersionPrefix>.*</VersionPrefix>" -R .
