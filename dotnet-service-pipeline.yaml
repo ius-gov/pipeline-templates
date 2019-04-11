@@ -15,10 +15,10 @@ jobs:
     steps:
       - powershell: |
           Write-Host "##vso[task.setvariable variable=version;]${{ parameters.stateCode }}.${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
-          Write-Host "Setting csproj Version To $version"
+          Write-Host "Setting csproj Version To $(version)"
         displayName: Calculating Version
       - script: |
-          find application/ -type f -iname '*.csproj' -exec  sed -i "s/0\.0\.0\-INTERNAL/$version/g" "{}" \;
+          find application/ -type f -iname '*.csproj' -exec  sed -i "s/0\.0\.0\-INTERNAL/$(version)/g" "{}" \;
           grep "<VersionPrefix>.*</VersionPrefix>" -R .
         displayName: Set Project Version
       - task: DotNetCoreCLI@2

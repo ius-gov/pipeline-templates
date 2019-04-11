@@ -24,11 +24,11 @@ jobs:
 
           Write-Host "##vso[task.setvariable variable=version;]$tmpVersion"
           Write-Host "##vso[task.setvariable variable=semVersion;]$tmpSemversion"
-          Write-Host "Setting csproj Version To $version"
-          Write-Host "Setting semVersion to $semVersion"
+          Write-Host "Setting csproj Version To $(version)"
+          Write-Host "Setting semVersion to $(semVersion)"
         displayName: Calculating Version
       - script: |
-          find application/ -type f -iname '*.csproj' -exec  sed -i "s/0\.0\.0\-INTERNAL/$version/g" "{}" \;
+          find application/ -type f -iname '*.csproj' -exec  sed -i "s/0\.0\.0\-INTERNAL/$(version)/g" "{}" \;
           grep "<VersionPrefix>.*</VersionPrefix>" -R .
         displayName: Set Project Version
       - template: docker-pipeline.yaml
