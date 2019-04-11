@@ -11,9 +11,10 @@ jobs:
     pool:
       vmImage: 'Ubuntu-16.04'
     variables:
-      version: ${{ parameters.stateCode }}.${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)
+      version: 0.0.0.0
     steps:
       - script: |
+          ##vso[task.setvariable variable=version]${{ parameters.stateCode }}.${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)
           echo "Setting csproj Version To $version"
           find application/ -type f -iname '*.csproj' -exec  sed -i "s/0\.0\.0\-INTERNAL/$version/g" "{}" \;
           grep "<VersionPrefix>.*</VersionPrefix>" -R .
