@@ -23,7 +23,7 @@ jobs:
           Write-Host "Set intermeidate variables $tmpSemversion and $tmpVersion"
 
           Write-Host "##vso[task.setvariable variable=version;]$tmpVersion"
-          Write-Host "##vso[task.setvariable variable=semVersion;]$tmpSemversion
+          Write-Host "##vso[task.setvariable variable=semVersion;]$tmpSemversion"
           Write-Host "Setting csproj Version To $version"
           Write-Host "Setting semVersion to $semVersion"
         displayName: Calculating Version
