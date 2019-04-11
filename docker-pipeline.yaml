@@ -32,8 +32,8 @@ steps:
       command: tag
       azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
       azureContainerRegistry: ${{ parameters.registry }}
-      imageName: ${{ format('{0}', parameters.latestName) }}
-      arguments: ${{ format('{0}', parameters.imageName) }}
+      imageName: ${{ parameters.latestName }}
+      arguments: ${{ parameters.imageName }}
   - task: AzureCLI@1
     displayName: Running Health Check
     inputs:
@@ -63,7 +63,7 @@ steps:
          }' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
         echo 'Using AppSettings'
         cat $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
-        echo '${{ format('Starting Docker Image {0}', parameters.latestName) }}'
+        echo 'Starting Docker Image ${{ parameters.latestName }}'
         docker run -d -e "APPSETTING_LOCATION=/data/appsettings" -e "BuildServer=true" -v $(Build.ArtifactStagingDirectory)/appsettings:/data/appsettings  -p 80:80 ${{ parameters.imageName }}
         sleep 5
         docker ps -a
@@ -113,7 +113,7 @@ steps:
       command: push
       azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
       azureContainerRegistry: ${{ parameters.registry }}
-      imagename: ${{ format('{0}', parameters.latestName) }}
+      imagename: ${{ parameters.latestName }}
   - task: AzureCLI@1
     displayName: package helm chart
     condition: |
