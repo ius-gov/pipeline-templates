@@ -29,5 +29,5 @@ jobs:
           project: '${{ parameters.project }}'
           helmChartLocation: '${{ parameters.helmChartLocation }}'
           helmChartName : '${{ parameters.helmChartName }}'
-          latestName: '$(registry)/$(project):latest'
-          imageName: '$(registry)/$(project):$(version)'
+          latestName: '${{format('{0}/{1}:latest', $(registry), $(project)) }}'
+          imageName: '${{format('{0}/{1}:{2}', $(registry), $(project), $(version)) }}'
