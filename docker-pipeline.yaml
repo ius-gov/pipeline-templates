@@ -78,7 +78,15 @@ steps:
       and
       (
         succeeded(),
-        in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/devlop')
+        or
+        (
+          eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+          and
+          (
+            eq(variables['UsingDevelopBranch'], 'true'),
+            eq(variables['Build.SourceBranch'], 'refs/heads/develop')
+          )
+        )
       )
     inputs:
       command: push
@@ -91,7 +99,15 @@ steps:
       and
       (
         succeeded(),
-        in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/devlop')
+        or
+        (
+          eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+          and
+          (
+            eq(variables['UsingDevelopBranch'], 'true'),
+            eq(variables['Build.SourceBranch'], 'refs/heads/develop')
+          )
+        )
       )
     inputs:
       command: push
@@ -104,7 +120,15 @@ steps:
       and
       (
         succeeded(),
-        in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/devlop')
+        or
+        (
+          eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+          and
+          (
+            eq(variables['UsingDevelopBranch'], 'true'),
+            eq(variables['Build.SourceBranch'], 'refs/heads/develop')
+          )
+        )
       )
     inputs:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
