@@ -12,9 +12,9 @@ steps:
       azureSubscription: 'Microsoft Azure Enterprise (181b1a02-9555-44fb-84c1-7d23c91ff8c6)'
       scriptLocation: inlineScript
       inlineScript: |
-      helm init -c
-      az acr helm repo add --name iusdev
-      helm dep up ${{ parameters.chart }}
+        helm init -c
+        az acr helm repo add --name iusdev
+        helm dep up ${{ parameters.chart }}
 
   - task: HelmDeploy@0
     displayName: 'helm upgrade ${{ parameters.projectName }}'
