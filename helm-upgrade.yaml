@@ -13,6 +13,7 @@ steps:
       scriptLocation: inlineScript
       inlineScript: |
         helm init -c
+        az login
         az acr helm repo add --name iusdev
         helm dep up ${{ parameters.chart }}
 
