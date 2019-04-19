@@ -13,8 +13,8 @@ steps:
       scriptLocation: inlineScript
       inlineScript: |
         helm init -c
-        az login
-        az acr helm repo add --name iusdev --username=fce6e15a-ad21-4ccb-9a44-56b6c189f7cc --password=d117b44d-4a69-41b6-aa94-959ed4401395
+        az login --username=fce6e15a-ad21-4ccb-9a44-56b6c189f7cc --password=d117b44d-4a69-41b6-aa94-959ed4401395
+        az acr helm repo add --name iusdev
         helm dep up ${{ parameters.chart }}
 
   - task: HelmDeploy@0
