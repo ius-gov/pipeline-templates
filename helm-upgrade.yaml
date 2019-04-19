@@ -9,7 +9,7 @@ steps:
   - task: AzureCLI@1
     displayName: 'Helm Dependency Upgrade ${{ parameters.projectName }}'
     inputs:
-      azureSubscription: 'Microsoft Azure Enterprise (181b1a02-9555-44fb-84c1-7d23c91ff8c6)'
+      azureSubscription: 'k8-container'
       scriptLocation: inlineScript
       inlineScript: |
         helm init -c
@@ -19,7 +19,7 @@ steps:
   - task: HelmDeploy@0
     displayName: 'helm upgrade ${{ parameters.projectName }}'
     inputs:
-      azureSubscription: 'Microsoft Azure Enterprise (181b1a02-9555-44fb-84c1-7d23c91ff8c6)'
+      azureSubscription: 'k8-container'
       azureResourceGroup: '${{ parameters.resourceGroup }}'
       kubernetesCluster: ${{ parameters. cluster}}
       namespace: default
