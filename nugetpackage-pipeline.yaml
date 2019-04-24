@@ -21,7 +21,9 @@ jobs:
           find application/ -type f -iname '*.csproj' -exec  sed -i "s/0\.0\.0\-INTERNAL/$(version)/g" "{}" \;
           grep "<VersionPrefix>.*</VersionPrefix>" -R .
         displayName: Set Project Version
-      - script: dotnet build ${{ parameters.Project }} -c Release
+      - script: |
+          echo building ${{ parameters.Project }}
+          dotnet build ${{ parameters.Project }} -c Release
         displayName: Building Project
       - script : dotnet pack ${{ parameters.Project}} -c Release --include-symbols --include-source -o $(Build.ArtifactStagingDirectory)/dist
         displayName: Nuget Pack
