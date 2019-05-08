@@ -86,15 +86,6 @@ steps:
       and
       (
         succeeded(),
-        or
-        (
-          eq(variables['Build.SourceBranch'], 'refs/heads/master'),
-          and
-          (
-            eq(variables['UsingDevelopBranch'], 'true'),
-            eq(variables['Build.SourceBranch'], 'refs/heads/devlop')
-          )
-        ),
         ne(variables['autorestProjectName'], ''),
         ne(variables['autorestClientFeed'], '')
       )
