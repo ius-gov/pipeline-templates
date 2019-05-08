@@ -124,7 +124,7 @@ steps:
       )
     inputs:
       command: push
-      publishVstsFeed: '${{ parameters.FeedName}}${{ parameters.Feed}}'
+      publishVstsFeed: '${{parameters.autorestClientFeed}}'
       allowPackageConflicts: false
       packagesToPush: '$(Build.ArtifactStagingDirectory)/autorest'
   - task: Docker@1
