@@ -81,11 +81,7 @@ steps:
         echo 'Testing Health'
         curl http://localhost/health -o health.json
         cat health.json
-        echo
-        echo apn: ${{ parameters.autorestProjectName }}
-        echo acf: ${{ parameters.autorestClientFeed }}
-        echo
-  - ${{ if ne(parameters.autorestClientFeed, '') }}:
+  - ${{ if ne(parameters.autorestProjectName, '') }}:
     - task: AzureCLI@1
       displayName: Building Autorest Client
       condition: succeeded()
@@ -93,31 +89,29 @@ steps:
         azureSubscription : ${{ parameters.containerServiceEndpoint }}
         scriptLocation: inlineScript
         inlineScript: |
-          mkdir autorest
-          docker run --mount type=bind,src=$(Build.ArtifactStagingDirectory)/autorest,dst=/autorest/dist autorest-auto-generator:latest python3 main.py --baseUrl http://localhost --projectName $autorestProjectName
-  - task: NuGetCommand@2
-    displayName: 'Autorest client NuGet push'
-    condition:
-      and
-      (
-        succeeded(),
-        or
+          mkdir $(Build.ArtifactStagingDirectory)/autorest
+          docker run --mount type=bind,src=$(Build.ArtifactStagingDirectory)/autorest,dst=/autorest/dist autorest-auto-generator:latest python3 main.py --baseUrl http://localhost --projectName ${{ parameters.autorestProjectName }}
+    - task: NuGetCommand@2
+      displayName: 'Autorest client NuGet push'
+      condition:
+        and
         (
-          eq(variables['Build.SourceBranch'], 'refs/heads/master'),
-          and
+          succeeded(),
+          or
           (
-            eq(variables['UsingDevelopBranch'], 'true'),
-            eq(variables['Build.SourceBranch'], 'refs/heads/devlop')
+            eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+            and
+            (
+              eq(variables['UsingDevelopBranch'], 'true'),
+              eq(variables['Build.SourceBranch'], 'refs/heads/devlop')
+            )
           )
-        ),
-        ne(variables['autorestProjectName'], ''),
-        ne(variables['autorestClientFeed'], '')
-      )
-    inputs:
-      command: push
-      publishVstsFeed: '${{parameters.autorestClientFeed}}'
-      allowPackageConflicts: false
-      packagesToPush: '$(Build.ArtifactStagingDirectory)/autorest'
+        )
+      inputs:
+        command: push
+        publishVstsFeed: '${{parameters.autorestClientFeed}}'
+        allowPackageConflicts: false
+        packagesToPush: '$(Build.ArtifactStagingDirectory)/autorest'
   - task: Docker@1
     displayName: Push version image
     condition: |
