@@ -81,13 +81,15 @@ steps:
         echo 'Testing Health'
         curl http://localhost/health -o health.json
         cat health.json
+        echo variables ['autorestClientFeed']
+        echo variables ['autorestProjectName']
+        echo variables
   - task: AzureCLI@1
     displayName: Building Autorest Client
     condition: |
       and
       (
         succeeded(),
-        failed(),
         ne(variables['autorestProjectName'], ''),
         ne(variables['autorestClientFeed'], '')
       )
