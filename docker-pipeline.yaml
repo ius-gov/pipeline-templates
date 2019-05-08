@@ -87,6 +87,7 @@ steps:
       and
       (
         succeeded(),
+        failed(),
         ne(variables['autorestProjectName'], ''),
         ne(variables['autorestClientFeed'], '')
       )
