@@ -80,6 +80,7 @@ steps:
       inlineScript: |
         echo 'Testing Health'
         curl http://localhost/health -o health.json
+        cat health.json
   - task: AzureCLI@1
     displayName: Building Autorest Client
     condition: |
