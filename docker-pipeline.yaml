@@ -90,8 +90,8 @@ steps:
       and
       (
         succeeded(),
-        ne(variables['autorestProjectName'], ''),
-        ne(variables['autorestClientFeed'], '')
+        ne(parameters['autorestProjectName'], ''),
+        ne(parameters['autorestClientFeed'], '')
       )
     inputs:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
@@ -114,8 +114,8 @@ steps:
             eq(variables['Build.SourceBranch'], 'refs/heads/devlop')
           )
         ),
-        ne(variables['autorestProjectName'], ''),
-        ne(variables['autorestClientFeed'], '')
+        ne(parameters['autorestProjectName'], ''),
+        ne(parameters['autorestClientFeed'], '')
       )
     inputs:
       command: push
