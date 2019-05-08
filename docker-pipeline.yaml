@@ -84,21 +84,16 @@ steps:
         echo variables['autorestClientFeed']
         echo variables['autorestProjectName']
         echo variables
-  - task: AzureCLI@1
-    displayName: Building Autorest Client
-    condition: |
-      and
-      (
-        succeeded(),
-        ne(parameters['autorestProjectName'], ''),
-        ne(parameters['autorestClientFeed'], '')
-      )
-    inputs:
-      azureSubscription : ${{ parameters.containerServiceEndpoint }}
-      scriptLocation: inlineScript
-      inlineScript: |
-        mkdir autorest
-        docker run --mount type=bind,src=$(Build.ArtifactStagingDirectory)/autorest,dst=/autorest/dist autorest-auto-generator:latest python3 main.py --baseUrl http://localhost --projectName $autorestProjectName
+  - ${{ if ne(parameters.autorestClientFeed, '') }}:
+    - task: AzureCLI@1
+      displayName: Building Autorest Client
+      condition: succeeded()
+      inputs:
+        azureSubscription : ${{ parameters.containerServiceEndpoint }}
+        scriptLocation: inlineScript
+        inlineScript: |
+          mkdir autorest
+          docker run --mount type=bind,src=$(Build.ArtifactStagingDirectory)/autorest,dst=/autorest/dist autorest-auto-generator:latest python3 main.py --baseUrl http://localhost --projectName $autorestProjectName
   - task: NuGetCommand@2
     displayName: 'Autorest client NuGet push'
     condition:
@@ -114,8 +109,8 @@ steps:
             eq(variables['Build.SourceBranch'], 'refs/heads/devlop')
           )
         ),
-        ne(parameters['autorestProjectName'], ''),
-        ne(parameters['autorestClientFeed'], '')
+        ne(variables['autorestProjectName'], ''),
+        ne(variables['autorestClientFeed'], '')
       )
     inputs:
       command: push
