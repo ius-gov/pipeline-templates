@@ -81,9 +81,9 @@ steps:
         echo 'Testing Health'
         curl http://localhost/health -o health.json
         cat health.json
-        echo variables['autorestClientFeed']
-        echo variables['autorestProjectName']
-        echo variables
+        echo ${{ parameters.autorestProjectName}}
+        echo ${{ parameters.autorestClientFeed}}
+        echo ${{ parameters }}
   - ${{ if ne(parameters.autorestClientFeed, '') }}:
     - task: AzureCLI@1
       displayName: Building Autorest Client
