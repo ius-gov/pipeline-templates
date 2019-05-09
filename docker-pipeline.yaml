@@ -80,8 +80,8 @@ steps:
       inlineScript: |
         echo 'Testing Health'
         curl http://localhost/health -o health.json
-	python -m json.tool health.json
-	echo 'health result:'
+        python -m json.tool health.json
+        echo 'health result:'
         cat health.json
 	echo
   - ${{ if ne(parameters.autorestProjectName, '') }}:
