@@ -83,7 +83,7 @@ steps:
         python -m json.tool health.json
         echo 'health result:'
         cat health.json
-	echo
+        echo
   - ${{ if ne(parameters.autorestProjectName, '') }}:
     - task: AzureCLI@1
       displayName: Building Autorest Client
