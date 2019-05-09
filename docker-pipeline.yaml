@@ -90,8 +90,7 @@ steps:
         scriptLocation: inlineScript
         inlineScript: |
           mkdir $(Build.ArtifactStagingDirectory)/autorest
-          docker pull iusdev.azurecr.io/autorest-auto-generator
-          docker run --mount type=bind,src=$(Build.ArtifactStagingDirectory)/autorest,dst=/autorest/dist autorest-auto-generator:latest python3 main.py --baseUrl http://localhost --projectName ${{ parameters.autorestProjectName }}
+          docker run --mount type=bind,src=$(Build.ArtifactStagingDirectory)/autorest,dst=/autorest/dist iusdev.azurecr.io/autorest-auto-generator:latest python3 main.py --baseUrl http://localhost --projectName ${{ parameters.autorestProjectName }}
     - task: NuGetCommand@2
       displayName: 'Autorest client NuGet push'
       condition:
