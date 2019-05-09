@@ -80,9 +80,8 @@ steps:
       inlineScript: |
         echo 'Testing Health'
         curl http://localhost/health -o health.json
-        python -m json.tool health.json
         echo 'health result:'
-        cat health.json
+        python -m json.tool health.json
         echo
   - ${{ if ne(parameters.autorestProjectName, '') }}:
     - task: AzureCLI@1
@@ -94,6 +93,9 @@ steps:
         inlineScript: |
           mkdir $(Build.ArtifactStagingDirectory)/autorest
           docker ps -a
+          curl http://localhost/swagger/docs -o swaggerdocs.json
+          echo 'swagger result:'
+          python -m json.tool swaggerdocs.json
           docker run --mount type=bind,src=$(Build.ArtifactStagingDirectory)/autorest,dst=/autorest/dist iusdev.azurecr.io/autorest-auto-generator:latest python3 main.py --baseUrl http://localhost --projectName ${{ parameters.autorestProjectName }}
     - task: NuGetCommand@2
       displayName: 'Autorest client NuGet push'
