@@ -83,6 +83,9 @@ steps:
         echo 'health result:'
         python -m json.tool health.json
         docker ps -a
+        latest_guid="$(docker ps -a | grep "${{ parameters.imageName }}" | awk '{print $1}')"
+        echo "Checking logs for $latest_guid"
+        docker logs $latest_guid
         echo
   - ${{ if ne(parameters.autorestProjectName, '') }}:
     - task: AzureCLI@1
