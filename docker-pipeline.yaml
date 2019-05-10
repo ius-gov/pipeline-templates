@@ -66,7 +66,7 @@ steps:
         echo 'Using AppSettings'
         cat $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
         echo 'Starting Docker Image ${{ parameters.latestName }}'
-        docker run -d -e "APPSETTING_LOCATION=/data/appsettings" -e "BuildServer=true" -v $(Build.ArtifactStagingDirectory)/appsettings:/data/appsettings  -p 80:80 ${{ parameters.imageName }}
+        docker run -d -e "APPSETTING_LOCATION=/data/appsettings" -e "BuildServer=true" -v $(Build.ArtifactStagingDirectory)/appsettings:/data/appsettings --net=host -p 80:80 ${{ parameters.imageName }}
         sleep 5
         docker ps -a
         latest_guid="$(docker ps -a | grep "${{ parameters.imageName }}" | awk '{print $1}')"
@@ -97,7 +97,7 @@ steps:
           curl http://localhost/swagger/docs -o swaggerdocs.json
           echo 'swagger result:'
           python -m json.tool swaggerdocs.json
-          docker run --mount type=bind,src=$(Build.ArtifactStagingDirectory)/autorest,dst=/autorest/dist iusdev.azurecr.io/autorest-auto-generator:latest python3 main.py --projectName ${{ parameters.autorestProjectName }}
+          docker run --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory)/autorest,dst=/autorest/dist iusdev.azurecr.io/autorest-auto-generator:latest python3 main.py --projectName ${{ parameters.autorestProjectName }}
           docker ps -a
     - task: NuGetCommand@2
       displayName: 'Autorest client NuGet push'
