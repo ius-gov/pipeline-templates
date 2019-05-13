@@ -1,6 +1,6 @@
 parameters:
   containerServiceEndpoint: 'iUSDevContainer'
-  storatgeSubscription: ''
+  storageSubscription: ''
   storageContainerName: ''
   storageRMStorageAccount : ''
   registry: 'iusdev.azurecr.io'
@@ -32,7 +32,7 @@ jobs:
           addDefaultLabels: false
       - task: AzureFileCopy@3
         sourcePath: $(ArtifactStagingDirectory )
-        azureSubscription: '${{ parameters.storatgeSubscription }}'
+        azureSubscription: '${{ parameters.storageSubscription }}'
         destination: azureBlob
         storage:  ${{ parameters.storageRMStorageAccount }}
         containerName: ${{ parameters.storageContainerName }}
