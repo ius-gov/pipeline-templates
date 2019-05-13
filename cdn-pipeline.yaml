@@ -10,9 +10,6 @@ jobs:
   - job: DockerBuilds
     pool:
       vmImage: 'Ubuntu-16.04'
-    variables:
-      version: 0.0.0.0
-      semVersion: 0.0.0
     steps:
       - task: Docker@1
         displayName: Container registry login
