@@ -62,10 +62,7 @@ steps:
               "VirtualHost": "BuildServer"
             },
             "Identity": {
-               "ApiScope": "api1",
-               "Endpoint": "https://iusidentityserver.azurewebsites.net/connect/token",
-               "Name": "",
-               "Password": ""
+               "ApiScope": "api1"
              }
           },
           "Serilog":{
@@ -103,7 +100,6 @@ steps:
         latest_guid="$(docker ps -a | grep "${{ parameters.imageName }}" | awk '{print $1}')"
         echo "Checking logs for $latest_guid"
         docker logs $latest_guid
-        echo
   - ${{ if ne(parameters.autorestProjectName, '') }}:
     - task: AzureCLI@1
       displayName: Building Autorest Client
@@ -114,6 +110,7 @@ steps:
         inlineScript: |
           mkdir $(Build.ArtifactStagingDirectory)/autorest
           docker run --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory)/autorest,dst=/autorest/dist iusdev.azurecr.io/autorest-auto-generator:latest python3 main.py --projectName ${{ parameters.autorestProjectName }}
+          ls -al $(Build.ArtifactStagingDirectory)/autorest
     - task: NuGetCommand@2
       displayName: 'Autorest client NuGet push'
       condition:
