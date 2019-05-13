@@ -31,9 +31,10 @@ jobs:
           arguments: --build-arg baseContainerUrl ${{ parameters.baseContainerUrl }} --build-arg cdnSourceFolder=$(ArtifactStagingDirectory )
           addDefaultLabels: false
       - task: AzureFileCopy@3
-        sourcePath: $(ArtifactStagingDirectory )
-        azureSubscription: '${{ parameters.storageSubscription }}'
-        destination: azureBlob
-        storage:  ${{ parameters.storageRMStorageAccount }}
-        containerName: ${{ parameters.storageContainerName }}
-        additionalArgumentsForBlobCopy: "/SetContentType"
+        inputs:
+          sourcePath: $(ArtifactStagingDirectory )
+          azureSubscription: '${{ parameters.storageSubscription }}'
+          destination: azureBlob
+          storage:  ${{ parameters.storageRMStorageAccount }}
+          containerName: ${{ parameters.storageContainerName }}
+          additionalArgumentsForBlobCopy: "/SetContentType"
