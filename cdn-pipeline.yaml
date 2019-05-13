@@ -27,11 +27,11 @@ jobs:
           azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
           azureContainerRegistry: ${{ parameters.registry }}
           dockerFile: Dockerfile
-          arguments: --build-arg baseContainerUrl=${{ parameters.baseContainerUrl }} --build-arg cdnSourceFolder=$(ArtifactStagingDirectory )
+          arguments: --build-arg baseContainerUrl=${{ parameters.baseContainerUrl }} --build-arg cdnSourceFolder=$(Build.ArtifactStagingDirectory)
           addDefaultLabels: false
       - task: AzureFileCopy@3
         inputs:
-          sourcePath: $(ArtifactStagingDirectory )
+          sourcePath: $(Build.ArtifactStagingDirectory)
           azureSubscription: '${{ parameters.storageSubscription }}'
           destination: azureBlob
           storage:  ${{ parameters.storageRMStorageAccount }}
