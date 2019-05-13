@@ -131,7 +131,7 @@ steps:
         command: push
         publishVstsFeed: '${{parameters.autorestClientFeed}}'
         allowPackageConflicts: false
-        packagesToPush: '$(Build.ArtifactStagingDirectory)/autorest'
+        packagesToPush: '$(Build.ArtifactStagingDirectory)/autorest/*.nupkg'
   - task: Docker@1
     displayName: Push version image
     condition: |
