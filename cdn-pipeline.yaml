@@ -1,19 +1,39 @@
 parameters:
-  Name : 'DacPac'
-  dacpacProject: ''
-  nugetConfigPath : 'application/NuGet.Config'
+  containerServiceEndpoint: 'iUSDevContainer'
+  storatgeSubscription: ''
+  storageContainerName: ''
+  storageRMStorageAccount : ''
+  registry: 'iusdev.azurecr.io'
+  baseContainerUrl: https://iusux.blob.core.windows.net/iusux
 
 jobs:
-  - job: ${{ parameters.Name }}
+  - job: DockerBuilds
     pool:
-      vmImage: 'vs2017-win2016'
+      vmImage: 'Ubuntu-16.04'
+    variables:
+      version: 0.0.0.0
+      semVersion: 0.0.0
     steps:
-      - task: MSBuild@1
+      - task: Docker@1
+        displayName: Container registry login
         inputs:
-          configuration: Release
-          solution: ${{ parameters.dacpacProject }}
-          msbuildArguments:  /p:OutputPath=$(Build.ArtifactStagingDirectory)/${{ parameters.Name }}
-      - task: PublishBuildArtifacts@1
+          azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
+          azureContainerRegistry: ${{ parameters.registry }}
+          command: login
+      - task: Docker@1
+        displayName: Build image
         inputs:
-          pathtoPublish : '$(Build.ArtifactStagingDirectory)'
-          artifactName: artifacts
+          command: build
+          azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
+          azureContainerRegistry: ${{ parameters.registry }}
+          dockerFile: Dockerfile
+          imageName: ${{ parameters.project }}
+          arguments: --build-arg baseContainerUrl ${{ parameters.baseContainerUrl }} --build-arg cdnSourceFolder=$(ArtifactStagingDirectory )
+          addDefaultLabels: false
+      - task: AzureFileCopy@3
+        sourcePath: $(ArtifactStagingDirectory )
+        azureSubscription: '${{ parameters.storatgeSubscription }}'
+        destination: azureBlob
+        storage:  ${{ parameters.storageRMStorageAccount }}
+        containerName: ${{ parameters.storageContainerName }}
+        additionalArgumentsForBlobCopy: "/SetContentType"
