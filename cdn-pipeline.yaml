@@ -27,7 +27,6 @@ jobs:
           azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
           azureContainerRegistry: ${{ parameters.registry }}
           dockerFile: Dockerfile
-          imageName: ${{ parameters.project }}
           arguments: --build-arg baseContainerUrl ${{ parameters.baseContainerUrl }} --build-arg cdnSourceFolder=$(ArtifactStagingDirectory )
           addDefaultLabels: false
       - task: AzureFileCopy@3
