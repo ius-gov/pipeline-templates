@@ -47,7 +47,7 @@ steps:
         echo '{
           "AppSettings" : {
              "URLs" : {
-               "IdentityServer" : "https://iusidentityservier.azurewebsites.net"
+               "IdentityServer" : "https://iusidentityserver.azurewebsites.net"
              }
           },
           "Data": {
@@ -60,8 +60,14 @@ steps:
               },
               "UserName": "$(QueueUserName)",
               "VirtualHost": "BuildServer"
-              }
             },
+            "Identity": {
+               "ApiScope": "api1",
+               "Endpoint": "https://iusidentityserver.azurewebsites.net/connect/token",
+               "Name": "",
+               "Password": ""
+             }
+          },
           "Serilog":{
             "MinimumLevel": "Information",
              "Using": [
