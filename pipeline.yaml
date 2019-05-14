@@ -6,6 +6,8 @@ parameters:
   helmChartName: ''
   majorVersion: 0
   stateCode: 0
+  autorestClientFeed: ''
+  autorestProjectName: ''
 
 jobs:
   - job: DockerBuilds
@@ -42,3 +44,5 @@ jobs:
           helmChartName : '${{ parameters.helmChartName }}'
           latestName: '$(registry)/$(project):latest'
           imageName: '$(registry)/$(project):$(version)'
+          autorestClientFeed: '${{ parameters.autorestClientFeed }}'
+          autorestProjectName: '${{ parameters.autorestProjectName }}'

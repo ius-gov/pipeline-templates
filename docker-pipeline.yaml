@@ -1,4 +1,6 @@
 parameters:
+  autorestClientFeed: ''
+  autorestProjectName: ''
   version: ''
   semVersion: ''
   containerServiceEndpoint: ''
@@ -35,7 +37,7 @@ steps:
       imageName: ${{ parameters.latestName }}
       arguments: ${{ parameters.imageName }}
   - task: AzureCLI@1
-    displayName: Running Health Check
+    displayName: Launching docker image
     inputs:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
@@ -45,7 +47,7 @@ steps:
         echo '{
           "AppSettings" : {
              "URLs" : {
-               "IdentityServer" : "https://iusidentityservier.azurewebsites.net"
+               "IdentityServer" : "https://iusidentityserver.azurewebsites.net"
              }
           },
           "Data": {
@@ -58,20 +60,78 @@ steps:
               },
               "UserName": "$(QueueUserName)",
               "VirtualHost": "BuildServer"
-              }
-            }
+            },
+            "Identity": {
+               "ApiScope": "api1"
+             }
+          },
+          "Serilog":{
+            "MinimumLevel": "Information",
+             "Using": [
+                 "Serilog.Sinks.Console"
+             ],
+             "WriteTo": [
+                 {
+                     "Name": "Console"
+                 }
+             ]
+          }
          }' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
         echo 'Using AppSettings'
         cat $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
         echo 'Starting Docker Image ${{ parameters.latestName }}'
-        docker run -d -e "APPSETTING_LOCATION=/data/appsettings" -e "BuildServer=true" -v $(Build.ArtifactStagingDirectory)/appsettings:/data/appsettings  -p 80:80 ${{ parameters.imageName }}
+        docker run -d -e "APPSETTING_LOCATION=/data/appsettings" -e "BuildServer=true" -v $(Build.ArtifactStagingDirectory)/appsettings:/data/appsettings --net=host -p 80:80 ${{ parameters.imageName }}
         sleep 5
         docker ps -a
         latest_guid="$(docker ps -a | grep "${{ parameters.imageName }}" | awk '{print $1}')"
         echo "Checking logs for $latest_guid"
         docker logs $latest_guid
+  - task: AzureCLI@1
+    displayName: Running Health Check
+    inputs:
+      azureSubscription : ${{ parameters.containerServiceEndpoint }}
+      scriptLocation: inlineScript
+      inlineScript: |
         echo 'Testing Health'
-        curl http://localhost/health
+        curl http://localhost/health -o health.json
+        echo 'health result:'
+        python -m json.tool health.json
+        docker ps -a
+        latest_guid="$(docker ps -a | grep "${{ parameters.imageName }}" | awk '{print $1}')"
+        echo "Checking logs for $latest_guid"
+        docker logs $latest_guid
+  - ${{ if ne(parameters.autorestProjectName, '') }}:
+    - task: AzureCLI@1
+      displayName: Building Autorest Client
+      condition: succeeded()
+      inputs:
+        azureSubscription : ${{ parameters.containerServiceEndpoint }}
+        scriptLocation: inlineScript
+        inlineScript: |
+          mkdir $(Build.ArtifactStagingDirectory)/autorest
+          docker run --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory)/autorest,dst=/autorest/dist iusdev.azurecr.io/autorest-auto-generator:latest python3 main.py --projectName ${{ parameters.autorestProjectName }}
+          ls -al $(Build.ArtifactStagingDirectory)/autorest
+    - task: NuGetCommand@2
+      displayName: 'Autorest client NuGet push'
+      condition:
+        and
+        (
+          succeeded(),
+          or
+          (
+            eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+            and
+            (
+              eq(variables['UsingDevelopBranch'], 'true'),
+              eq(variables['Build.SourceBranch'], 'refs/heads/devlop')
+            )
+          )
+        )
+      inputs:
+        command: push
+        publishVstsFeed: '${{parameters.autorestClientFeed}}'
+        allowPackageConflicts: false
+        packagesToPush: '$(Build.ArtifactStagingDirectory)/autorest/*.nupkg'
   - task: Docker@1
     displayName: Push version image
     condition: |
