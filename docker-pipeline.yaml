@@ -18,24 +18,18 @@ steps:
       azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
       azureContainerRegistry: ${{ parameters.registry }}
       command: login
-  - task: Docker@1
+  - task: Docker@2
     displayName: Build image
     inputs:
       command: build
-      azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
-      azureContainerRegistry: ${{ parameters.registry }}
+      containerRegistry: ${{ parameters.registry }}
       dockerFile: application/Dockerfile
       imageName: ${{ parameters.project }}
       arguments: --build-arg version=${{ parameters.version}}
+      tags: |
+        ${{ parameters.latestName }}
+        ${{ parameters.imageName }}
       addDefaultLabels: false
-  - task: Docker@1
-    displayName: Tag image
-    inputs:
-      command: tag
-      azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
-      azureContainerRegistry: ${{ parameters.registry }}
-      imageName: ${{ parameters.latestName }}
-      arguments: ${{ parameters.imageName }}
   - task: AzureCLI@1
     displayName: Launching docker image
     inputs:
@@ -100,4 +94,3 @@ steps:
         latest_guid="$(docker ps -a | grep "${{ parameters.imageName }}" | awk '{print $1}')"
         echo "Checking logs for $latest_guid"
         docker logs $latest_guid
-  
