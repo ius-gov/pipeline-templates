@@ -24,7 +24,7 @@ steps:
       command: build
       containerRegistry: ${{ parameters.registry }}
       dockerFile: application/Dockerfile
-      imageName: ${{ parameters.project }}
+      repository: ${{ parameters.project }}
       arguments: --build-arg version=${{ parameters.version}}
       tags: |
         ${{ parameters.latestName }}
