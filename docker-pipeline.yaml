@@ -1,16 +1,3 @@
-parameters:
-  autorestClientFeed: ''
-  autorestProjectName: ''
-  version: ''
-  semVersion: ''
-  containerServiceEndpoint: ''
-  registry: ''
-  project: ''
-  helmChartLocation: ''
-  helmChartName : ''
-  latestName: ''
-  imageName: ''
-
 steps:
   - task: Docker@1
     displayName: Container registry login

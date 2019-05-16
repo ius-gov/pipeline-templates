@@ -1,4 +1,6 @@
-parameters:
+variables:
+  version: 0.0.0.0
+  semVersion: 0.0.0
   containerServiceEndpoint: 'iUSDevContainer'
   registry: 'iusdev.azurecr.io'
   project: ''
@@ -13,14 +15,23 @@ jobs:
   - job: DockerBuilds
     pool:
       vmImage: 'Ubuntu-16.04'
-    variables:
-      version: 0.0.0.0
-      semVersion: 0.0.0
     steps:
+      - script: |
+          echo "Pipeline.yaml Uses the following variables"
+          echo "stateCode=$(stateCode)"
+          echo "majorVersion=$(majorVersion)"
+          echo "build.buildId=$(build.buildId)"
+          echo "registry=$(registry)"
+          echo "containerServiceEndpint=$(containerServiceEndpint)"
+          echo "project=$(project)"
+          echo "autorestClientFeed=$(autorestClientFeed)"
+          echo "autorestProjectName=$(autorestProjectName)"
+          echo "helmChartLocation=$(helmChartLocation)"
+          echo "helmChartName=$(helmChartName)"
       - powershell: |
-          Write-Host "Attempting to set variable to ${{ parameters.stateCode }}.${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
-          $tmpSemversion = "${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
-          $tmpVersion = "${{ parameters.stateCode }}.$tmpSemversion"
+          Write-Host "Attempting to set variable to $(stateCode).$(majorVersion).$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
+          $tmpSemversion = "$(majorVersion).$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
+          $tmpVersion = "$(stateCode).$tmpSemversion"
 
           Write-Host "Set intermeidate variables $tmpSemversion and $tmpVersion"
 
@@ -37,39 +48,39 @@ jobs:
         parameters:
           version: '$(version)'
           semVersion: '$(semVersion)'
-          containerServiceEndpoint: '${{ parameters.containerServiceEndpoint }}'
-          registry: '${{ parameters.registry }}'
-          project: '${{ parameters.project }}'
+          containerServiceEndpoint: '$(containerServiceEndpoint)'
+          registry: '$(registry'
+          project: '$(project)'
           latestName: '$(registry)/$(project):latest'
           imageName: '$(registry)/$(project):$(version)'
       - template: docker-autorest-pipeline.yaml
         parameters:
           version: '$(version)'
           semVersion: '$(semVersion)'
-          containerServiceEndpoint: '${{ parameters.containerServiceEndpoint }}'
-          registry: '${{ parameters.registry }}'
-          project: '${{ parameters.project }}'
+          containerServiceEndpoint: '$(containerServiceEndpoint)'
+          registry: '$(registry)'
+          project: '$(project)'
           latestName: '$(registry)/$(project):latest'
           imageName: '$(registry)/$(project):$(version)'
-          autorestClientFeed: '${{ parameters.autorestClientFeed }}'
-          autorestProjectName: '${{ parameters.autorestProjectName }}'
+          autorestClientFeed: '$autorestClientFeed'
+          autorestProjectName: '$(autorestProjectName)'
       - template: docker-push-pipeline.yaml
         parameters:
           version: '$(version)'
           semVersion: '$(semVersion)'
-          containerServiceEndpoint: '${{ parameters.containerServiceEndpoint }}'
-          registry: '${{ parameters.registry }}'
-          project: '${{ parameters.project }}'
+          containerServiceEndpoint: '$(containerServiceEndpoint)'
+          registry: '$(registry)'
+          project: '$(project)'
           latestName: '$(registry)/$(project):latest'
           imageName: '$(registry)/$(project):$(version)'
       - template: helm-pipeline.yaml
         parameters:
           version: '$(version)'
           semVersion: '$(semVersion)'
-          containerServiceEndpoint: '${{ parameters.containerServiceEndpoint }}'
-          registry: '${{ parameters.registry }}'
-          project: '${{ parameters.project }}'
-          helmChartLocation: '${{ parameters.helmChartLocation }}'
-          helmChartName : '${{ parameters.helmChartName }}'
+          containerServiceEndpoint: '$(containerServiceEndpoint)'
+          registry: '$(registry)'
+          project: '$(project)'
+          helmChartLocation: '$(helmChartLocation)'
+          helmChartName : '$(helmChartName)'
           latestName: '$(registry)/$(project):latest'
           imageName: '$(registry)/$(project):$(version)'
