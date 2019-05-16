@@ -56,9 +56,9 @@ jobs:
           downloadPath: '$(Build.ArtifactStagingDirectory)'
       - task: AzureFileCopy@3
         inputs:
-          sourcePath: $(Build.ArtifactStagingDirectory)
+          sourcePath: $(Build.ArtifactStagingDirectory)/cdn
           azureSubscription: '${{ parameters.storageSubscription }}'
           destination: azureBlob
           storage:  ${{ parameters.storageRMStorageAccount }}
           containerName: ${{ parameters.storageContainerName }}
-          additionalArgumentsForBlobCopy: "/SetContentType"
+          additionalArgumentsForBlobCopy: "/SetContentType /S"
