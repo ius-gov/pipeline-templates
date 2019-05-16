@@ -37,6 +37,10 @@ jobs:
             mkdir $(Build.ArtifactStagingDirectory)/cdn
             docker run --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory),dst=/cdn-out $(registry)/mdl-bundle:$(build.buildId) tar -C /cdn-out -xvzf /cdn/cdn.tar.gz
             ls -al $(Build.ArtifactStagingDirectory)/cdn
+  - job: FileCopy
+    pool:
+      vmImage: 'Hosted VS2017'
+    steps:
       - task: AzureFileCopy@3
         inputs:
           sourcePath: $(Build.ArtifactStagingDirectory)
