@@ -41,7 +41,7 @@ jobs:
     dependsOn: DockerBuilds
     pool:
       # This must be a windows server because of the AzureFileCopy https://github.com/microsoft/azure-pipelines-tasks/issues/8920
-      vmImage: 'win1803'
+      vmImage: 'vs2017-win2016'
     steps:
       - task: AzureFileCopy@3
         inputs:
