@@ -1,0 +1,64 @@
+parameters:
+  containerServiceEndpoint: 'iUSDevContainer'
+  storageSubscription: ''
+  storageContainerName: ''
+  storageRMStorageAccount : ''
+  registry: 'iusdev.azurecr.io'
+  baseContainerUrl: https://iusux.blob.core.windows.net/iusux
+
+jobs:
+  - job: DockerBuilds
+    pool:
+      vmImage: 'Ubuntu-16.04'
+    steps:
+      - task: Docker@1
+        displayName: Container registry login
+        inputs:
+          azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
+          azureContainerRegistry: ${{ parameters.registry }}
+          command: login
+      - task: Docker@1
+        displayName: Build image
+        inputs:
+          command: build
+          azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
+          azureContainerRegistry: ${{ parameters.registry }}
+          dockerFile: Dockerfile
+          imageName: $(registry)/mdl-bundle:$(build.buildId)
+          arguments: --build-arg baseContainerUrl=${{ parameters.baseContainerUrl }}
+          addDefaultLabels: false
+      - task: AzureCLI@1
+        displayName: Extracting Bundled Files
+        condition: succeeded()
+        inputs:
+          azureSubscription : ${{ parameters.containerServiceEndpoint }}
+          scriptLocation: inlineScript
+          inlineScript: |
+            mkdir $(Build.ArtifactStagingDirectory)/cdn
+            docker run --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory),dst=/cdn-out $(registry)/mdl-bundle:$(build.buildId) tar -C /cdn-out -xvzf /cdn/cdn.tar.gz
+      - task: PublishBuildArtifacts@1
+        displayName: Publishing Artifact
+        inputs:
+          pathtoPublish : '$(Build.ArtifactStagingDirectory)/cdn'
+          artifactName: cdn
+  - job: FileCopy
+    dependsOn: DockerBuilds
+    pool:
+      # This must be a windows server because of the AzureFileCopy https://github.com/microsoft/azure-pipelines-tasks/issues/8920
+      vmImage: 'vs2017-win2016'
+    steps:
+      - task: DownloadBuildArtifacts@0
+        displayName: Download Published Artifacts
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'cdn'
+          downloadPath: '$(Build.ArtifactStagingDirectory)'
+      - task: AzureFileCopy@3
+        inputs:
+          sourcePath: $(Build.ArtifactStagingDirectory)/cdn
+          azureSubscription: '${{ parameters.storageSubscription }}'
+          destination: azureBlob
+          storage:  ${{ parameters.storageRMStorageAccount }}
+          containerName: ${{ parameters.storageContainerName }}
+          additionalArgumentsForBlobCopy: "/SetContentType /S"
