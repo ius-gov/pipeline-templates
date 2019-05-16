@@ -36,8 +36,8 @@ jobs:
           inlineScript: |
             mkdir $(Build.ArtifactStagingDirectory)/cdn
             docker run --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory),dst=/cdn-out $(registry)/mdl-bundle:$(build.buildId) tar -C /cdn-out -xvzf /cdn/cdn.tar.gz
-            ls -al $(Build.ArtifactStagingDirectory)/cdn
       - task: PublishBuildArtifacts@1
+        displayName: Publishing Artifact
         inputs:
           pathtoPublish : '$(Build.ArtifactStagingDirectory)/cdn'
           artifactName: cdn
@@ -48,6 +48,7 @@ jobs:
       vmImage: 'vs2017-win2016'
     steps:
       - task: DownloadBuildArtifacts@0
+        displayName: Download Published Artifacts
         inputs:
           buildType: 'current'
           downloadType: 'single'
