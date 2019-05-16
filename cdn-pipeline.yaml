@@ -39,7 +39,8 @@ jobs:
             ls -al $(Build.ArtifactStagingDirectory)/cdn
   - job: FileCopy
     pool:
-      vmImage: 'Hosted VS2017'
+      # This must be a windows server because of the AzureFileCopy https://github.com/microsoft/azure-pipelines-tasks/issues/8920
+      vmImage: 'win1803'
     steps:
       - task: AzureFileCopy@3
         inputs:
