@@ -37,12 +37,22 @@ jobs:
             mkdir $(Build.ArtifactStagingDirectory)/cdn
             docker run --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory),dst=/cdn-out $(registry)/mdl-bundle:$(build.buildId) tar -C /cdn-out -xvzf /cdn/cdn.tar.gz
             ls -al $(Build.ArtifactStagingDirectory)/cdn
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathtoPublish : '$(Build.ArtifactStagingDirectory)/cdn'
+          artifactName: cdn
   - job: FileCopy
     dependsOn: DockerBuilds
     pool:
       # This must be a windows server because of the AzureFileCopy https://github.com/microsoft/azure-pipelines-tasks/issues/8920
       vmImage: 'vs2017-win2016'
     steps:
+      - task: DownloadBuildArtifacts@0
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'cdn'
+          downloadPath: '$(Build.ArtifactStagingDirectory)'
       - task: AzureFileCopy@3
         inputs:
           sourcePath: $(Build.ArtifactStagingDirectory)
