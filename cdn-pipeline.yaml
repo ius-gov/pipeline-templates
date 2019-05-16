@@ -26,6 +26,16 @@ jobs:
           dockerFile: Dockerfile
           arguments: --build-arg baseContainerUrl=${{ parameters.baseContainerUrl }} --build-arg cdnSourceFolder=$(Build.ArtifactStagingDirectory)
           addDefaultLabels: false
+      - task: AzureCLI@1
+        displayName: Building Autorest Client
+        condition: succeeded()
+        inputs:
+          azureSubscription : ${{ parameters.containerServiceEndpoint }}
+          scriptLocation: inlineScript
+          inlineScript: |
+            mkdir $(Build.ArtifactStagingDirectory)/cdn
+            docker run --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory),dst=/cdn-out $(build.buildId) tar -C /cdn-out -xvzf /cdn/cdn.tar.gz
+            ls -al $(Build.ArtifactStagingDirectory)/cdn
       - task: AzureFileCopy@3
         inputs:
           sourcePath: $(Build.ArtifactStagingDirectory)
