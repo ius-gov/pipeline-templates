@@ -27,7 +27,7 @@ jobs:
           arguments: --build-arg baseContainerUrl=${{ parameters.baseContainerUrl }} --build-arg cdnSourceFolder=$(Build.ArtifactStagingDirectory)
           addDefaultLabels: false
       - task: AzureCLI@1
-        displayName: Building Autorest Client
+        displayName: Extracting Bundled Files
         condition: succeeded()
         inputs:
           azureSubscription : ${{ parameters.containerServiceEndpoint }}
