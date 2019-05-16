@@ -24,7 +24,8 @@ jobs:
           azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
           azureContainerRegistry: ${{ parameters.registry }}
           dockerFile: Dockerfile
-          arguments: --build-arg baseContainerUrl=${{ parameters.baseContainerUrl }} --build-arg cdnSourceFolder=$(Build.ArtifactStagingDirectory)
+          imageName: $(registry)/mdl-bundle:$(build.buildId)
+          arguments: --build-arg baseContainerUrl=${{ parameters.baseContainerUrl }}
           addDefaultLabels: false
       - task: AzureCLI@1
         displayName: Extracting Bundled Files
@@ -34,7 +35,7 @@ jobs:
           scriptLocation: inlineScript
           inlineScript: |
             mkdir $(Build.ArtifactStagingDirectory)/cdn
-            docker run --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory),dst=/cdn-out $(build.buildId) tar -C /cdn-out -xvzf /cdn/cdn.tar.gz
+            docker run --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory),dst=/cdn-out $(registry)/mdl-bundle:$(build.buildId) tar -C /cdn-out -xvzf /cdn/cdn.tar.gz
             ls -al $(Build.ArtifactStagingDirectory)/cdn
       - task: AzureFileCopy@3
         inputs:
