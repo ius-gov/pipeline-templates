@@ -38,6 +38,7 @@ jobs:
             docker run --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory),dst=/cdn-out $(registry)/mdl-bundle:$(build.buildId) tar -C /cdn-out -xvzf /cdn/cdn.tar.gz
             ls -al $(Build.ArtifactStagingDirectory)/cdn
   - job: FileCopy
+    dependsOn: DockerBuilds
     pool:
       # This must be a windows server because of the AzureFileCopy https://github.com/microsoft/azure-pipelines-tasks/issues/8920
       vmImage: 'win1803'
