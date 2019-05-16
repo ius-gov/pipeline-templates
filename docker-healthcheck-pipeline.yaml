@@ -1,0 +1,69 @@
+parameters:
+  containerServiceEndpoint: ''
+  imageName: ''
+
+steps:
+  - task: AzureCLI@1
+    displayName: Launching docker image
+    inputs:
+      azureSubscription : ${{ parameters.containerServiceEndpoint }}
+      scriptLocation: inlineScript
+      inlineScript: |
+        echo 'Creating Appsettings folder at $(Build.ArtifactStagingDirectory)'
+        mkdir $(Build.ArtifactStagingDirectory)/appsettings
+        echo '{
+          "AppSettings" : {
+             "URLs" : {
+               "IdentityServer" : "https://iusidentityserver.azurewebsites.net"
+             }
+          },
+          "Data": {
+            "Queue": {
+              "Password": "$(QueuePassword)",
+              "Port": "5672",
+              "ServerName": "$(QueueUrl)",
+              "Threads": {
+                "Global": 0
+              },
+              "UserName": "$(QueueUserName)",
+              "VirtualHost": "BuildServer"
+            },
+            "Identity": {
+               "ApiScope": "api1"
+             }
+          },
+          "Serilog":{
+            "MinimumLevel": "Information",
+             "Using": [
+                 "Serilog.Sinks.Console"
+             ],
+             "WriteTo": [
+                 {
+                     "Name": "Console"
+                 }
+             ]
+          }
+         }' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
+        echo 'Using AppSettings'
+        cat $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
+        echo 'Starting Docker Image ${{ parameters.imageName }}'
+        docker run -d -e "APPSETTING_LOCATION=/data/appsettings" -e "BuildServer=true" -v $(Build.ArtifactStagingDirectory)/appsettings:/data/appsettings --net=host -p 80:80 ${{ parameters.imageName }}
+        sleep 5
+        docker ps -a
+        latest_guid="$(docker ps -a | grep "${{ parameters.imageName }}" | awk '{print $1}')"
+        echo "Checking logs for $latest_guid"
+        docker logs $latest_guid
+  - task: AzureCLI@1
+    displayName: Running Health Check
+    inputs:
+      azureSubscription : ${{ parameters.containerServiceEndpoint }}
+      scriptLocation: inlineScript
+      inlineScript: |
+        echo 'Testing Health'
+        curl http://localhost/health -o health.json
+        echo 'health result:'
+        python -m json.tool health.json
+        docker ps -a
+        latest_guid="$(docker ps -a | grep "${{ parameters.imageName }}" | awk '{print $1}')"
+        echo "Checking logs for $latest_guid"
+        docker logs $latest_guid
