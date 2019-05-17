@@ -10,6 +10,7 @@ parameters:
   helmChartName : ''
   latestName: ''
   imageName: ''
+  dockerRunOptions: ''
 
 steps:
   - ${{ if ne(parameters.autorestProjectName, '') }}:
@@ -21,7 +22,7 @@ steps:
         scriptLocation: inlineScript
         inlineScript: |
           mkdir $(Build.ArtifactStagingDirectory)/autorest
-          docker run --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory)/autorest,dst=/autorest/dist iusdev.azurecr.io/autorest-auto-generator:latest python3 main.py --projectName ${{ parameters.autorestProjectName }}
+          docker run --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory)/autorest,dst=/autorest/dist iusdev.azurecr.io/autorest-auto-generator:latest python3 main.py --projectName ${{ parameters.autorestProjectName }} ${{ parameters.dockerRunOptions }}
           ls -al $(Build.ArtifactStagingDirectory)/autorest
     - task: NuGetCommand@2
       displayName: 'Autorest client NuGet push'
