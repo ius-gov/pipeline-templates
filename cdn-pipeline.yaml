@@ -5,7 +5,7 @@ parameters:
   storageRMStorageAccount : ''
   registry: 'iusdev.azurecr.io'
   baseContainerUrl: https://iusux.blob.core.windows.net/iusux
-  folderVersion: ''
+  blobPrefix: ''
 
 jobs:
   - job: DockerBuilds
@@ -63,4 +63,4 @@ jobs:
           storage:  ${{ parameters.storageRMStorageAccount }}
           containerName: ${{ parameters.storageContainerName }}
           additionalArgumentsForBlobCopy: "/SetContentType /S"
-          targetPath: ${{ parameters.folderVersion }}
+          blobPrefix: ${{ parameters.blobPrefix }}
