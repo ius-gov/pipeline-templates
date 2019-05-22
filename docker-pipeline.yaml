@@ -5,18 +5,24 @@ steps:
       azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
       azureContainerRegistry: ${{ parameters.registry }}
       command: login
-  - task: Docker@2
+  - task: Docker@1
     displayName: Build image
     inputs:
       command: build
-      containerRegistry: ${{ parameters.registry }}
+      azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
+      azureContainerRegistry: ${{ parameters.registry }}
       dockerFile: application/Dockerfile
-      repository: ${{ parameters.project }}
+      imageName: ${{ parameters.project }}
       arguments: --build-arg version=${{ parameters.version}}
-      tags: |
-        ${{ parameters.latestName }}
-        ${{ parameters.imageName }}
       addDefaultLabels: false
+  - task: Docker@1
+    displayName: Tag image
+    inputs:
+      command: tag
+      azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
+      azureContainerRegistry: ${{ parameters.registry }}
+      imageName: ${{ parameters.latestName }}
+      arguments: ${{ parameters.imageName }}
   - task: AzureCLI@1
     displayName: Launching docker image
     inputs:
@@ -81,3 +87,105 @@ steps:
         latest_guid="$(docker ps -a | grep "${{ parameters.imageName }}" | awk '{print $1}')"
         echo "Checking logs for $latest_guid"
         docker logs $latest_guid
+  - ${{ if ne(parameters.autorestProjectName, '') }}:
+    - task: AzureCLI@1
+      displayName: Building Autorest Client
+      condition: succeeded()
+      inputs:
+        azureSubscription : ${{ parameters.containerServiceEndpoint }}
+        scriptLocation: inlineScript
+        inlineScript: |
+          mkdir $(Build.ArtifactStagingDirectory)/autorest
+          docker run --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory)/autorest,dst=/autorest/dist iusdev.azurecr.io/autorest-auto-generator:latest python3 main.py --projectName ${{ parameters.autorestProjectName }}
+          ls -al $(Build.ArtifactStagingDirectory)/autorest
+    - task: NuGetCommand@2
+      displayName: 'Autorest client NuGet push'
+      condition:
+        and
+        (
+          succeeded(),
+          or
+          (
+            eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+            and
+            (
+              eq(variables['UsingDevelopBranch'], 'true'),
+              eq(variables['Build.SourceBranch'], 'refs/heads/devlop')
+            )
+          )
+        )
+      inputs:
+        command: push
+        publishVstsFeed: '${{parameters.autorestClientFeed}}'
+        allowPackageConflicts: false
+        packagesToPush: '$(Build.ArtifactStagingDirectory)/autorest/*.nupkg'
+  - task: Docker@1
+    displayName: Push version image
+    condition: |
+      and
+      (
+        succeeded(),
+        or
+        (
+          eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+          and
+          (
+            eq(variables['UsingDevelopBranch'], 'true'),
+            eq(variables['Build.SourceBranch'], 'refs/heads/develop')
+          )
+        )
+      )
+    inputs:
+      command: push
+      azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
+      azureContainerRegistry: ${{ parameters.registry }}
+      imagename: ${{ parameters.imageName }}
+  - task: Docker@1
+    displayName: Push latest image
+    condition: |
+      and
+      (
+        succeeded(),
+        or
+        (
+          eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+          and
+          (
+            eq(variables['UsingDevelopBranch'], 'true'),
+            eq(variables['Build.SourceBranch'], 'refs/heads/develop')
+          )
+        )
+      )
+    inputs:
+      command: push
+      azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
+      azureContainerRegistry: ${{ parameters.registry }}
+      imagename: ${{ parameters.latestName }}
+  - task: AzureCLI@1
+    displayName: package helm chart
+    condition: |
+      and
+      (
+        succeeded(),
+        or
+        (
+          eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+          and
+          (
+            eq(variables['UsingDevelopBranch'], 'true'),
+            eq(variables['Build.SourceBranch'], 'refs/heads/develop')
+          )
+        )
+      )
+    inputs:
+      azureSubscription : ${{ parameters.containerServiceEndpoint }}
+      scriptLocation: inlineScript
+      inlineScript: |
+        echo "Setting version to ${{ parameters.semVersion }}"
+        sed -i 's/0\.0\.0-INTERNAL/${{ parameters.semVersion }}/g' ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/Chart.yaml
+        # The values contains the version of the docker image, which is the full version
+        sed -i 's/0\.0\.0-INTERNAL/${{ parameters.version }}/g' ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/values.yaml
+        cat ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/Chart.yaml
+        cat ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/values.yaml
+        helm package ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }} --save=false
+        az acr helm push -n iusdev ${{ parameters.helmChartName }}-${{ parameters.semVersion }}.tgz
