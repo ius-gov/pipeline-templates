@@ -10,6 +10,7 @@ parameters:
   helmChartName : ''
   latestName: ''
   imageName: ''
+  imageregistry: iusdev
 
 steps:
   - task: AzureCLI@1
@@ -39,4 +40,4 @@ steps:
         cat ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/Chart.yaml
         cat ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/values.yaml
         helm package ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }} --save=false
-        az acr helm push -n iusdev ${{ parameters.helmChartName }}-${{ parameters.semVersion }}.tgz
+        az acr helm push -n ${{ parameters.imageRegistry }} ${{ parameters.helmChartName }}-${{ parameters.semVersion }}.tgz
