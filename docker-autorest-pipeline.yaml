@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 parameters:
   autorestClientFeed: ''
   autorestProjectName: ''
@@ -46,3 +47,51 @@ steps:
         publishVstsFeed: '${{parameters.autorestClientFeed}}'
         allowPackageConflicts: false
         packagesToPush: '$(Build.ArtifactStagingDirectory)/autorest/*.nupkg'
+=======
+parameters:
+  autorestClientFeed: ''
+  autorestProjectName: ''
+  version: ''
+  semVersion: ''
+  containerServiceEndpoint: ''
+  registry: ''
+  project: ''
+  helmChartLocation: ''
+  helmChartName : ''
+  latestName: ''
+  imageName: ''
+
+steps:
+  - ${{ if ne(parameters.autorestProjectName, '') }}:
+    - task: AzureCLI@1
+      displayName: Building Autorest Client
+      condition: succeeded()
+      inputs:
+        azureSubscription : ${{ parameters.containerServiceEndpoint }}
+        scriptLocation: inlineScript
+        inlineScript: |
+          mkdir $(Build.ArtifactStagingDirectory)/autorest
+          docker run --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory)/autorest,dst=/autorest/dist iusdev.azurecr.io/autorest-auto-generator:latest python3 main.py --projectName ${{ parameters.autorestProjectName }}
+          ls -al $(Build.ArtifactStagingDirectory)/autorest
+    - task: NuGetCommand@2
+      displayName: 'Autorest client NuGet push'
+      condition:
+        and
+        (
+          succeeded(),
+          or
+          (
+            eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+            and
+            (
+              eq(variables['UsingDevelopBranch'], 'true'),
+              eq(variables['Build.SourceBranch'], 'refs/heads/devlop')
+            )
+          )
+        )
+      inputs:
+        command: push
+        publishVstsFeed: '${{parameters.autorestClientFeed}}'
+        allowPackageConflicts: false
+        packagesToPush: '$(Build.ArtifactStagingDirectory)/autorest/*.nupkg'
+>>>>>>> Stashed changes
