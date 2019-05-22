@@ -36,38 +36,6 @@ jobs:
       - template: docker-pipeline.yaml
         parameters:
           version: '$(version)'
-          containerServiceEndpoint: '${{ parameters.containerServiceEndpoint }}'
-          registry: '${{ parameters.registry }}'
-          project: '${{ parameters.project }}'
-          latestName: '$(registry)/$(project):latest'
-          imageName: '$(registry)/$(project):$(version)'
-      - template: docker-healthcheck-pipeline.yaml
-        parameters:
-          containerServiceEndpoint: '${{ parameters.containerServiceEndpoint }}'
-          imageName: '$(registry)/$(project):$(version)'
-      - template: docker-autorest-pipeline.yaml
-        parameters:
-          version: '$(version)'
-          semVersion: '$(semVersion)'
-          containerServiceEndpoint: '${{ parameters.containerServiceEndpoint }}'
-          registry: '${{ parameters.registry }}'
-          project: '${{ parameters.project }}'
-          latestName: '$(registry)/$(project):latest'
-          imageName: '$(registry)/$(project):$(version)'
-          autorestClientFeed: '${{ parameters.autorestClientFeed }}'
-          autorestProjectName: '${{ parameters.autorestProjectName }}'
-      - template: docker-push-pipeline.yaml
-        parameters:
-          version: '$(version)'
-          semVersion: '$(semVersion)'
-          containerServiceEndpoint: '${{ parameters.containerServiceEndpoint }}'
-          registry: '${{ parameters.registry }}'
-          project: '${{ parameters.project }}'
-          latestName: '$(registry)/$(project):latest'
-          imageName: '$(registry)/$(project):$(version)'
-      - template: helm-pipeline.yaml
-        parameters:
-          version: '$(version)'
           semVersion: '$(semVersion)'
           containerServiceEndpoint: '${{ parameters.containerServiceEndpoint }}'
           registry: '${{ parameters.registry }}'
@@ -76,3 +44,5 @@ jobs:
           helmChartName : '${{ parameters.helmChartName }}'
           latestName: '$(registry)/$(project):latest'
           imageName: '$(registry)/$(project):$(version)'
+          autorestClientFeed: '${{ parameters.autorestClientFeed }}'
+          autorestProjectName: '${{ parameters.autorestProjectName }}'
