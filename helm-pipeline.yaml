@@ -10,7 +10,7 @@ parameters:
   helmChartName : ''
   latestName: ''
   imageName: ''
-  imageregistry: iusdev
+  imageRegistry: iusdev
 
 steps:
   - task: AzureCLI@1
