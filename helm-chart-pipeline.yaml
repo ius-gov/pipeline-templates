@@ -40,7 +40,3 @@ jobs:
           containerServiceEndpoint: '${{ parameters.containerServiceEndpoint }}'
           helmChartLocation: '${{ parameters.helmChartLocation }}'
           helmChartName : '${{ parameters.helmChartName }}'
-      - task: PublishBuildArtifacts@1
-        inputs:
-          pathtoPublish : '${{ parameters.helmChartName }}-$(semVersion).tgz'
-          artifactName: helmChart
