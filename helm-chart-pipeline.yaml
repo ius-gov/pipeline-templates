@@ -1,9 +1,11 @@
 parameters:
-  semVersion: ''
-  containerServiceEndpoint: ''
+  containerServiceEndpoint: 'iUSDevContainer'
   helmChartLocation: ''
   helmChartName : ''
   Name: ''
+  majorVersion: 0
+  stateCode: 0
+  registry: 'iusdev.azurecr.io'
 
 jobs:
   - job: ${{ parameters.Name }}
@@ -28,7 +30,7 @@ jobs:
       - task: Docker@1
         displayName: Container registry login
         inputs:
-          azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
+          azureSubscriptionEndpoin t: ${{ parameters.containerServiceEndpoint }}
           azureContainerRegistry: ${{ parameters.registry }}
           command: login
       - task: AzureCLI@1
@@ -37,10 +39,10 @@ jobs:
           azureSubscription : ${{ parameters.containerServiceEndpoint }}
           scriptLocation: inlineScript
           inlineScript: |
-            echo "Setting version to ${{ parameters.semVersion }}"
-            sed -i 's/0\.0\.0-INTERNAL/${{ parameters.semVersion }}/g' ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/Chart.yaml
+            echo "Setting version to ${{ semVersion }}"
+            sed -i 's/0\.0\.0-INTERNAL/${{ semVersion }}/g' ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/Chart.yaml
             # The values contains the version of the docker image, which is the full version
-            sed -i 's/0\.0\.0-INTERNAL/${{ parameters.version }}/g' ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/values.yaml
+            sed -i 's/0\.0\.0-INTERNAL/${{ version }}/g' ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/values.yaml
             cat ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/Chart.yaml
             cat ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/values.yaml
             helm dep up ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}
@@ -65,7 +67,7 @@ jobs:
           azureSubscription : ${{ parameters.containerServiceEndpoint }}
           scriptLocation: inlineScript
           inlineScript: |
-            az acr helm push -n iusdev ${{ parameters.helmChartName }}-${{ parameters.semVersion }}.tgz
+            az acr helm push -n iusdev ${{ parameters.helmChartName }}-${{ semVersion }}.tgz
       - task: PublishBuildArtifacts@1
         inputs:
           pathtoPublish : '${{ parameters.helmChartName }}-${{ parameters.semVersion }}.tgz'
