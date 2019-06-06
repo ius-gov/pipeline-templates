@@ -175,9 +175,9 @@ steps:
       azureContainerRegistry: ${{ parameters.registry }}
       imagename: ${{ parameters.latestName }}
   - template: helm-chart-pipeline-template.yaml
-      parameters:
-        version: '${{ parameters.version }}'
-        semVersion: '${{ parameters.semVersion }}'
-        containerServiceEndpoint: '${{ parameters.containerServiceEndpoint }}'
-        helmChartLocation: '${{ parameters.helmChartLocation }}'
-        helmChartName : '${{ parameters.helmChartName }}'
+    parameters:
+      version: '${{ parameters.version }}'
+      semVersion: '${{ parameters.semVersion }}'
+      containerServiceEndpoint: '${{ parameters.containerServiceEndpoint }}'
+      helmChartLocation: '${{ parameters.helmChartLocation }}'
+      helmChartName : '${{ parameters.helmChartName }}'
