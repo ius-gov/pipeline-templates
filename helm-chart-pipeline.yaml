@@ -30,8 +30,8 @@ jobs:
       - task: Docker@1
         displayName: Container registry login
         inputs:
-          azureSubscriptionEndpoin t: ${{ parameters.containerServiceEndpoint }}
-          azureContainerRegistry: ${{ parameters.registry }}
+          azureSubscriptionEndpoint : ${{ parameters.containerServiceEndpoint }}
+          azureContainerRegistry : ${{ parameters.registry }}
           command: login
       - task: AzureCLI@1
         displayName: package helm chart
