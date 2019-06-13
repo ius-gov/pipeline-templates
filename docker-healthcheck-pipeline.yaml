@@ -48,7 +48,7 @@ steps:
         echo 'Using AppSettings'
         cat $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Production.json
         echo 'Starting Docker Image ${{ parameters.imageName }}'
-        docker run -d -e "APPSETTING_LOCATION=/data/appsettings" -e -e "BuildServer=true" ${{ parameters.dockerRunOptions }} -v $(Build.ArtifactStagingDirectory)/appsettings:/data/appsettings --net=host -p 80:80 ${{ parameters.imageName }}
+        docker run -d -e "APPSETTING_LOCATION=/data/appsettings" -e "BuildServer=true" ${{ parameters.dockerRunOptions }} -v $(Build.ArtifactStagingDirectory)/appsettings:/data/appsettings --net=host -p 80:80 ${{ parameters.imageName }}
         sleep 20
         docker ps -a
         latest_guid="$(docker ps -a | grep "${{ parameters.imageName }}" | awk '{print $1}')"
