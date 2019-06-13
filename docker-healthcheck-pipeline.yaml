@@ -60,11 +60,11 @@ steps:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
       inlineScript: |
-        echo 'Testing Health'
-        curl http://localhost/health -o health.json
-        echo 'health result:'
-        python -m json.tool health.json
+        echo 'Testing Health'        
         docker ps -a
         latest_guid="$(docker ps -a | grep "${{ parameters.imageName }}" | awk '{print $1}')"
         echo "Checking logs for $latest_guid"
         docker logs $latest_guid
+        curl http://localhost/health -o health.json
+        echo 'health result:'
+        python -m json.tool health.json
