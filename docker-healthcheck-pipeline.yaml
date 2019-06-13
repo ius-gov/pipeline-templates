@@ -44,7 +44,7 @@ steps:
                  }
              ]
           }
-         }' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
+         }' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Production.json
         echo 'Using AppSettings'
         cat $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
         echo 'Starting Docker Image ${{ parameters.imageName }}'
@@ -60,7 +60,7 @@ steps:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
       inlineScript: |
-        echo 'Testing Health'        
+        echo 'Testing Health'
         docker ps -a
         latest_guid="$(docker ps -a | grep "${{ parameters.imageName }}" | awk '{print $1}')"
         echo "Checking logs for $latest_guid"
