@@ -66,5 +66,6 @@ steps:
         echo "Checking logs for $latest_guid"
         docker logs $latest_guid
         curl http://localhost/health -o health.json
+        docker logs $latest_guid
         echo 'health result:'
         python -m json.tool health.json
