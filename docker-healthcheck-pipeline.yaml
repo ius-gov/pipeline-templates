@@ -68,4 +68,5 @@ steps:
         curl http://localhost/health -o health.json
         docker logs $latest_guid
         echo 'health result:'
+        cat health.json
         python -m json.tool health.json
