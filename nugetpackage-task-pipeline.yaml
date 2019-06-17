@@ -9,7 +9,7 @@ steps:
       echo building ${{ parameters.Project }}
       dotnet build ${{ parameters.Project }} -c Release
     displayName: Building Project
-  - script : dotnet pack ${{ parameters.Project}} -c Release --include-symbols --include-source -o $(Build.ArtifactStagingDirectory)/dist
+  - script : dotnet pack ${{ parameters.Project}} -c Release --include-symbols --include-source -o $(Build.ArtifactStagingDirectory)/dist/${{ parameters.Project}}
     displayName: Nuget Pack
   - task: NuGetCommand@2
     displayName: 'NuGet push'
@@ -30,5 +30,5 @@ steps:
     inputs:
       command: push
       publishVstsFeed: '${{ parameters.FeedName}}${{ parameters.Feed}}'
-      packagesToPush: $(Build.ArtifactStagingDirectory)/dist/*.nupkg;!$(Build.ArtifactStagingDirectory)/dist/*.symbols.nupkg
+      packagesToPush: $(Build.ArtifactStagingDirectory)/dist/${{ parameters.Project}}/*.nupkg;!$(Build.ArtifactStagingDirectory)/dist/${{ parameters.Project}}/*.symbols.nupkg
       allowPackageConflicts: false
