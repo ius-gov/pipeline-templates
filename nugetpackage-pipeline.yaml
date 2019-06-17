@@ -21,29 +21,9 @@ jobs:
           find application/ -type f -iname '*.csproj' -exec  sed -i "s/0\.0\.0\-INTERNAL/$(version)/g" "{}" \;
           grep "<VersionPrefix>.*</VersionPrefix>" -R .
         displayName: Set Project Version
-      - script: |
-          echo building ${{ parameters.Project }}
-          dotnet build ${{ parameters.Project }} -c Release
-        displayName: Building Project
-      - script : dotnet pack ${{ parameters.Project}} -c Release --include-symbols --include-source -o $(Build.ArtifactStagingDirectory)/dist
-        displayName: Nuget Pack
-      - task: NuGetCommand@2
-        displayName: 'NuGet push'
-        condition:
-          and
-          (
-            succeeded(),
-            or
-            (
-              eq(variables['Build.SourceBranch'], 'refs/heads/master'),
-              and
-              (
-                eq(variables['UsingDevelopBranch'], 'true'),
-                eq(variables['Build.SourceBranch'], 'refs/heads/devlop')
-              )
-            )
-          )
-        inputs:
-          command: push
-          publishVstsFeed: '${{ parameters.FeedName}}${{ parameters.Feed}}'
-          allowPackageConflicts: false
+      - template: nugetpackage-task-pipeline.yaml
+        parameters:
+          Name: ${{ parameters.Name }}
+          Project: ${{ parameters.Project }}
+          Feed: ${{ parameters.Feed }}
+          
