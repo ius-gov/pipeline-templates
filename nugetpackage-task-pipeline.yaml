@@ -30,4 +30,5 @@ steps:
     inputs:
       command: push
       publishVstsFeed: '${{ parameters.FeedName}}${{ parameters.Feed}}'
+      packagesToPush: $(Build.ArtifactStagingDirectory)/dist/*.nupkg;!$(Build.ArtifactStagingDirectory)/dist/*.symbols.nupkg
       allowPackageConflicts: false
