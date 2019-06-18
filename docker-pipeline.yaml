@@ -112,7 +112,7 @@ steps:
           docker run --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory)/autorest,dst=/autorest/dist iusdev.azurecr.io/autorest-auto-generator:latest python3 main.py --projectName ${{ parameters.autorestProjectName }}
           $dockerexitcode = $LASTEXITCODE
           ls -al $(Build.ArtifactStagingDirectory)/autorest
-          If ($dockerexitcode -neq 0){
+          If ($dockerexitcode -ne 0){
             exit $dockerexitcode
           }
     - task: NuGetCommand@2
