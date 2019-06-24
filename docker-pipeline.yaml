@@ -1,6 +1,7 @@
 parameters:
   autorestClientFeed: ''
   autorestProjectName: ''
+  autorestTemplateType: 'Service'
   version: ''
   semVersion: ''
   containerServiceEndpoint: ''
@@ -113,7 +114,7 @@ steps:
         scriptLocation: inlineScript
         inlineScript: |
           mkdir $(Build.ArtifactStagingDirectory)/autorest
-          docker run --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory)/autorest,dst=/autorest/dist iusdev.azurecr.io/autorest-auto-generator:latest python3 main.py --projectName ${{ parameters.autorestProjectName }}
+          docker run --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory)/autorest,dst=/autorest/dist iusdev.azurecr.io/autorest-auto-generator:latest python3 main.py --projectName ${{ parameters.autorestProjectName }} --templateType ${{ parameters.autorestTemplateType }}
           dockerexitcode=$?
           ls -al $(Build.ArtifactStagingDirectory)/autorest
           if [ $dockerexitcode != 0 ]; then
