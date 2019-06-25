@@ -47,4 +47,4 @@ jobs:
           imageName: '$(registry)/$(project):$(version)'
           autorestClientFeed: '${{ parameters.autorestClientFeed }}'
           autorestProjectName: '${{ parameters.autorestProjectName }}'
-          autorestTemplateType: '${{ parameters.autorestProjectName }}'
+          autorestTemplateType: '${{ parameters.autorestTemplateType }}'
