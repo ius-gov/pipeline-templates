@@ -8,6 +8,7 @@ parameters:
   stateCode: 0
   autorestClientFeed: ''
   autorestProjectName: ''
+  autorestTemplateType: 'Service'
 
 jobs:
   - job: DockerBuilds
@@ -46,3 +47,4 @@ jobs:
           imageName: '$(registry)/$(project):$(version)'
           autorestClientFeed: '${{ parameters.autorestClientFeed }}'
           autorestProjectName: '${{ parameters.autorestProjectName }}'
+          autorestTemplateType: '${{ parameters.autorestProjectName }}'

@@ -1,6 +1,7 @@
 parameters:
   autorestClientFeed: ''
   autorestProjectName: ''
+  autorestTemplateType: 'Service'
   version: ''
   semVersion: ''
   containerServiceEndpoint: ''
@@ -96,10 +97,14 @@ steps:
         curl http://localhost/health -o health.json
         echo 'health result:'
         python -m json.tool health.json
+        healthexitcode=$?
         docker ps -a
         latest_guid="$(docker ps -a | grep "${{ parameters.imageName }}" | awk '{print $1}')"
         echo "Checking logs for $latest_guid"
         docker logs $latest_guid
+        if [ $healthexitcode != 0 ]; then
+          exit $healthexitcode
+        fi
   - ${{ if ne(parameters.autorestProjectName, '') }}:
     - task: AzureCLI@1
       displayName: Building Autorest Client
@@ -109,7 +114,7 @@ steps:
         scriptLocation: inlineScript
         inlineScript: |
           mkdir $(Build.ArtifactStagingDirectory)/autorest
-          docker run --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory)/autorest,dst=/autorest/dist iusdev.azurecr.io/autorest-auto-generator:latest python3 main.py --projectName ${{ parameters.autorestProjectName }}
+          docker run --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory)/autorest,dst=/autorest/dist iusdev.azurecr.io/autorest-auto-generator:latest python3 main.py --projectName ${{ parameters.autorestProjectName }} --templateType ${{ parameters.autorestTemplateType }}
           dockerexitcode=$?
           ls -al $(Build.ArtifactStagingDirectory)/autorest
           if [ $dockerexitcode != 0 ]; then
