@@ -66,6 +66,7 @@ steps:
                "ApiScope": "api1"
              }
           },
+          "DoNotRequireHttps": true,
           "Serilog":{
             "MinimumLevel": "Information",
              "Using": [
