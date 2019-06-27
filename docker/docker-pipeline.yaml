@@ -184,7 +184,7 @@ steps:
       azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
       azureContainerRegistry: ${{ parameters.registry }}
       imagename: ${{ parameters.latestName }}
-  - template: helm-chart-pipeline-template.yaml
+  - template: ../helm/helm-chart-pipeline-template.yaml
     parameters:
       version: '${{ parameters.version }}'
       semVersion: '${{ parameters.semVersion }}'
