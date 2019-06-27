@@ -1,22 +1,19 @@
 parameters:
   containerServiceEndpoint: 'iUSDevContainer'
-  registry: 'iusdev.azurecr.io'
-  project: ''
-  helmChartLocation: 'application/helm'
-  helmChartName: ''
+  helmChartLocation: ''
+  helmChartName : ''
+  Name: ''
   majorVersion: 0
   stateCode: 0
-  autorestClientFeed: ''
-  autorestProjectName: ''
-  autorestTemplateType: 'Service'
+  registry: 'iusdev.azurecr.io'
 
 jobs:
-  - job: DockerBuilds
+  - job: ${{ parameters.Name }}
     pool:
       vmImage: 'Ubuntu-16.04'
     variables:
       version: 0.0.0.0
-      semVersion: 0.0.0
+      semVersion: 0.0.0 
     steps:
       - powershell: |
           Write-Host "Attempting to set variable to ${{ parameters.stateCode }}.${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
@@ -30,21 +27,16 @@ jobs:
           Write-Host "Setting csproj Version To $(version)"
           Write-Host "Setting semVersion to $(semVersion)"
         displayName: Calculating Version
-      - script: |
-          find application/ -type f -iname '*.csproj' -exec  sed -i "s/0\.0\.0\-INTERNAL/$(version)/g" "{}" \;
-          grep "<VersionPrefix>.*</VersionPrefix>" -R .
-        displayName: Set Project Version
-      - template: docker-pipeline.yaml
+      - task: Docker@1
+        displayName: Container registry login
+        inputs:
+          azureSubscriptionEndpoint : ${{ parameters.containerServiceEndpoint }}
+          azureContainerRegistry : ${{ parameters.registry }}
+          command: login
+      - template: helm-chart-pipeline-template.yaml
         parameters:
           version: '$(version)'
           semVersion: '$(semVersion)'
           containerServiceEndpoint: '${{ parameters.containerServiceEndpoint }}'
-          registry: '${{ parameters.registry }}'
-          project: '${{ parameters.project }}'
           helmChartLocation: '${{ parameters.helmChartLocation }}'
           helmChartName : '${{ parameters.helmChartName }}'
-          latestName: '$(registry)/$(project):latest'
-          imageName: '$(registry)/$(project):$(version)'
-          autorestClientFeed: '${{ parameters.autorestClientFeed }}'
-          autorestProjectName: '${{ parameters.autorestProjectName }}'
-          autorestTemplateType: '${{ parameters.autorestTemplateType }}'

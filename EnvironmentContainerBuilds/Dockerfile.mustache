@@ -1,0 +1,9 @@
+FROM {{{ imageSource }}} AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
+
+ENV APPSETTINGS_LOCATION /data/appsettings
+RUN mkdir /data/appsettings
+RUN curl "{{{ appsettingsUrl }}}" -o /data/appsettings/appsettings.{{ environment}}.json

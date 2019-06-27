@@ -1,0 +1,45 @@
+parameters:
+  # The registry used to login to download the image from
+  downloadRegistry: ''
+  # The name of the ServiceConnection that is used to download the image from
+  downloadRegistryServiceEndpoint: ''
+  # The registry to upload the new environment specific image to
+  upLoadRegistry: ''
+  # The name of the ServiceConnection that is used to upload the image to
+  uploadRegistryServiceEndpoint: ''
+  # The image name not including the registry (ie. iconrelay-service, not iconrelay.azurecr.io/iconrelay-service)
+  imageName : ''
+  # The url where the appsettings can be downloaded from
+  appSettingsUrl: ''
+  # The name of the environemnt.  The appsettings will be named appsettings.<environmentName>.json
+  environmentName: 'Development'
+  # the image version to use.  Default is latest
+  imageVersion : latest
+
+jobs:
+  - job: DockerBuilds
+    pool:
+      vmImage: 'Ubuntu-16.04'
+    steps:
+      - task: Docker@1
+        displayName: Download Container registry login
+        inputs:
+          azureSubscriptionEndpoint: ${{ parameters.downloadRegistryServiceEndpoint }}
+          azureContainerRegistry: ${{ parameters.downloadRegistry }}
+          command: login
+      - task: Docker@1
+        displayName: Upload Container registry login
+        inputs:
+          azureSubscriptionEndpoint: ${{ parameters.uploadRegistryServiceEndpoint }}
+          azureContainerRegistry: ${{ parameters.uploadRegistry }}
+          command: login
+      - script: |
+          npm install mustache
+          echo "{ \
+              "imageSource" : {{parameters.downloadRegistry}}/{{parameters.imageName}}:{{parameters.imageVersion}}, \
+              "appsettingsUrl" : {{ parameters.appSettingsUrl}}, \
+              "environment" : {{ parameters.environmentName}} \
+            }" | mustache - Dockerfile.mustach > Dockerfile
+            docker build . -t {{parameters.upLoadRegistry}}/{{parameters.imageName}}:{{parameters.environmentName}}-{{parameters.imageVersion}}
+            docker push {{parameters.upLoadRegistry}}/{{parameters.imageName}}:{{parameters.environmentName}}-{{parameters.imageVersion}}
+        displayName: Create the Dockerfile
