@@ -12,10 +12,10 @@ steps:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
       inlineScript: |
-        cp -r template_assets/package template_assets/${{ parameter.helmChartName }}
+        cp -r template_assets/package template_assets/${{ parameters.helmChartName }}
         sudo npm install -g mustache
-        echo '{ "imageName" : "${{ parameters.project }}" }' | mustache - template_asses/${{ parameter.helmChartName }}/values.yaml
-        echo '{ "helmName" : "${{ parameters.helmChartName }}" }' | mustache - template_asses/${{ parameter.helmChartName }}/Chart.yaml
+        echo '{ "imageName" : "${{ parameters.project }}" }' | mustache - template_asses/${{ parameters.helmChartName }}/values.yaml
+        echo '{ "helmName" : "${{ parameters.helmChartName }}" }' | mustache - template_asses/${{ parameters.helmChartName }}/Chart.yaml
   - task: AzureCLI@1
     displayName: package helm chart
     inputs:
