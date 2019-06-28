@@ -19,7 +19,7 @@ steps:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
       inlineScript: |
-        tar xvzf $(Build.ArtifactStagingDirectory)/template.tar.gz $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName}}/
+        Expand-Archive -LiteralPath $(Build.ArtifactStagingDirectory)/template.zip -DestinationPath $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName}}
         sudo npm install -g mustache
         echo '{ "imageName" : "${{ parameters.project }}" }' | mustache - $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName }}/values.yaml
         echo '{ "helmName" : "${{ parameters.helmChartName }}" }' | mustache - $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName }}/Chart.yaml
