@@ -23,15 +23,15 @@ steps:
       scriptLocation: inlineScript
       inlineScript: |
         echo "Setting version to ${{ parameters.semVersion }}"
-        sed -i 's/0\.0\.0-INTERNAL/${{ parameters.semVersion }}/g' ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/Chart.yaml
+        sed -i 's/0\.0\.0-INTERNAL/${{ parameters.semVersion }}/g' template_asses/${{ parameters.helmChartName }}/Chart.yaml
         # The values contains the version of the docker image, which is the full version
-        sed -i 's/0\.0\.0-INTERNAL/${{ parameters.version }}/g' ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/values.yaml
-        cat ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/Chart.yaml
-        cat ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/values.yaml
+        sed -i 's/0\.0\.0-INTERNAL/${{ parameters.version }}/g' template_asses/${{ parameters.helmChartName }}/values.yaml
+        cat template_asses/${{ parameters.helmChartName }}/Chart.yaml
+        cat template_asses/${{ parameters.helmChartName }}/values.yaml
         helm init --client-only
         az acr helm repo add --name iusdev
-        helm dep up ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}
-        helm package ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }} --save=false
+        helm dep up template_asses/${{ parameters.helmChartName }}
+        helm package template_asses/${{ parameters.helmChartName }} --save=false
   - task: AzureCLI@1
     displayName: publish helm chart
     condition: |
