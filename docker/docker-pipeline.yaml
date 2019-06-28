@@ -20,7 +20,7 @@ steps:
       scriptLocation: inlineScript
       inlineScript: |
         az storage blob list --container-name helm-templates --account-name iusbuildtools
-        az storage blob download --container-name helm-templates --account-name iusbuildtools --file template.tar.gz
+        az storage blob download --container-name helm-templates --name iusbuildtools --file template.tar.gz
         tar xczf $(Build.ArtifactStagingDirectory)/template.tar.gz $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName}}
         sudo npm install -g mustache
         echo '{ "imageName" : "${{ parameters.project }}" }' | mustache - $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName }}/values.yaml
