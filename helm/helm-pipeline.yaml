@@ -14,7 +14,30 @@ parameters:
 
 steps:
   - task: AzureCLI@1
+    displayName: Create Helm Chart
+    inputs:
+      azureSubscription : ${{ parameters.containerServiceEndpoint }}
+      scriptLocation: inlineScript
+      inlineScript: |
+        cp -r template_assets/package template_assets/${{ parameter.helmChartName }}
+        sudo npm install -g mustache
+        echo '{ "imageName" : "${{ parameters.project }}" }' | mustache - template_asses/${{ parameter.helmChartName }}/values.yaml
+        echo '{ "helmName" : "${{ parameters.helmChartName }}" }' | mustache - template_asses/${{ parameter.helmChartName }}/Chart.yaml
+  - task: AzureCLI@1
     displayName: package helm chart
+    inputs:
+      azureSubscription : ${{ parameters.containerServiceEndpoint }}
+      scriptLocation: inlineScript
+      inlineScript: |
+        echo "Setting version to ${{ parameters.semVersion }}"
+        sed -i 's/0\.0\.0-INTERNAL/${{ parameters.semVersion }}/g' template_asses/${{ parameters.helmChartName }}/Chart.yaml
+        # The values contains the version of the docker image, which is the full version
+        sed -i 's/0\.0\.0-INTERNAL/${{ parameters.version }}/g' template_asses/${{ parameters.helmChartName }}/values.yaml
+        cat template_asses/${{ parameters.helmChartName }}/Chart.yaml
+        cat template_asses/${{ parameters.helmChartName }}/values.yaml
+        helm package template_asses/${{ parameters.helmChartName }} --save=false
+  - task: AzureCLI@1
+    displayName: Push Helm chart
     condition: |
       and
       (
@@ -29,15 +52,4 @@ steps:
           )
         )
       )
-    inputs:
-      azureSubscription : ${{ parameters.containerServiceEndpoint }}
-      scriptLocation: inlineScript
-      inlineScript: |
-        echo "Setting version to ${{ parameters.semVersion }}"
-        sed -i 's/0\.0\.0-INTERNAL/${{ parameters.semVersion }}/g' ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/Chart.yaml
-        # The values contains the version of the docker image, which is the full version
-        sed -i 's/0\.0\.0-INTERNAL/${{ parameters.version }}/g' ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/values.yaml
-        cat ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/Chart.yaml
-        cat ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/values.yaml
-        helm package ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }} --save=false
-        az acr helm push -n ${{ parameters.imageRegistry }} ${{ parameters.helmChartName }}-${{ parameters.semVersion }}.tgz
+    inlineScript: az acr helm push -n ${{ parameters.imageRegistry }} ${{ parameters.helmChartName }}-${{ parameters.semVersion }}.tgz
