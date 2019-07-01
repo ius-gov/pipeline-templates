@@ -13,9 +13,6 @@ parameters:
   imageRegistry: 'iusdev'
 
 steps:
-  - script : |
-      mv template_assets ${{ parameters.helmChartName }}
-      echo '{ "imageName" : "${{parameters.}}" }'
   - task: AzureCLI@1
     displayName: package helm chart
     condition: |
