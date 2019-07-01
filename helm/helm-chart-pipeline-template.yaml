@@ -13,13 +13,9 @@ steps:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
       inlineScript: |
-        mkdir $(Build.ArtifactStagingDirectory)/helm
-        docker run --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory)/helm,dst=/data/output iusdev.azurecr.io/buildtools:latest cp -r /data/helm-template /data/output
-        ls -lah
-        echo "Extracting files: to $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/"
-        mkdir -p $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/
-        tar xvzf helm-templates.tar.gz -C $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/
-        ls -lah $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/
+        mkdir $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}
+        docker run --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }},dst=/data/output iusdev.azurecr.io/buildtools:latest cp -r /data/helm-template /data/output
+        ls -lah $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}
         sudo npm install -g mustache
         echo '{ "imageName" : "${{ parameters.project }}" }' | mustache - $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml
         echo $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml"
