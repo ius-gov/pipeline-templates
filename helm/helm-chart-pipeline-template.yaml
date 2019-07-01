@@ -13,7 +13,7 @@ steps:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
       inlineScript: |
-        mkdir $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}
+        mkdir -p $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}
         docker run --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }},dst=/data/output iusdev.azurecr.io/buildtools:latest cp -r /data/helm-template /data/output
         ls -lah $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}
         sudo npm install -g mustache
