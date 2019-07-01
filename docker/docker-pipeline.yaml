@@ -22,7 +22,7 @@ steps:
         wget ftp://iusproget.westus.cloudapp.azure.com/helm-templates.tar.gz
         ls -lah
         echo "Extracting files: tar xvzf helm-templates.tar.gz $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName}}/"
-        tar xvzf helm-templates.tar.gz $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName}}/
+        tar xvzf helm-templates.tar.gz -C $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName}}/
         sudo npm install -g mustache
         echo '{ "imageName" : "${{ parameters.project }}" }' | mustache - $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName }}/values.yaml
         echo '{ "helmName" : "${{ parameters.helmChartName }}" }' | mustache - $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName }}/Chart.yaml
