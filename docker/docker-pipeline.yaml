@@ -19,8 +19,8 @@ steps:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
       inlineScript: |
-        wget "https://iusgov-my.sharepoint.com/:u:/g/personal/chriswoerz_ius_gov/EajX1hkb79ZEuUkTCzp_F6UBUapuOXvMF6Rkxf2mJeqgmA?e=OYwRaX" -O template.tar.gz
-        tar xvzf template.tar.gz $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName}}/
+        wget ftp://iusproget.westus.cloudapp.azure.com/helm-templates.tar.gz
+        tar xvzf helm-templates.tar.gz $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName}}/
         sudo npm install -g mustache
         echo '{ "imageName" : "${{ parameters.project }}" }' | mustache - $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName }}/values.yaml
         echo '{ "helmName" : "${{ parameters.helmChartName }}" }' | mustache - $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName }}/Chart.yaml
