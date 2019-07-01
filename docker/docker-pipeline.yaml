@@ -186,6 +186,7 @@ steps:
       imagename: ${{ parameters.latestName }}
   - template: ../helm/helm-chart-pipeline-template.yaml
     parameters:
+      project: '${{ parameters.project }}'
       version: '${{ parameters.version }}'
       semVersion: '${{ parameters.semVersion }}'
       containerServiceEndpoint: '${{ parameters.containerServiceEndpoint }}'
