@@ -20,7 +20,7 @@ steps:
       scriptLocation: inlineScript
       inlineScript: |
         wget https://iusgov-my.sharepoint.com/:u:/g/personal/chriswoerz_ius_gov/EbBzs3QnUoVEn6IjsgTImj4Bd6odv1V6Xd0oPlpJw40pUw?e=OlemNc -O template.tar.gz
-        tar xczf template.tar.gz $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName}}/
+        tar xvzf template.tar.gz $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName}}/
         sudo npm install -g mustache
         echo '{ "imageName" : "${{ parameters.project }}" }' | mustache - $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName }}/values.yaml
         echo '{ "helmName" : "${{ parameters.helmChartName }}" }' | mustache - $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName }}/Chart.yaml
