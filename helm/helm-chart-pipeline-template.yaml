@@ -16,7 +16,8 @@ steps:
         mkdir -p $(Build.ArtifactStagingDirectory)/helm
         docker run --net=host -v $(Build.ArtifactStagingDirectory)/helm/:/data/output iusdev.azurecr.io/buildtools:latest cp -r /data/helm-template/ /data/output/
         mv $(Build.ArtifactStagingDirectory)/helm/helm-template $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/
-        ls -lah $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}
+        sudo chmod -R 0777 $(Build.ArtifactStagingDirectory)/helm
+        ls -lahr $(Build.ArtifactStagingDirectory)/helm
         sudo npm install -g mustache
         echo '{ "imageName" : "${{ parameters.project }}" }' | mustache - $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml
         echo $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml"
