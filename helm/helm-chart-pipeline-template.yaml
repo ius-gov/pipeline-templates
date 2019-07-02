@@ -17,14 +17,16 @@ steps:
         docker run --net=host -v $(Build.ArtifactStagingDirectory)/helm/:/data/output iusdev.azurecr.io/buildtools:latest cp -r /data/helm-template/ /data/output/
         mv $(Build.ArtifactStagingDirectory)/helm/helm-template $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/
         sudo chmod -R 0777 $(Build.ArtifactStagingDirectory)/helm
-        ls -lahr $(Build.ArtifactStagingDirectory)/helm
+        ls -lahR $(Build.ArtifactStagingDirectory)/helm
         sudo npm install -g mustache
+        echo "Updating imageName to ${{ parameters.project }} in $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml"
         echo '{ "imageName" : "${{ parameters.project }}" }' | mustache - $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml
-        echo $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml"
         cat $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml
+        echo "-------"
+        echo "Updating helmName to ${{ parameters.helmChartName }} in $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/Chart.yaml"
         echo '{ "helmName" : "${{ parameters.helmChartName }}" }' | mustache - $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/Chart.yaml $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/Chart.yaml
-        echo $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/Chart.yaml"
         cat $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/Chart.yaml
+        echo "-------"
   - task: AzureCLI@1
     displayName: package helm chart
     inputs:
