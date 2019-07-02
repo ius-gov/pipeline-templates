@@ -13,37 +13,40 @@ steps:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
       inlineScript: |
-        wget ftp://iusproget.westus.cloudapp.azure.com/helm-templates.tar.gz
-        ls -lah
-        echo "Extracting files: to $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName}}/"
-        mkdir -p $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName}}/
-        tar xvzf helm-templates.tar.gz -C $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName}}/
-        ls -lah $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName}}/
+        mkdir -p $(Build.ArtifactStagingDirectory)/helm
+        docker run --net=host -v $(Build.ArtifactStagingDirectory)/helm/:/data/output iusdev.azurecr.io/buildtools:latest cp -r /data/helm-template/ /data/output/
+        mv $(Build.ArtifactStagingDirectory)/helm/helm-template $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/
+        sudo chmod -R 0777 $(Build.ArtifactStagingDirectory)/helm
+        ls -lahR $(Build.ArtifactStagingDirectory)/helm
         sudo npm install -g mustache
-        echo '{ "imageName" : "${{ parameters.project }}" }' | mustache - $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName }}/values.yaml $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName }}/values.yaml
-        cat $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName }}/values.yaml
-        echo '{ "helmName" : "${{ parameters.helmChartName }}" }' | mustache - $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName }}/Chart.yaml $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName }}/Chart.yaml
-        cat $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName }}/Chart.yaml
+        echo "Updating imageName to ${{ parameters.project }} in $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml"
+        echo '{ "imageName" : "${{ parameters.project }}" }' | mustache - $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml
+        cat $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml
+        echo "-------"
+        echo "Updating helmName to ${{ parameters.helmChartName }} in $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/Chart.yaml"
+        echo '{ "helmName" : "${{ parameters.helmChartName }}" }' | mustache - $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/Chart.yaml $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/Chart.yaml
+        cat $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/Chart.yaml
+        echo "-------"
   - task: AzureCLI@1
     displayName: package helm chart
     inputs:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
       inlineScript: |
-        echo "Setting version to ${{ parameters.semVersion }} in $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName }}/Chart.yaml"
-        sed -i 's/0\.0\.0-INTERNAL/${{ parameters.semVersion }}/g' $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName }}/Chart.yaml
-        cat $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName }}/Chart.yaml
+        echo "Setting version to ${{ parameters.semVersion }} in $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/Chart.yaml"
+        sed -i 's/0\.0\.0-INTERNAL/${{ parameters.semVersion }}/g' $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/Chart.yaml
+        cat $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/Chart.yaml
         # The values contains the version of the docker image, which is the full version
-        echo "Setting version to ${{ parameters.semVersion }} in $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName }}/values.yaml"
-        sed -i 's/0\.0\.0-INTERNAL/${{ parameters.version }}/g' $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName }}/values.yaml
-        cat $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName }}/values.yaml
+        echo "Setting version to ${{ parameters.semVersion }} in $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml"
+        sed -i 's/0\.0\.0-INTERNAL/${{ parameters.version }}/g' $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml
+        cat $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml
         helm init --client-only
         echo "Adding iusdev acr repo"
         az acr helm repo add --name iusdev
-        echo "Updating the helm dependencies in $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName }}"
-        helm dep up $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName }}
-        echo "Packaging $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName }}"
-        helm package $(Build.ArtifactStagingDirectory)/${{ parameters.helmChartName }} --save=false
+        echo "Updating the helm dependencies in $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}"
+        helm dep up $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}
+        echo "Packaging $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}"
+        helm package $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }} --save=false
   - task: AzureCLI@1
     displayName: publish helm chart
     condition: |
