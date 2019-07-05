@@ -12,6 +12,6 @@ steps:
 
     Write-Host "##vso[task.setvariable variable=version;]$tmpVersion"
     Write-Host "##vso[task.setvariable variable=semVersion;]$tmpSemversion"
-    Write-Host "Setting csproj Version To $(version)"
-    Write-Host "Setting semVersion to $(semVersion)"
+    Write-Host "Setting csproj Version To $version"
+    Write-Host "Setting semVersion to $semVersion"
   displayName: Calculating Version
