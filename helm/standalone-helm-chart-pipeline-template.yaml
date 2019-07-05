@@ -42,6 +42,6 @@ steps:
       inlineScript: |
         az acr helm push -n iusdev ${{ parameters.helmChartName }}-${{ parameters.semVersion }}.tgz
   - task: PublishBuildArtifacts@1
-      inputs:
+    inputs:
       pathtoPublish : '${{ parameters.helmChartName }}-$(semVersion).tgz'
       artifactName: helmChart
