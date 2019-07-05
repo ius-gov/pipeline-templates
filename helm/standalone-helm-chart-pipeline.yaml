@@ -2,7 +2,6 @@ parameters:
   containerServiceEndpoint: 'iUSDevContainer'
   helmChartLocation: ''
   helmChartName : ''
-  Name: ''
   majorVersion: 0
   stateCode: 0
   registry: 'iusdev.azurecr.io'
