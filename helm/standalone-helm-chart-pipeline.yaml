@@ -13,7 +13,6 @@ jobs:
     steps:
       - template: calculate-version-template.yaml
         parameters:
-          stateCode:  ${{ parameters.stateCode }}
           majorVersion:  ${{ parameters.majorVersion }}
       - task: Docker@1
         displayName: Container registry login
