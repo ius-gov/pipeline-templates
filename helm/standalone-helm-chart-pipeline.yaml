@@ -12,7 +12,7 @@ jobs:
       vmImage: 'Ubuntu-16.04'
     steps:
       - template: calculate-version-template.yaml
-        inputs:
+        parameters:
           stateCode: $(parameters.stateCode)
           majorVersion: $(parameters.majorVersion)
       - task: Docker@1
@@ -21,7 +21,7 @@ jobs:
           azureSubscriptionEndpoint : ${{ parameters.containerServiceEndpoint }}
           azureContainerRegistry : ${{ parameters.registry }}
           command: login
-      - template: helm-chart-pipeline-template.yaml
+      - template: standalone-helm-chart-pipeline-template.yaml
         parameters:
           version: '$(version)'
           semVersion: '$(semVersion)'
