@@ -1,0 +1,19 @@
+parameters:
+  stateCode: 0
+  majorVersion: 0
+
+steps:
+- powershell: |
+    Write-Host "Attempting to set variable to ${{ parameters.stateCode }}.${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
+    $tmpSemversion = "${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
+    $tmpVersion = "${{ parameters.stateCode }}.$tmpSemversion"
+
+    Write-Host "Set intermeidate variables $tmpSemversion and $tmpVersion"
+
+    Write-Host "##vso[task.setvariable variable=version;]$tmpVersion"
+    Write-Host "##vso[task.setvariable variable=semVersion;]$tmpSemversion"
+  displayName: Calculating Version
+- powershell: |
+    Write-Host "Set csproj Version To $(version)"
+    Write-Host "Set semVersion to $(semVersion)"
+  displayName: Verify Versions

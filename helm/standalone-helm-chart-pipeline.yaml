@@ -1,0 +1,29 @@
+parameters:
+  containerServiceEndpoint: 'iUSDevContainer'
+  helmChartLocation: ''
+  helmChartName : ''
+  majorVersion: 0
+  stateCode: 0
+  registry: 'iusdev.azurecr.io'
+# If you need to do more than one chart from a build copy this out and add additional standalone template steps
+jobs:
+  - job: ${{ parameters.Name }}
+    pool:
+      vmImage: 'Ubuntu-16.04'
+    steps:
+      - template: calculate-version-template.yaml
+        parameters:
+          majorVersion:  ${{ parameters.majorVersion }}
+      - task: Docker@1
+        displayName: Container registry login
+        inputs:
+          azureSubscriptionEndpoint : ${{ parameters.containerServiceEndpoint }}
+          azureContainerRegistry : ${{ parameters.registry }}
+          command: login
+      - template: standalone-helm-chart-pipeline-template.yaml
+        parameters:
+          version: '$(version)'
+          semVersion: '$(semVersion)'
+          containerServiceEndpoint: '${{ parameters.containerServiceEndpoint }}'
+          helmChartLocation: '${{ parameters.helmChartLocation }}'
+          helmChartName : '${{ parameters.helmChartName }}'
