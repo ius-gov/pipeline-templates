@@ -14,6 +14,7 @@ steps:
         sed -i 's/0\.0\.0-INTERNAL/$(semVersion)/g' ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/Chart.yaml
         sed -i 's/0\.0\.0-INTERNAL/$(semVersion)/g' ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/values.yaml
         sed -i 's/0\.0\.0-INTERNAL/$(semVersion)/g' ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/requirements.yaml
+        echo "Chart.yaml"
         cat ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/Chart.yaml
         echo "values.yaml"
         cat ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/values.yaml
