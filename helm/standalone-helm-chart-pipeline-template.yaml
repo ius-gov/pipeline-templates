@@ -13,7 +13,7 @@ steps:
         echo "Setting version to $(semVersion)"
         sed -i 's/0\.0\.0-INTERNAL/$(semVersion)/g' ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/Chart.yaml
         sed -i 's/0\.0\.0-INTERNAL/$(semVersion)/g' ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/values.yaml
-        sed -i 's/0\.0\.0-INTERNAL/$(semVersion)/g' ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/reqirements.yaml
+        sed -i 's/0\.0\.0-INTERNAL/$(semVersion)/g' ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/requirements.yaml
         cat ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/Chart.yaml
         echo "values.yaml"
         cat ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/values.yaml
