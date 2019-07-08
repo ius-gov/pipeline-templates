@@ -5,7 +5,7 @@ parameters:
 
 steps:
   - task: AzureCLI@1
-    displayName: package helm chart
+    displayName: package helm chart ${{ parameters.helmChartName }}
     inputs:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
@@ -21,7 +21,7 @@ steps:
         helm dep up ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}
         helm package ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }} --save=false
   - task: AzureCLI@1
-    displayName: publish helm chart
+    displayName: publish helm chart ${{ parameters.helmChartName }}
     condition: |
       and
       (
@@ -42,6 +42,7 @@ steps:
       inlineScript: |
         az acr helm push -n iusdev ${{ parameters.helmChartName }}-$(semVersion).tgz
   - task: PublishBuildArtifacts@1
+    displayName: Publish Helm Chart ${{ parameters.helmChartName }} as a build artifact
     inputs:
       pathtoPublish : '${{ parameters.helmChartName }}-$(semVersion).tgz'
       artifactName: helmChart
