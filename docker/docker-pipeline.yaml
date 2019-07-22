@@ -48,7 +48,7 @@ steps:
         echo '{
           "AppSettings" : {
              "URLs" : {
-               "IdentityServer" : "https://iusidentityserver.azurewebsites.net"
+               "IdentityServer" : "https://iusbuildidentityserver.azurewebsites.net"
              }
           },
           "Data": {
