@@ -21,4 +21,4 @@ jobs:
           containerServiceEndpoint: '${{ parameters.containerServiceEndpoint }}'
           helmChartLocation: '${{ parameters.helmChartLocation }}'
           helmChartName : '${{ parameters.helmChartName }}'
-          registry: 'iusdev'
+          registry: '${{ parameters.registry }}'
