@@ -19,7 +19,7 @@ jobs:
         displayName: Container registry login
         inputs:
           azureSubscriptionEndpoint : ${{ parameters.containerServiceEndpoint }}
-          azureContainerRegistry : '${{ parameters.registry }}.'${{ parameters.registryHost }}''
+          azureContainerRegistry : '${{ parameters.registry }}.'${{ parameters.registryHost }}'
           command: login
       - template: standalone-helm-chart-pipeline-template.yaml
         parameters:
