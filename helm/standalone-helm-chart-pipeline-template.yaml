@@ -21,7 +21,7 @@ steps:
         echo "requirements.yaml"
         cat ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/requirements.yaml
         helm init --client-only 
-        az acr helm repo add --name ${{ registry }}
+        az acr helm repo add --name ${{ parameters.registry }}
         helm repo remove local 
         helm dep up ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}
         helm package ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }} --save=false
