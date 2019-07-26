@@ -30,3 +30,4 @@ jobs:
           helmChartLocation: '${{ parameters.helmChartLocation }}'
           helmChartName : '${{ parameters.helmChartName }}'
           registry: '${{ parameters.registry }}'
+          additionalRegistries: '${{ parameters.additionalRegistries }}'
