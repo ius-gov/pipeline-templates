@@ -45,7 +45,7 @@ steps:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
       inlineScript: |
-        az acr helm push -n iusdev ${{ parameters.helmChartName }}-$(semVersion).tgz
+        az acr helm push -n ${{ parameters.registry }} ${{ parameters.helmChartName }}-$(semVersion).tgz
   - task: PublishBuildArtifacts@1
     displayName: Publish Helm Chart ${{ parameters.helmChartName }} as a build artifact
     inputs:
