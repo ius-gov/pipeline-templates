@@ -23,10 +23,10 @@ steps:
         cat ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/requirements.yaml
         helm init --client-only 
         az acr helm repo add --name ${{ parameters.registry }}
-        registries=(${{ parameters.additionalRegistries }})
+        registries=("${{ parameters.additionalRegistries }}")
         for i in ${registries[@]}; 
         do 
-        az acr helm repo add -n $i; 
+        az acr helm repo add -name $i; 
         done
         helm repo remove local 
         helm dep up ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}
