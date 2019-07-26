@@ -4,7 +4,9 @@ parameters:
   helmChartName : ''
   majorVersion: 0
   stateCode: 0
-  registry: 'iusdev.azurecr.io'
+  registry: 'iusdev'
+  registryHost: "azurecr.io"
+  additionalRegistries: ""
 # If you need to do more than one chart from a build copy this out and add additional standalone template steps
 jobs:
   - job: ${{ parameters.Name }}
@@ -18,7 +20,7 @@ jobs:
         displayName: Container registry login
         inputs:
           azureSubscriptionEndpoint : ${{ parameters.containerServiceEndpoint }}
-          azureContainerRegistry : ${{ parameters.registry }}
+          azureContainerRegistry : '${{ parameters.registry }}.${{ parameters.registryHost }}'
           command: login
       - template: standalone-helm-chart-pipeline-template.yaml
         parameters:
@@ -27,3 +29,5 @@ jobs:
           containerServiceEndpoint: '${{ parameters.containerServiceEndpoint }}'
           helmChartLocation: '${{ parameters.helmChartLocation }}'
           helmChartName : '${{ parameters.helmChartName }}'
+          registry: '${{ parameters.registry }}'
+          additionalRegistries: '${{ parameters.additionalRegistries }}'
