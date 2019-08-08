@@ -23,7 +23,7 @@ steps:
           and
           (
             eq(variables['UsingDevelopBranch'], 'true'),
-            eq(variables['Build.SourceBranch'], 'refs/heads/devlop')
+            eq(variables['Build.SourceBranch'], 'refs/heads/develop')
           )
         )
       )
