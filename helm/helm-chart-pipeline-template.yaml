@@ -24,7 +24,14 @@ steps:
         cat $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml
         echo "-------"
         echo "Updating helmName to ${{ parameters.helmChartName }} in $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/Chart.yaml"
-        echo '{ "helmName" : "${{ parameters.helmChartName }}" }' | mustache - $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/Chart.yaml $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/Chart.yaml
+        echo '{ "helmName" : "${{ parameters.helmChartName }}", \
+            "sourceUrl" : "$(Build.Repository.Uri)", \
+            "sourceSHA" : "$(Build.SourceVersion)", \
+            "repositoryID" : "$(Build.Repository.ID)", \
+            "repositoryName" : "$(Build.Repository.Name)", \
+            "teamProjectID" : "$(System.TeamProjectId)", \
+            "teamProjectName" : "$(System.TeamProject)", \
+             }' | mustache - $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/Chart.yaml $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/Chart.yaml
         cat $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/Chart.yaml
         echo "-------"
   - task: AzureCLI@1
