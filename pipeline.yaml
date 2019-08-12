@@ -20,7 +20,10 @@ jobs:
     steps:
       - task: CacheBeta@0
         inputs:
-          key: iUS-Docker
+          key: |
+            $(Agent.OS)
+            iUS-Docker
+            $(cacheType)
           path: /var/lib/docker/containers
       - powershell: |
           Write-Host "Attempting to set variable to ${{ parameters.stateCode }}.${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
