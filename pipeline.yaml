@@ -18,6 +18,10 @@ jobs:
       version: 0.0.0.0
       semVersion: 0.0.0
     steps:
+      - task: CacheBeta@0
+        inputs:
+          key: iUS-Docker
+          path: /var/lib/docker/containers
       - powershell: |
           Write-Host "Attempting to set variable to ${{ parameters.stateCode }}.${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
           $tmpSemversion = "${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
