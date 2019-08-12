@@ -14,13 +14,13 @@ parameters:
 
 steps:
   - task: CacheBeta@0
-      inputs:
-        key: |
-          $(Agent.OS)
-          iUS-Docker
-          $(cacheType)
-        path: /var/lib/docker/containers
-      displayName: DockerCache
+    inputs:
+      key: |
+        $(Agent.OS)
+        iUS-Docker
+        $(cacheType)
+      path: /var/lib/docker/containers
+    displayName: DockerCache
   - task: Docker@1
     displayName: Container registry login
     inputs:
