@@ -13,12 +13,25 @@ parameters:
   imageName: ''
 
 steps:
+  - task: CacheBeta@0
+      inputs:
+        key: |
+          $(Agent.OS)
+          iUS-Docker
+          $(cacheType)
+        path: /var/lib/docker/containers
+      displayName: DockerCache
   - task: Docker@1
     displayName: Container registry login
     inputs:
       azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
       azureContainerRegistry: ${{ parameters.registry }}
       command: login
+  - task: AzureCLI@1
+    inputs:
+      azureSubscription : ${{ parameters.containerServiceEndpoint }}
+      scriptLocation: inlineScript
+      inlineScript: docker info
   - task: Docker@1
     displayName: Build image
     inputs:
