@@ -7,6 +7,7 @@ parameters:
   registry: 'iusdev'
   registryHost: "azurecr.io"
   additionalRegistries: ""
+  additionalPublicRegistries: ""
 # If you need to do more than one chart from a build copy this out and add additional standalone template steps
 jobs:
   - job: ${{ parameters.Name }}
@@ -32,3 +33,4 @@ jobs:
           helmChartName : '${{ parameters.helmChartName }}'
           registry: '${{ parameters.registry }}'
           additionalRegistries: '${{ parameters.additionalRegistries }}'
+          additionalPublicRegistries: '${{ parameters.additionalPublicRegistries }}'

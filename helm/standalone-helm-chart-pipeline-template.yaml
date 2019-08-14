@@ -4,6 +4,7 @@ parameters:
   helmChartName : ''
   registry: 'iusdev'
   additionalRegistries: ''
+  additionalPublicRegistries: ''
 steps:
   - task: AzureCLI@1
     displayName: package helm chart ${{ parameters.helmChartName }}
@@ -27,6 +28,11 @@ steps:
         for i in ${registries[@]}; 
         do 
         az acr helm repo add --name $i; 
+        done
+        additionalPublicRegistries=("${{ parameters.additionalPublicRegistries }}")
+        for i in "${!additionalPublicRegistries[@]}"; 
+        do 
+        helm repo add  $i "${additionalPublicRegistries[$i]}"; 
         done
         helm repo remove local 
         helm dep up ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}
