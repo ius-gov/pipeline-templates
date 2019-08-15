@@ -46,6 +46,7 @@ steps:
         echo 'Creating Appsettings folder at $(Build.ArtifactStagingDirectory)'
         mkdir $(Build.ArtifactStagingDirectory)/appsettings
         echo '{
+          "ClientStateID" : 0,
           "AppSettings" : {
              "URLs" : {
                "IdentityServer" : "https://iusbuildidentityserver.azurewebsites.net"
