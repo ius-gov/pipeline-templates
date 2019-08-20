@@ -27,6 +27,7 @@ steps:
         registries=("${{ parameters.additionalRegistries }}")
         for i in ${registries[@]}; 
         do 
+        echo "Adding Helm Repository $i"
         az acr helm repo add --name $i; 
         done
         additionalPublicRegistries=("${{ parameters.additionalPublicRegistries }}")
