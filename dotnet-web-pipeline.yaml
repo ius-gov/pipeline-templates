@@ -21,6 +21,9 @@ jobs:
           find application/ -type f -iname '*.csproj' -exec  sed -i "s/0\.0\.0\-INTERNAL/$(version)/g" "{}" \;
           grep "<VersionPrefix>.*</VersionPrefix>" -R .
         displayName: Set Project Version
+      - script: |
+          npm install -g typescript@3.1.6 
+        displayName: Pin Typescript Version
       - task: DotNetCoreCLI@2
         displayName: Restore
         inputs:
