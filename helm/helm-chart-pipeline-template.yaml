@@ -5,6 +5,7 @@ parameters:
   helmChartName : ''
   version: 0
   semVersion: 0
+  azureContainerRegistry: 'iusdev'
 
 steps:
   - task: AzureCLI@1
@@ -41,8 +42,8 @@ steps:
         sed -i 's/0\.0\.0-INTERNAL/${{ parameters.version }}/g' $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml
         cat $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml
         helm init --client-only
-        echo "Adding iusdev acr repo"
-        az acr helm repo add --name iusdev
+        echo "Adding ${{ parameters.azureContainerRegistry }} acr repo"
+        az acr helm repo add --name ${{ parameters.azureContainerRegistry }}
         echo "Updating the helm dependencies in $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}"
         helm dep up $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}
         echo "Packaging $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}"
@@ -67,7 +68,7 @@ steps:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
       inlineScript: |
-        az acr helm push -n iusdev ${{ parameters.helmChartName }}-${{ parameters.semVersion }}.tgz
+        az acr helm push -n ${{ parameters.azureContainerRegistry }} ${{ parameters.helmChartName }}-${{ parameters.semVersion }}.tgz
   - task: PublishBuildArtifacts@1
     displayName: publish helm chart as build artifact
     inputs:
