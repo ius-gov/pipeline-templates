@@ -21,7 +21,6 @@ steps:
         sudo chmod -R 0777 $(Build.ArtifactStagingDirectory)/helm
         ls -lahR $(Build.ArtifactStagingDirectory)/helm
         sudo npm install -g mustache
-        cat $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml
         echo "Updating imageRepository to ${{ parameters.azureContainerRegistry }} in $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml"
         echo "Updating imageName to ${{ parameters.project }} in $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml"
         echo '{ "imageRepository" : "${{ parameters.azureContainerRegistry }}", "imageName" : "${{ parameters.project }}" }' | mustache - $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml
