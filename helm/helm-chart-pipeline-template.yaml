@@ -6,6 +6,7 @@ parameters:
   version: 0
   semVersion: 0
   azureContainerRegistry: 'iusdev'
+  additionalRegistries: ''
 
 steps:
   - task: AzureCLI@1
@@ -46,6 +47,12 @@ steps:
         helm init --client-only
         echo "Adding ${{ parameters.azureContainerRegistry }} acr repo"
         az acr helm repo add --name ${{ parameters.azureContainerRegistry }}
+        registries=("${{ parameters.additionalRegistries }}")
+        for i in ${registries[@]}; 
+        do 
+        echo "Adding Helm Repository $i"
+        az acr helm repo add --name $i; 
+        done
         echo "Updating the helm dependencies in $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}"
         helm dep up $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}
         echo "Packaging $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}"
