@@ -12,6 +12,8 @@ parameters:
   imageName: ''
   dockerRunOptions: ''
   autorestTag: 'latest'
+  autorestImageName: 'autorest-auto-generator'
+  acrRegistryName: 'iusdev'
 
 steps:
   - ${{ if ne(parameters.autorestProjectName, '') }}:
@@ -23,7 +25,7 @@ steps:
         scriptLocation: inlineScript
         inlineScript: |
           mkdir $(Build.ArtifactStagingDirectory)/autorest
-          docker run --cpus 0 --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory)/autorest,dst=/autorest/dist iusdev.azurecr.io/autorest-auto-generator:${{ parameters.autorestTag }} python3 main.py --projectName ${{ parameters.autorestProjectName }}
+          docker run --cpus 0 --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory)/autorest,dst=/autorest/dist ${{ acrRegistryName }}.azurecr.io/${{ autorestImageName }}:${{ parameters.autorestTag }} python3 main.py --projectName ${{ parameters.autorestProjectName }}
           ls -al $(Build.ArtifactStagingDirectory)/autorest
     - task: NuGetCommand@2
       displayName: 'Autorest client NuGet push'
@@ -43,6 +45,6 @@ steps:
         )
       inputs:
         command: push
-        publishVstsFeed: '${{parameters.autorestClientFeed}}'
+        publishVstsFeed: '${{ parameters.autorestClientFeed }}'
         allowPackageConflicts: false
         packagesToPush: '$(Build.ArtifactStagingDirectory)/autorest/*.nupkg'
