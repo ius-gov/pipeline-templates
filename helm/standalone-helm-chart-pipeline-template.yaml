@@ -5,6 +5,7 @@ parameters:
   registry: 'iusdev'
   additionalRegistries: ''
   additionalPublicRegistries: ''
+  childChartsToUpdate: ''
 steps:
   - task: AzureCLI@1
     displayName: package helm chart ${{ parameters.helmChartName }}
@@ -36,6 +37,12 @@ steps:
         helm repo add  $i "${additionalPublicRegistries[$i]}"; 
         done
         helm repo remove local 
+        childCharts=("${{ parameters.childChartsToUpdate }}")
+        for i in ${childCharts[@]}; 
+        do 
+        echo "updating $i"
+        helm dep up $i; 
+        done
         helm dep up ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}
         helm package ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }} --save=false
   - task: AzureCLI@1
