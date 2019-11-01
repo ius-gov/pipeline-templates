@@ -41,9 +41,10 @@ steps:
         for i in ${childCharts[@]}; 
         do 
         echo "updating $i"
-        helm dep up $i; 
+        helm dependency update  $i; 
+        ls -la $1/charts
         done
-        helm dep up ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}
+        helm dependency update   ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}
         helm package ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }} --save=false
   - task: AzureCLI@1
     displayName: publish helm chart ${{ parameters.helmChartName }}
