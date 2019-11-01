@@ -42,7 +42,7 @@ steps:
         do 
         echo "updating $i"
         helm dependency update  $i; 
-        ls -la $1/charts
+        ls -la $i/charts
         done
         helm dependency update   ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}
         helm package ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }} --save=false
