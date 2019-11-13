@@ -41,11 +41,11 @@ steps:
         for i in ${childCharts[@]}; 
         do 
         echo "updating $i"
-        helm dependency update  $i &; 
+        helm dependency update  $i &
         done
         for i in ${childCharts[@]}; 
         do 
-        fg;
+        fg
         done
          for i in ${childCharts[@]}; 
         do 
