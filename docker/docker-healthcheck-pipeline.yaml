@@ -46,6 +46,7 @@ steps:
           },
           "UseIncludedCertificate" : "true",
           "DoNotRequireHttps" : "true",
+          "DoNotFetchDiscovery" : "true",
           "BuildServer" : "true",
           "ConfigurationDump" : "true"
          }' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Production.json

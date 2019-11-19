@@ -67,7 +67,6 @@ steps:
                "ApiScope": "api1"
              }
           },
-          "DoNotRequireHttps": true,
           "Serilog":{
             "MinimumLevel": "Information",
              "Using": [
@@ -80,6 +79,7 @@ steps:
              ]
           },
           "UseIncludedCertificate" : "true",
+          "DoNotFetchDiscovery" : "true",
           "DoNotRequireHttps" : "true",
           "BuildServer" : "true",
           "ConfigurationDump" : "true"
