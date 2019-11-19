@@ -41,7 +41,9 @@ steps:
         for i in ${childCharts[@]}; 
         do 
         echo "updating $i"
-        helm dependency update  $i; 
+        helm dependency update  $i;
+        status=$?
+        [ $status -eq 0 ] && echo "dep up on $i command was successful" || echo "dep up on $i failed"
         ls -la $i/charts
         done
         helm dependency update   ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}
