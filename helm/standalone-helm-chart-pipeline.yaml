@@ -13,7 +13,7 @@ parameters:
 jobs:
   - job: ${{ parameters.Name }}
     pool:
-      vmImage: 'Ubuntu-16.04'
+      vmImage: 'Ubuntu-18.04'
     steps:
       - template: calculate-version-template.yaml
         parameters:
