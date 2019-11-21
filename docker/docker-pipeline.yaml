@@ -62,7 +62,8 @@ steps:
                 "Global": 0
               },
               "UserName": "$(QueueUserName)",
-              "VirtualHost": "BuildServer"
+              "VirtualHost": "BuildServer",
+              "GlobalDisable": true
             },
             "Identity": {
                "ApiScope": "api1"
