@@ -55,14 +55,7 @@ steps:
           },
           "Data": {
             "Queue": {
-              "Password": "$(QueuePassword)",
-              "Port": "5672",
-              "ServerName": "$(QueueUrl)",
-              "Threads": {
-                "Global": 0
-              },
-              "UserName": "$(QueueUserName)",
-              "VirtualHost": "BuildServer"
+              "GlobalDisable": true
             },
             "Identity": {
                "ApiScope": "api1"
