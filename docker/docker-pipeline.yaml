@@ -23,10 +23,8 @@ steps:
       if [[ -f "application/Dockerfile" ]]; then 
         echo "Using included Dockerfile.  Please consider updating to newest pattern"
       elif [[ -f "dockerfile.json" ]]; then
-        docker run -v $(Agent.BuildDirectory):/src iusdev.azurecr.io/dockerfile-template:latest mustache src/dockerfile.json data/Dockerfile.mustache > application/Dockerfile
         echo "Generating new Dockerfile from the dockerfile.mustache"
-        npm install mustache
-        cat dockerfile.mustache | mustache - Dockerfile.mustach > application/Dockerfile
+        docker run -v $(Agent.BuildDirectory):/src iusdev.azurecr.io/dockerfile-template:latest mustache src/dockerfile.json data/Dockerfile.mustache > application/Dockerfile
         cat application/Dockerfile
       else
         echo "Dockerfile is not present and neither is a required dockerfile.json"
