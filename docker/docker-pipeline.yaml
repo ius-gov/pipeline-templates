@@ -19,6 +19,16 @@ steps:
       azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
       azureContainerRegistry: ${{ parameters.registry }}
       command: login
+  - script: |
+      if [[ -f "application/Dockerfile" ]]; then 
+        echo "Using included Dockerfile.  Please consider updating to newest pattern"
+      else
+        echo "Generating new Dockerfile from the dockerfile.mustache"
+        npm install mustache
+        cat dockerfile.mustache | mustache - Dockerfile.mustach > application/Dockerfile
+        cat application/Dockerfile
+      fi
+    displayName: Check for Dockerfile
   - task: Docker@1
     displayName: Build image
     inputs:
