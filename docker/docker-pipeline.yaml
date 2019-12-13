@@ -22,7 +22,7 @@ steps:
   - script: |
       if [[ -f "application/Dockerfile" ]]; then 
         echo "Using included Dockerfile.  Please consider updating to newest pattern"
-      else if [[ -f "dockerfile.json" ]]; then
+      elif [[ -f "dockerfile.json" ]]; then
         docker run -v ${Agent.BuildDirectory}:/src iusdev.azurecr.io/dockerfile-template:latest mustache src/dockerfile.json data/Dockerfile.mustache > application/Dockerfile
         echo "Generating new Dockerfile from the dockerfile.mustache"
         npm install mustache
