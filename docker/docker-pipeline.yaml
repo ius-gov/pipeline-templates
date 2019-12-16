@@ -11,6 +11,7 @@ parameters:
   helmChartName : ''
   latestName: ''
   imageName: ''
+  stateCode: 0
 
 steps:
   - task: Docker@1
@@ -19,6 +20,19 @@ steps:
       azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
       azureContainerRegistry: ${{ parameters.registry }}
       command: login
+  - script: |
+      if [[ -f "application/Dockerfile" ]]; then 
+        echo "Using included Dockerfile.  Please consider updating to newest pattern"
+      elif [[ -f "dockerfile.json" ]]; then
+        echo "Generating new Dockerfile from the dockerfile.mustache"
+        docker run --net=host -v $(Build.SourcesDirectory):/src iusdev.azurecr.io/dockerfile-template:latest node /data/state_code_updater /src/dockerfile.json ${{ parameters.stateCode }}
+        docker run --net=host -v $(Build.SourcesDirectory):/src iusdev.azurecr.io/dockerfile-template:latest mustache /src/dockerfile.json /data/Dockerfile.mustache > application/Dockerfile
+        cat application/Dockerfile
+      else
+        echo "Dockerfile is not present and neither is a required dockerfile.json"
+        exit 1
+      fi
+    displayName: Check for Dockerfile
   - task: Docker@1
     displayName: Build image
     inputs:

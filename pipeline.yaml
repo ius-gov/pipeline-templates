@@ -48,3 +48,4 @@ jobs:
           autorestClientFeed: '${{ parameters.autorestClientFeed }}'
           autorestProjectName: '${{ parameters.autorestProjectName }}'
           autorestTemplateType: '${{ parameters.autorestTemplateType }}'
+          stateCode: ${{ parameters.stateCode }}
