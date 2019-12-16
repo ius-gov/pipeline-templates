@@ -25,10 +25,10 @@ steps:
         echo "Using included Dockerfile.  Please consider updating to newest pattern"
       elif [[ -f "dockerfile.json" ]]; then
         echo "Generating new Dockerfile from the dockerfile.mustache"
-        ls $(Agent.BuildDirectory)
-        docker run -v $(Agent.BuildDirectory):/src iusdev.azurecr.io/dockerfile-template:latest ls /src
-        docker run -v $(Agent.BuildDirectory):/src iusdev.azurecr.io/dockerfile-template:latest mustache /src/dockerfile.json /data/Dockerfile.mustache > application/Dockerfile
-        #docker run --net=host -v $(Agent.BuildDirectory):/src iusdev.azurecr.io/dockerfile-template:latest node -p "JSON.stringify({..require('/src/dockerfile.json'), state_code: ${{ parameters.stateCode }} }, null, 2)" > /src/dockerfile.json &&\
+        ls $(Build.SourcesDirectory)
+        docker run -v $(Build.SourcesDirectory):/src iusdev.azurecr.io/dockerfile-template:latest ls /src
+        docker run -v $(Build.SourcesDirectory):/src iusdev.azurecr.io/dockerfile-template:latest mustache /src/dockerfile.json /data/Dockerfile.mustache > application/Dockerfile
+        #docker run --net=host -v $(Build.SourcesDirectory):/src iusdev.azurecr.io/dockerfile-template:latest node -p "JSON.stringify({..require('/src/dockerfile.json'), state_code: ${{ parameters.stateCode }} }, null, 2)" > /src/dockerfile.json &&\
         #  mustache /src/dockerfile.json /data/Dockerfile.mustache > application/Dockerfile
         cat application/Dockerfile
       else
