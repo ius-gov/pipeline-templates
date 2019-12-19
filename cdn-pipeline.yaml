@@ -39,7 +39,7 @@ jobs:
           scriptLocation: inlineScript
           inlineScript: |
             mkdir $(Build.ArtifactStagingDirectory)/cdn
-            docker run --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory),dst=/cdn-out ${{ parameters.registry }}/mdl-bundle:$(build.buildId) tar -C /cdn-out -xvzf /cdn/cdn.tar.gz
+            docker run --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory),dst=/cdn-out mdl-bundle:$(build.buildId) tar -C /cdn-out -xvzf /cdn/cdn.tar.gz
       - task: PublishBuildArtifacts@1
         displayName: Publishing Artifact
         inputs:
