@@ -25,8 +25,8 @@ steps:
         echo "Using included Dockerfile.  Please consider updating to newest pattern"
       elif [[ -f "dockerfile.json" ]]; then
         echo "Generating new Dockerfile from the dockerfile.mustache"
-        docker run --net=host -v $(Build.SourcesDirectory):/src iusdev.azurecr.io/dockerfile-template:latest node /data/state_code_updater /src/dockerfile.json ${{ parameters.stateCode }}
-        docker run --net=host -v $(Build.SourcesDirectory):/src iusdev.azurecr.io/dockerfile-template:latest mustache /src/dockerfile.json /data/Dockerfile.mustache > application/Dockerfile
+        docker run --net=host -v $(Build.SourcesDirectory):/src ${{ parameters.registry }}/dockerfile-template:latest node /data/state_code_updater /src/dockerfile.json ${{ parameters.stateCode }}
+        docker run --net=host -v $(Build.SourcesDirectory):/src ${{ parameters.registry }}/dockerfile-template:latest mustache /src/dockerfile.json /data/Dockerfile.mustache > application/Dockerfile
         cat application/Dockerfile
       else
         echo "Dockerfile is not present and neither is a required dockerfile.json"
@@ -128,7 +128,7 @@ steps:
         scriptLocation: inlineScript
         inlineScript: |
           mkdir $(Build.ArtifactStagingDirectory)/autorest
-          docker run --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory)/autorest,dst=/autorest/dist iusdev.azurecr.io/autorest-auto-generator:latest python3 main.py --projectName ${{ parameters.autorestProjectName }} --templateType ${{ parameters.autorestTemplateType }}
+          docker run --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory)/autorest,dst=/autorest/dist ${{ parameters.registry }}/autorest-auto-generator:latest python3 main.py --projectName ${{ parameters.autorestProjectName }} --templateType ${{ parameters.autorestTemplateType }}
           dockerexitcode=$?
           ls -al $(Build.ArtifactStagingDirectory)/autorest
           if [ $dockerexitcode != 0 ]; then
