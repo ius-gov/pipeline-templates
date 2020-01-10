@@ -7,6 +7,9 @@ parameters:
   additionalPublicRegistries: ''
   childChartsToUpdate: ''
 steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.7'
   - script: |
       python3 -m pip install -r .yamllint/requirements.txt
       sh .yamllint/yamllintall.sh
