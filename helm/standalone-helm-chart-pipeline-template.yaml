@@ -16,7 +16,6 @@ steps:
       printf ""
       printf "== Running YAML Linter"
       sh .yamllint/yamllintall.sh
-      printf ""
     displayName: YAML Linting
   - task: AzureCLI@1
     displayName: package helm chart ${{ parameters.helmChartName }}
