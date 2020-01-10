@@ -7,6 +7,10 @@ parameters:
   additionalPublicRegistries: ''
   childChartsToUpdate: ''
 steps:
+  - script: |
+      python3 -m pip install -r .yamllint/requirements.txt --user
+      sh .yamllint/yamllintall.sh
+    displayName: YAML Linting
   - task: AzureCLI@1
     displayName: package helm chart ${{ parameters.helmChartName }}
     inputs:
@@ -43,7 +47,12 @@ steps:
         echo "updating $i"
         helm dependency update  $i;
         status=$?
-        [ $status -eq 0 ] && echo "dep up on $i command was successful" || echo "dep up on $i failed"
+        if [ $status -eq 0 ] 
+        then
+          echo "dep up on $i command was successful" 
+        else 
+          echo "dep up on $i failed"
+          exit status
         ls -la $i/charts
         done
         helm dependency update   ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}
