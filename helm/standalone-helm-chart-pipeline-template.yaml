@@ -11,8 +11,12 @@ steps:
     inputs:
       versionSpec: '3.7'
   - script: |
+      printf "== Installing Requirements"
       python3 -m pip install -r .yamllint/requirements.txt
+      printf ""
+      printf "== Running YAML Linter"
       sh .yamllint/yamllintall.sh
+      printf ""
     displayName: YAML Linting
   - task: AzureCLI@1
     displayName: package helm chart ${{ parameters.helmChartName }}
