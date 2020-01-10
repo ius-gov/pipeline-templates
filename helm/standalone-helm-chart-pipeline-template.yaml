@@ -42,6 +42,7 @@ steps:
         do 
         echo "updating $i"
         helm dependency update  $i;
+
         status=$?
         if [ $status -eq 0 ] 
         then
@@ -49,6 +50,8 @@ steps:
         else 
           echo "dep up on $i failed"
           exit status
+        fi
+
         ls -la $i/charts
         done
         helm dependency update   ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}
