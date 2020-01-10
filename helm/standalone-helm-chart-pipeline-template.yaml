@@ -8,7 +8,7 @@ parameters:
   childChartsToUpdate: ''
 steps:
   - script: |
-      pip install -r .yamllint/requirements.txt
+      python3 -m pip install -r .yamllint/requirements.txt
       sh .yamllint/yamllintall.sh
     displayName: YAML Linting
   - task: AzureCLI@1
