@@ -7,10 +7,6 @@ parameters:
   additionalPublicRegistries: ''
   childChartsToUpdate: ''
 steps:
-  - script: |
-      python3 -m pip install -r .yamllint/requirements.txt
-      sh .yamllint/yamllintall.sh
-    displayName: YAML Linting
   - task: AzureCLI@1
     displayName: package helm chart ${{ parameters.helmChartName }}
     inputs:
