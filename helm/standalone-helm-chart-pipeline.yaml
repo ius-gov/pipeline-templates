@@ -36,3 +36,4 @@ jobs:
           additionalRegistries: '${{ parameters.additionalRegistries }}'
           additionalPublicRegistries: '${{ parameters.additionalPublicRegistries }}'
           childChartsToUpdate: ""
+          lintYaml: true
