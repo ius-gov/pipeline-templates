@@ -9,6 +9,7 @@ parameters:
   additionalRegistries: ""
   additionalPublicRegistries: ""
   childChartsToUpdate: ""
+  lintYaml: true
 # If you need to do more than one chart from a build copy this out and add additional standalone template steps
 jobs:
   - job: ${{ parameters.Name }}
@@ -36,3 +37,4 @@ jobs:
           additionalRegistries: '${{ parameters.additionalRegistries }}'
           additionalPublicRegistries: '${{ parameters.additionalPublicRegistries }}'
           childChartsToUpdate: ""
+          lintYaml: ${{ parameters.lintYaml }}
