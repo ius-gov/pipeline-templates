@@ -6,6 +6,7 @@ parameters:
   majorVersion: 0
   stateCode: 0
   registry: 'iusdev.azurecr.io'
+  dockerBuildToolsACR: 'iusdev'
 
 jobs:
   - job: ${{ parameters.Name }}
@@ -40,3 +41,5 @@ jobs:
           containerServiceEndpoint: '${{ parameters.containerServiceEndpoint }}'
           helmChartLocation: '${{ parameters.helmChartLocation }}'
           helmChartName : '${{ parameters.helmChartName }}'
+          dockerBuildToolsACR: ''${{ parameters.dockerBuildToolsACR }}'
+

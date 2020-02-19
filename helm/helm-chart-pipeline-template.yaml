@@ -6,6 +6,7 @@ parameters:
   version: 0
   semVersion: 0
   azureContainerRegistry: 'iusdev'
+  dockerBuildToolsACR: 'iusdev'
   additionalRegistries: ''
 
 steps:
@@ -16,7 +17,7 @@ steps:
       scriptLocation: inlineScript
       inlineScript: |
         mkdir -p $(Build.ArtifactStagingDirectory)/helm
-        docker run --net=host -v $(Build.ArtifactStagingDirectory)/helm/:/data/output ${{ parameters.azureContainerRegistry }}.azurecr.io/buildtools:latest cp -r /data/helm-template/ /data/output/
+        docker run --net=host -v $(Build.ArtifactStagingDirectory)/helm/:/data/output ${{ parameters.dockerBuildToolsACR }}.azurecr.io/buildtools:latest cp -r /data/helm-template/ /data/output/
         mv $(Build.ArtifactStagingDirectory)/helm/helm-template $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/
         sudo chmod -R 0777 $(Build.ArtifactStagingDirectory)/helm
         ls -lahR $(Build.ArtifactStagingDirectory)/helm
