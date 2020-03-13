@@ -44,7 +44,6 @@ steps:
         echo "Setting version to ${{ parameters.semVersion }} in $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml"
         sed -i 's/0\.0\.0-INTERNAL/${{ parameters.version }}/g' $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml
         cat $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml
-        helm init --client-only
         echo "Adding ${{ parameters.azureContainerRegistry }} acr repo"
         az acr helm repo add --name ${{ parameters.azureContainerRegistry }}
         registries=("${{ parameters.additionalRegistries }}")

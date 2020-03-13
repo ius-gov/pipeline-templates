@@ -35,7 +35,6 @@ steps:
         cat ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/values.yaml
         echo "requirements.yaml"
         cat ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/requirements.yaml
-        helm init --client-only 
         az acr helm repo add --name ${{ parameters.registry }}
         registries=("${{ parameters.additionalRegistries }}")
         for i in ${registries[@]}; 
