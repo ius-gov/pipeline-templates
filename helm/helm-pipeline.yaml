@@ -34,7 +34,7 @@ steps:
       scriptLocation: inlineScript
       inlineScript: |
         echo "Setting version to ${{ parameters.semVersion }}"
-
+        
         sed -i 's/0\.0\.0-INTERNAL/${{ parameters.semVersion }}/g' ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/Chart.yaml
         sed -i 's/SOURCE_URL/$(Build.Repository.Uri)/g' ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/Chart.yaml
         sed -i 's/SOURCE_SHA/$(Build.SourceVersion)/g' ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/Chart.yaml
@@ -46,6 +46,6 @@ steps:
         # The values contains the version of the docker image, which is the full version
         sed -i 's/0\.0\.0-INTERNAL/${{ parameters.version }}/g' ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/values.yaml
         cat ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/values.yaml
-        
+        helm version
         helm package ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }} --save=false
         az acr helm push -n ${{ parameters.imageRegistry }} ${{ parameters.helmChartName }}-${{ parameters.semVersion }}.tgz
