@@ -25,6 +25,7 @@ steps:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
       inlineScript: |
+        helm version
         echo "Setting version to $(semVersion)"
         sed -i 's/0\.0\.0-INTERNAL/$(semVersion)/g' ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/Chart.yaml
         sed -i 's/0\.0\.0-INTERNAL/$(version)/g' ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/values.yaml
