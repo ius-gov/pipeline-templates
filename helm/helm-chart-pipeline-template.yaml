@@ -56,7 +56,7 @@ steps:
         echo "Updating the helm dependencies in $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}"
         helm dep up $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}
         echo "Packaging $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}"
-        helm package $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }} --save=false
+        helm package $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}
   - task: AzureCLI@1
     displayName: publish helm chart
     condition: |
