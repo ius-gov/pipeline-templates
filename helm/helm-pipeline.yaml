@@ -47,5 +47,5 @@ steps:
         sed -i 's/0\.0\.0-INTERNAL/${{ parameters.version }}/g' ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/values.yaml
         cat ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/values.yaml
         
-        helm package ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }} --save=false
+        helm package ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}
         az acr helm push -n ${{ parameters.imageRegistry }} ${{ parameters.helmChartName }}-${{ parameters.semVersion }}.tgz
