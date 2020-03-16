@@ -11,7 +11,7 @@ parameters:
 
 steps:
   - task: AzureCLI@1
-    displayName: create folders and add repositories
+    displayName: Initialize Helm3
     inputs:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript

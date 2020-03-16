@@ -20,7 +20,7 @@ steps:
         sh .yamllint/yamllintall.sh
       displayName: YAML Linting
   - task: AzureCLI@1
-    displayName: Initialize for Helm3
+    displayName: Initialize Helm3
     inputs:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
