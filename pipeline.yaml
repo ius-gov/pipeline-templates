@@ -18,7 +18,7 @@ jobs:
       version: 0.0.0.0
       semVersion: 0.0.0
     steps:
-      - inlineScript: |
+      - bash: |
           apt-cache policy
         displayName: list apt cache
       - powershell: |
