@@ -11,6 +11,25 @@ parameters:
 
 steps:
   - task: AzureCLI@1
+    displayName: create folders and add repositories
+    inputs:
+      azureSubscription : ${{ parameters.containerServiceEndpoint }}
+      scriptLocation: inlineScript
+      inlineScript: |
+        helm version
+        helm env
+        mkdir /home/vsts/.config
+        mkdir /home/vsts/.config/helm
+        ls /home/vsts/.config/helm
+        echo "Adding ${{ parameters.azureContainerRegistry }} acr repo"
+        az acr helm repo add --name ${{ parameters.azureContainerRegistry }}
+        registries=("${{ parameters.additionalRegistries }}")
+        for i in ${registries[@]}; 
+        do 
+        echo "Adding Helm Repository $i"
+        az acr helm repo add --name $i; 
+        done
+  - task: AzureCLI@1
     displayName: Create Helm Chart
     inputs:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
@@ -44,14 +63,6 @@ steps:
         echo "Setting version to ${{ parameters.semVersion }} in $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml"
         sed -i 's/0\.0\.0-INTERNAL/${{ parameters.version }}/g' $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml
         cat $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml
-        echo "Adding ${{ parameters.azureContainerRegistry }} acr repo"
-        az acr helm repo add --name ${{ parameters.azureContainerRegistry }}
-        registries=("${{ parameters.additionalRegistries }}")
-        for i in ${registries[@]}; 
-        do 
-        echo "Adding Helm Repository $i"
-        az acr helm repo add --name $i; 
-        done
         echo "Updating the helm dependencies in $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}"
         helm dep up $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}
         echo "Packaging $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}"
