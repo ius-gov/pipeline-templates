@@ -19,6 +19,9 @@ jobs:
       semVersion: 0.0.0
     steps:
       - powershell: |
+          helm version
+        displayName: Show version of things
+      - powershell: |
           Write-Host "Attempting to set variable to ${{ parameters.stateCode }}.${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
           $tmpSemversion = "${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
           $tmpVersion = "${{ parameters.stateCode }}.$tmpSemversion"
