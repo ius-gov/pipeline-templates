@@ -20,6 +20,7 @@ jobs:
     steps:
       - bash: |
           apt-cache policy
+          which helm
         displayName: list apt cache
       - powershell: |
           helm version
