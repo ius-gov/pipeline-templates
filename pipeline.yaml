@@ -20,6 +20,7 @@ jobs:
     steps:
       - powershell: |
           helm version
+          helm env
         displayName: Show version of things
       - powershell: |
           Write-Host "Attempting to set variable to ${{ parameters.stateCode }}.${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
