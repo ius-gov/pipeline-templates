@@ -30,8 +30,9 @@ steps:
         mkdir /home/vsts/.config
         mkdir /home/vsts/.config/helm
         ls /home/vsts/.config/helm
-        echo "Adding ${{ parameters.azureContainerRegistry }} acr repo"
-        az acr helm repo add --name ${{ parameters.azureContainerRegistry }}
+        helm repo add stable https://kubernetes-charts.storage.googleapis.com
+        echo "Adding ${{ parameters.registry }} acr repo"
+        az acr helm repo add --name ${{ parameters.registry }}
         registries=("${{ parameters.additionalRegistries }}")
         for i in ${registries[@]}; 
         do 
