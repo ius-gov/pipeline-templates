@@ -10,7 +10,9 @@ parameters:
   additionalRegistries: ''
 
 steps:
-  - inlineScript: |
+  - task: AzureCLI@1
+    displayName: create folders and add repositories
+    inlineScript: |
       helm version
       helm env
       mkdir /home/vsts/.config
@@ -24,10 +26,6 @@ steps:
       echo "Adding Helm Repository $i"
       az acr helm repo add --name $i; 
       done
-    displayName: create folders and add repositories
-  - inlineScript: |
-      echo "dumdumdum"
-    displayName: Add repositories
   - task: AzureCLI@1
     displayName: Create Helm Chart
     inputs:
