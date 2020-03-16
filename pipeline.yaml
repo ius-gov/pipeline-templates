@@ -21,6 +21,9 @@ jobs:
       - powershell: |
           helm version
           helm env
+          ls /home
+          ls /home/vsts/.config
+          ls /home/vsts/.config/helm
         displayName: Show version of things
       - powershell: |
           Write-Host "Attempting to set variable to ${{ parameters.stateCode }}.${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
