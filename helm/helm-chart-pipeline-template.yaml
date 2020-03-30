@@ -22,6 +22,7 @@ steps:
         mkdir /home/vsts/.config/helm
         ls /home/vsts/.config/helm
         helm repo add stable https://kubernetes-charts.storage.googleapis.com
+        helm repo add bitnami https://charts.bitnami.com/bitnami
         echo "Adding ${{ parameters.azureContainerRegistry }} acr repo"
         az acr helm repo add --name ${{ parameters.azureContainerRegistry }}
         registries=("${{ parameters.additionalRegistries }}")
