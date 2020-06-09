@@ -12,6 +12,7 @@ parameters:
 
 jobs:
   - job: DockerBuilds
+    timeoutInMinutes: 120
     pool:
       vmImage: 'Ubuntu-18.04'
     variables:
