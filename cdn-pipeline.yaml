@@ -6,7 +6,7 @@ parameters:
   registry: 'iusdev.azurecr.io'
   baseContainerUrl: https://iusux.blob.core.windows.net/iusux
   blobPrefix: ''
-
+  dockerFile: "Dockerfile"
 jobs:
   - job: DockerBuilds
     pool:
@@ -27,7 +27,7 @@ jobs:
           command: build
           azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
           azureContainerRegistry: ${{ parameters.registry }}
-          dockerFile: Dockerfile
+          dockerFile: ${{ parameters.dockerFile }}
           imageName: bundle:$(build.buildId)
           arguments: --build-arg baseContainerUrl=${{ parameters.baseContainerUrl }} --build-arg buildId=$(build.buildId)
           addDefaultLabels: false
