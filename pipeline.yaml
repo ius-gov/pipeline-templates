@@ -9,9 +9,11 @@ parameters:
   autorestClientFeed: ''
   autorestProjectName: ''
   autorestTemplateType: 'Service'
-
+  timeoutInMinutes: 90
+  
 jobs:
   - job: DockerBuilds
+    timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
     pool:
       vmImage: 'Ubuntu-18.04'
     variables:
