@@ -9,7 +9,7 @@ parameters:
   autorestClientFeed: ''
   autorestProjectName: ''
   autorestTemplateType: 'Service'
-
+  timeoutInMinutes: 90
 jobs:
   - job: DockerBuilds
     pool:
@@ -36,6 +36,7 @@ jobs:
         displayName: Set Project Version
       - template: docker/docker-pipeline.yaml
         parameters:
+          timeoutInMinutes: '${{ parameters.timeoutInMinutes }}'
           version: '$(version)'
           semVersion: '$(semVersion)'
           containerServiceEndpoint: '${{ parameters.containerServiceEndpoint }}'
