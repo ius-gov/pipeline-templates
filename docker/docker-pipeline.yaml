@@ -128,7 +128,7 @@ steps:
         scriptLocation: inlineScript
         inlineScript: |
           mkdir $(Build.ArtifactStagingDirectory)/autorest
-          docker run --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory)/autorest,dst=/autorest/dist ${{ parameters.registry }}/autorest-auto-generator:latest python3 main.py --projectName ${{ parameters.autorestProjectName }} --templateType ${{ parameters.autorestTemplateType }}
+          docker run --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory)/autorest,dst=/autorest/dist ${{ parameters.registry }}/autorest-auto-generator:latest python3 main.py --projectName ${{ parameters.autorestProjectName }} --templateType ${{ parameters.autorestTemplateType }} --sourceBranch $(Build.SourceBranch) --useDevelopBranch $(variables.UsingDevelopBranch)
           dockerexitcode=$?
           ls -al $(Build.ArtifactStagingDirectory)/autorest
           if [ $dockerexitcode != 0 ]; then
