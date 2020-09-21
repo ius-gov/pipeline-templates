@@ -34,7 +34,7 @@ jobs:
         displayName: Run Tests
         inputs:
           command: test
-          projects: 'application/test/*/*.csproj'
+          projects: 'application/**/test/**/*.csproj'
           arguments: '--configuration Release'
       - script: dotnet publish ${{ parameters.Project }}${{ parameters.serviceProject }} --configuration Release --output  -o $(Build.ArtifactStagingDirectory)/Service
         displayName: Publish
