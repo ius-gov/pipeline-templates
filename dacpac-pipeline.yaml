@@ -17,3 +17,11 @@ jobs:
         inputs:
           pathtoPublish : '$(Build.ArtifactStagingDirectory)'
           artifactName: artifacts
+      - task: UniversalPackages@0
+        displayName: Universal Publish
+        inputs:
+          command: publish
+          publishDirectory: '$(Build.ArtifactStagingDirectory/dacpac.zip)'
+          vstsFeedPublish: 'Tax/ius.database.artifacts'
+          vstsFeedPackagePublish: 'Dacpac artifact'
+          packagePublishDescription: 'database dacpac artifact'
