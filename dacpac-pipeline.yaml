@@ -5,6 +5,8 @@ parameters:
 
 jobs:
   - job: ${{ parameters.Name }}
+    variables:
+      version: 0.0.0.0
     pool:
       vmImage: 'vs2017-win2016'
     steps:
@@ -22,6 +24,6 @@ jobs:
         inputs:
           command: publish
           publishDirectory: '$(Build.ArtifactStagingDirectory/dacpac.zip)'
-          vstsFeedPublish: 'Tax/ius.database.artifacts'
+          vstsFeedPublish: 'ius.database.artifacts'
           vstsFeedPackagePublish: 'Dacpac artifact'
           packagePublishDescription: 'database dacpac artifact'
