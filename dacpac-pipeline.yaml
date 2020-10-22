@@ -26,4 +26,6 @@ jobs:
           publishDirectory: '$(Build.ArtifactStagingDirectory)/dacpac.zip'
           vstsFeedPublish: 'ius.database.artifacts'
           vstsFeedPackagePublish: 'Dacpac artifact'
+          versionOption: custom
+          versionPublish: '0.0.0.0'
           packagePublishDescription: 'database dacpac artifact'
