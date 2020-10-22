@@ -23,7 +23,7 @@ jobs:
         displayName: Universal Publish
         inputs:
           command: publish
-          publishDirectory: '$(Build.ArtifactStagingDirectory/dacpac.zip)'
+          publishDirectory: '$(Build.ArtifactStagingDirectory)/dacpac.zip'
           vstsFeedPublish: 'ius.database.artifacts'
           vstsFeedPackagePublish: 'Dacpac artifact'
           packagePublishDescription: 'database dacpac artifact'
