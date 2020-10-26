@@ -21,7 +21,9 @@ jobs:
         displayName: Universal Publish
         inputs:
           command: publish
-          publishDirectory: artifacts
-          vstsFeedPublish: 'ius.database.artifact'
-          vstsFeedPackagePublish: 'ius.assignmenet\DacPac.zip'
+          publishDirectory: 'artifacts'
+          vstsFeedPublish: 'ius.database.artifact\ius.assignmentmanagement.service'
+          vstsFeedPackagePublish: 'ius.assignmentmanagement.service'
+          versionOption: custom
+          versionPublish: '0.0.1'
           packagePublishDescription: 'database dacpac artifact'
