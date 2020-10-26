@@ -24,6 +24,4 @@ jobs:
           publishDirectory: artifacts
           vstsFeedPublish: 'ius.database.artifacts'
           vstsFeedPackagePublish: 'DacPac.zip'
-          versionOption: custom
-          versionPublish: '1.0.1'
           packagePublishDescription: 'database dacpac artifact'
