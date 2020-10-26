@@ -22,6 +22,6 @@ jobs:
         inputs:
           command: publish
           publishDirectory: artifacts
-          vstsFeedPublish: 'ius.database.artifacts'
-          vstsFeedPackagePublish: 'DacPac.zip'
+          vstsFeedPublish: 'ius.database.artifact'
+          vstsFeedPackagePublish: 'ius.assignmenet\DacPac.zip'
           packagePublishDescription: 'database dacpac artifact'
