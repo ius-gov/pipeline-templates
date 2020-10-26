@@ -25,5 +25,5 @@ jobs:
           vstsFeedPublish: 'ius.database.artifacts'
           vstsFeedPackagePublish: 'Dacpac artifact'
           versionOption: custom
-          versionPublish: '1.0.0'
+          versionPublish: '1.0.1'
           packagePublishDescription: 'database dacpac artifact'
