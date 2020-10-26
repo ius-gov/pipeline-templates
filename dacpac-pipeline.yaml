@@ -20,10 +20,9 @@ jobs:
       - task: UniversalPackages@0
         displayName: Universal Publish
         inputs:
-          command: publish
+          command: 'publish'
           publishDirectory: 'artifacts'
-          vstsFeedPublish: 'ius.database.artifact\ius.assignmentmanagement.service'
+          vstsFeedPublish: 'ius.database.artifact/ius.assignmentmanagement.service'
           vstsFeedPackagePublish: 'ius.assignmentmanagement.service'
-          versionOption: custom
-          versionPublish: '0.0.1'
+          versionOption: 'minor'
           packagePublishDescription: 'database dacpac artifact'
