@@ -26,3 +26,4 @@ jobs:
           vstsFeedPackagePublish: '$(Build.ArtifactStagingDirectory)/artifacts'
           versionOption: 'minor'
           packagePublishDescription: 'database dacpac artifact'
+          verbosity: 'debug'
