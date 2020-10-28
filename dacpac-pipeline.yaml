@@ -23,7 +23,7 @@ jobs:
           command: 'publish'
           publishDirectory: '$(Build.ArtifactStagingDirectory)/${{ parameters.Name }}'
           vstsFeedPublish: 'ius.database.artifact'
-          vstsFeedPackagePublish: '$(Build.ArtifactStagingDirectory)/artifacts'
+          vstsFeedPackagePublish: 'artifacts'
           versionOption: 'minor'
           packagePublishDescription: 'database dacpac artifact'
           verbosity: 'debug'
