@@ -2,6 +2,7 @@ parameters:
   Name : 'DacPac'
   dacpacProject: ''
   nugetConfigPath : 'application/NuGet.Config'
+  artifactName: ''
 
 jobs:
   - job: ${{ parameters.Name }}
@@ -23,7 +24,7 @@ jobs:
           command: 'publish'
           publishDirectory: '$(Build.ArtifactStagingDirectory)/${{ parameters.Name }}'
           vstsFeedPublish: 'ius.database.artifact'
-          vstsFeedPackagePublish: '${{ parameters.dacpacProject }}'
+          vstsFeedPackagePublish: '${{ parameters.artifactName }}'
           versionOption: 'minor'
           packagePublishDescription: 'database dacpac artifact'
           verbosity: 'debug'
