@@ -14,7 +14,7 @@ parameters:
   stateCode: 0
 
 steps:
-  - task: Docker@2
+  - task: Docker@1
     displayName: Container registry login
     inputs:
       azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
