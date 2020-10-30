@@ -14,7 +14,7 @@ parameters:
   stateCode: 0
 
 steps:
-  - task: Docker@1
+  - task: Docker@2
     displayName: Container registry login
     inputs:
       azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
@@ -32,17 +32,7 @@ steps:
         echo "Dockerfile is not present and neither is a required dockerfile.json"
         exit 1
       fi
-    displayName: Check for Dockerfile
-  - task: Docker@1
-    displayName: Build image
-    inputs:
-      command: build
-      azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
-      azureContainerRegistry: ${{ parameters.registry }}
-      dockerFile: application/Dockerfile
-      imageName: ${{ parameters.project }}
-      arguments: --build-arg version=${{ parameters.version}}
-      addDefaultLabels: false    
+    displayName: Check for Dockerfile   
   - task: Docker@2
     displayName: Build image for initContainer
     inputs:
@@ -53,14 +43,6 @@ steps:
       imageName: ${{ parameters.project }}_initimage
       arguments: --build-arg version=${{ parameters.version}}
       addDefaultLabels: false      
-  - task: Docker@1
-    displayName: Tag image
-    inputs:
-      command: tag
-      azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
-      azureContainerRegistry: ${{ parameters.registry }}
-      imageName: ${{ parameters.latestName }}
-      arguments: ${{ parameters.imageName }}
   - task: Docker@2
     displayName: Tag image for init container
     inputs:
@@ -119,27 +101,6 @@ steps:
         latest_guid="$(docker ps -a | grep "${{ parameters.imageName }}" | awk '{print $1}')"
         echo "Checking logs for $latest_guid"
         docker logs $latest_guid
-  - task: Docker@1
-    displayName: Push version image
-    condition: |
-      and
-      (
-        succeeded(),
-        or
-        (
-          eq(variables['Build.SourceBranch'], 'refs/heads/master'),
-          and
-          (
-            eq(variables['UsingDevelopBranch'], 'true'),
-            eq(variables['Build.SourceBranch'], 'refs/heads/develop')
-          )
-        )
-      )
-    inputs:
-      command: push
-      azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
-      azureContainerRegistry: ${{ parameters.registry }}
-      imagename: ${{ parameters.imageName }}
   - task: Docker@2
     displayName: Push version image for initcontainer
     condition: |
@@ -161,27 +122,6 @@ steps:
       azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
       azureContainerRegistry: ${{ parameters.registry }}
       imagename: ${{ parameters.imageName }}_initimage
-  - task: Docker@1
-    displayName: Push latest image
-    condition: |
-      and
-      (
-        succeeded(),
-        or
-        (
-          eq(variables['Build.SourceBranch'], 'refs/heads/master'),
-          and
-          (
-            eq(variables['UsingDevelopBranch'], 'true'),
-            eq(variables['Build.SourceBranch'], 'refs/heads/develop')
-          )
-        )
-      )
-    inputs:
-      command: push
-      azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
-      azureContainerRegistry: ${{ parameters.registry }}
-      imagename: ${{ parameters.latestName }}
   - task: Docker@2
     displayName: Push latest image for initcontainer
     condition: |
