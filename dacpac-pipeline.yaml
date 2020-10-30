@@ -18,13 +18,3 @@ jobs:
         inputs:
           pathtoPublish : '$(Build.ArtifactStagingDirectory)'
           artifactName: artifacts
-      - task: UniversalPackages@0
-        displayName: Universal Publish
-        inputs:
-          command: 'publish'
-          publishDirectory: '$(Build.ArtifactStagingDirectory)/${{ parameters.Name }}'
-          vstsFeedPublish: 'ius.database.artifact'
-          vstsFeedPackagePublish: '${{ parameters.artifactName }}'
-          versionOption: 'minor'
-          packagePublishDescription: 'database dacpac artifact'
-          verbosity: 'debug'
