@@ -36,7 +36,7 @@ jobs:
           find application/ -type f -iname '*.csproj' -exec  sed -i "s/0\.0\.0\-INTERNAL/$(version)/g" "{}" \;
           grep "<VersionPrefix>.*</VersionPrefix>" -R .
         displayName: Set Project Version
-      - template: docker/docker-pipeline.yaml
+      - template: docker/dockertestdacpac-pipeline.yaml
         parameters:
           version: '$(version)'
           semVersion: '$(semVersion)'
@@ -51,3 +51,4 @@ jobs:
           autorestProjectName: '${{ parameters.autorestProjectName }}'
           autorestTemplateType: '${{ parameters.autorestTemplateType }}'
           stateCode: ${{ parameters.stateCode }}
+          
