@@ -69,7 +69,10 @@ steps:
         echo "Updating the helm dependencies in $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}"
         helm dep up $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}
         echo "Packaging $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}"
-        helm package $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}
+        # helm package $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}
+        helm chart save . $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}:${{ parameters.semVersion }}
+        helm chart save . $(Build.ArtifactStagingDirectory)/helm/${{ parameters.azureContainerRegistry }}.azurecr.io/${{ parameters.helmChartName }}:${{ parameters.semVersion }}
+        tar -czvf $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}.tgz
   - task: AzureCLI@1
     displayName: publish helm chart
     condition: |
@@ -90,7 +93,7 @@ steps:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
       inlineScript: |
-        az acr helm push -n ${{ parameters.azureContainerRegistry }} ${{ parameters.helmChartName }}-${{ parameters.semVersion }}.tgz
+        helm chart push ${{ parameters.azureContainerRegistry }}.azurecr.io/${{ parameters.helmChartName }}:${{ parameters.semVersion }}
   - task: PublishBuildArtifacts@1
     displayName: publish helm chart as build artifact
     inputs:
