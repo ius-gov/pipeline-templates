@@ -77,8 +77,8 @@ steps:
         done
         helm dependency update   ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}
         #helm package ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}
-        helm chart save $(helm package $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }} | grep -o '/.*.tgz' ) $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}:${{ parameters.semVersion }}
-        helm chart save $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }} ${{ parameters.registry }}.azurecr.io/helm/v1/repo/${{ parameters.helmChartName }}:${{ parameters.semVersion }}
+        helm chart save $(helm package ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }} | grep -o '/.*.tgz' ) ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}:${{ parameters.semVersion }}
+        helm chart save ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }} ${{ parameters.registry }}.azurecr.io/helm/v1/repo/${{ parameters.helmChartName }}:${{ parameters.semVersion }}
   - task: AzureCLI@1
     displayName: publish helm chart ${{ parameters.helmChartName }}
     condition: |
