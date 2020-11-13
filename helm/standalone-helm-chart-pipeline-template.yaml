@@ -58,7 +58,7 @@ steps:
         cat ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/values.yaml
         echo "requirements.yaml"
         cat ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/requirements.yaml
-        helm repo add ${{ parameters.registry }} https://${{ parameters.registry }}.azurecr.io/helm/v1/repo --username ${{ parameters.registry }} --password $(iusdevPassword)
+        helm repo add ${{ parameters.registry }} https://${{ parameters.registry }}.azurecr.io/helm/v1/repo --username ${{ parameters.registry }} --password $(iusiddevchartsPassword)
         registries=("${{ parameters.additionalRegistries }}")
         childCharts=("${{ parameters.childChartsToUpdate }}")
         for i in ${childCharts[@]}; 
