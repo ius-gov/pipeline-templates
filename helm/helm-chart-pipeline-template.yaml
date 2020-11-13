@@ -94,6 +94,7 @@ steps:
       scriptLocation: inlineScript
       inlineScript: |
         export HELM_EXPERIMENTAL_OCI=1
+        helm registry login ${{ parameters.azureContainerRegistry }}.azurecr.io -u ${{ parameters.azureContainerRegistry }} -p $(iusdevPassword)
         helm chart push ${{ parameters.azureContainerRegistry }}.azurecr.io/helm/v1/repo/${{ parameters.helmChartName }}:${{ parameters.semVersion }}
   - task: PublishBuildArtifacts@1
     displayName: publish helm chart as build artifact
