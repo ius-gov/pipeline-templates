@@ -39,7 +39,7 @@ steps:
         for i in ${registries[@]}; 
         do 
         echo "Adding Helm Repository $i"
-        helm repo add $i https://${{ parameters.registry }}.azurecr.io/helm/v1/repo --username ${{ parameters.registry }} --password $(iusdevPassword); 
+        helm repo add $i https://${{ parameters.registries }}.azurecr.io/helm/v1/repo --username ${{ parameters.registries }} --password $(iusdevPassword); 
         done
   - task: AzureCLI@1
     displayName: package helm chart ${{ parameters.helmChartName }}
