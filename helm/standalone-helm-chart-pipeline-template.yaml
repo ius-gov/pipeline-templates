@@ -64,6 +64,7 @@ steps:
         for i in ${childCharts[@]}; 
         do 
         echo "updating $i"
+        helm chart pull ${{ parameters.registry }}.azurecr.io/$i
         helm dependency update  $i;
         status=$?
         if [ $status -eq 0 ] 
