@@ -27,7 +27,7 @@ jobs:
           publishDirectory: '$(Build.ArtifactStagingDirectory)'
           vstsFeedPublish: 'ius.assignmentmanagement.service/ius.database.artifact'
           vstsFeedPackagePublish: '${{ parameters.project }}.artifact'
-          versionOption: custom
-          versionPublish: '0.1.2'
+          #versionOption: custom
+          #versionPublish: '0.1.2'
           packagePublishDescription: '<Package description>'
           verbosity: 'debug'
