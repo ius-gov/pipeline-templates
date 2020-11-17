@@ -23,10 +23,10 @@ jobs:
         displayName: Universal Publish
         inputs:
           command: publish
-          feedsToUse: 'internal'
+          #feedsToUse: 'internal'
           publishDirectory: '$(Build.ArtifactStagingDirectory)'
-          vstsFeedPublish: 'ius.assignmentmanagement.service/ius.database.artifact'
-          vstsFeedPackagePublish: '${{ parameters.project }}.artifact'
+          vstsFeedPublish: '${{ parameters.project }}/ius.database.artifact'
+          #vstsFeedPackagePublish: '${{ parameters.project }}.artifact'
           #versionOption: custom
           #versionPublish: '0.1.2'
           packagePublishDescription: '<Package description>'
