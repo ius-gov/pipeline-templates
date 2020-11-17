@@ -18,3 +18,13 @@ jobs:
         inputs:
           pathtoPublish : '$(Build.ArtifactStagingDirectory)'
           artifactName: artifacts
+      - task: UniversalPackages@0
+        displayName: Universal Publish
+        inputs:
+          command: publish
+          publishDirectory: '$(Build.ArtifactStagingDirectory)'
+          vstsFeedPublish: 'artifacts/ius.database.artifact'
+          vstsFeedPackagePublish: '${{ parameters.Name }}.artifact'
+          versionOption: custom
+          versionPublish: '0.1.2'
+          packagePublishDescription: '<Package description>'
