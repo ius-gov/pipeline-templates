@@ -23,9 +23,11 @@ jobs:
         displayName: Universal Publish
         inputs:
           command: publish
+          feedsToUse: 'internal'
           publishDirectory: '$(Build.ArtifactStagingDirectory)'
           vstsFeedPublish: 'artifacts/ius.database.artifact'
           vstsFeedPackagePublish: '${{ parameters.project }}.artifact'
           versionOption: custom
           versionPublish: '0.1.2'
           packagePublishDescription: '<Package description>'
+          verbosity: 'debug'
