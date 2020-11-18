@@ -27,7 +27,7 @@ jobs:
           #feedsToUse: 'internal'
           publishDirectory: '$(Build.ArtifactStagingDirectory)'
           vstsFeedPublish: 'ius.database.artifact'
-          vstsFeedPackagePublish: 'iustaxrateservice-artifact'
+          vstsFeedPackagePublish: '${{ parameters.project }}.dacpac-artifact'
           versionOption: custom
           versionPublish: '2.1.2'
           packagePublishDescription: '<Package description>'
