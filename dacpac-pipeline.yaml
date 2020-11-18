@@ -26,7 +26,7 @@ jobs:
           verbosity: 'debug'
           feedsToUse: 'internal'
           publishDirectory: '$(Build.ArtifactStagingDirectory)'
-          vstsFeedPublish: '${{ parameters.project }}/ius.database.artifact'
+          vstsFeedPublish: 'artifacts/ius.database.artifact'
           #vstsFeedPackagePublish: '${{ parameters.project }}.artifact'
           #versionOption: custom
           #versionPublish: '0.1.2'
