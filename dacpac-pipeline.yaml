@@ -23,11 +23,11 @@ jobs:
         displayName: Universal Publish
         inputs:
           command: publish
-          verbosity: 'debug'
-          feedsToUse: 'internal'
+          #verbosity: 'debug'
+          #feedsToUse: 'internal'
           publishDirectory: '$(Build.ArtifactStagingDirectory)'
-          vstsFeedPublish: 'ius.taxrate.service/ius.database.artifact'
-          #vstsFeedPackagePublish: '${{ parameters.project }}.artifact'
+          vstsFeedPublish: 'iustaxrateservice/ius.database.artifact'
+          vstsFeedPackagePublish: 'iustaxrateservice.artifact'
           versionOption: custom
           versionPublish: '2.1.2'
           packagePublishDescription: '<Package description>'
