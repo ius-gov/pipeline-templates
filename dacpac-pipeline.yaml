@@ -28,6 +28,6 @@ jobs:
           publishDirectory: '$(Build.ArtifactStagingDirectory)'
           vstsFeedPublish: 'artifacts/ius.database.artifact'
           #vstsFeedPackagePublish: '${{ parameters.project }}.artifact'
-          #versionOption: custom
-          #versionPublish: '0.1.2'
+          versionOption: custom
+          versionPublish: '2.1.2'
           packagePublishDescription: '<Package description>'
