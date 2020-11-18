@@ -26,7 +26,7 @@ jobs:
           verbosity: 'debug'
           feedsToUse: 'internal'
           publishDirectory: '$(Build.ArtifactStagingDirectory)'
-          vstsFeedPublish: 'artifacts/ius.database.artifact'
+          vstsFeedPublish: 'ius.taxrate.service/ius.database.artifact'
           #vstsFeedPackagePublish: '${{ parameters.project }}.artifact'
           versionOption: custom
           versionPublish: '2.1.2'
