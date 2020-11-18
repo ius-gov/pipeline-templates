@@ -26,8 +26,8 @@ jobs:
           #verbosity: 'debug'
           #feedsToUse: 'internal'
           publishDirectory: '$(Build.ArtifactStagingDirectory)'
-          vstsFeedPublish: 'iustaxrateservice/ius.database.artifact'
-          vstsFeedPackagePublish: 'iustaxrateservice.artifact'
+          vstsFeedPublish: 'ius.database.artifact'
+          vstsFeedPackagePublish: 'iustaxrateservice-artifact'
           versionOption: custom
           versionPublish: '2.1.2'
           packagePublishDescription: '<Package description>'
