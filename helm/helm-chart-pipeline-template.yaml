@@ -46,7 +46,8 @@ steps:
         sudo npm install -g mustache
         echo "Updating imageRepository to ${{ parameters.azureContainerRegistry }} in $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml"
         echo "Updating imageName to ${{ parameters.project }} in $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml"
-        echo '{ "imageRepository" : "${{ parameters.azureContainerRegistry }}", "imageName" : "${{ parameters.project }}", "databaseName: "testdatabase", ${{ parameters.semVersion }} }' | mustache - $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml
+        echo '{ "imageRepository" : "${{ parameters.azureContainerRegistry }}", "imageName" : "${{ parameters.project }}"}' | mustache - $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml
+        echo '{ "databaseName: "testdatabase", ${{ parameters.semVersion }} }
         cat $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/values.yaml
         echo "-------"
         echo "Updating helmName to ${{ parameters.helmChartName }} in $(Build.ArtifactStagingDirectory)/helm/${{ parameters.helmChartName }}/Chart.yaml"
