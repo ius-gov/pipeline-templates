@@ -37,12 +37,12 @@ jobs:
       - task: UniversalPackages@0
         displayName: Universal Publish
         inputs:
-          command: publish
+          command: 'publish'
           #verbosity: 'debug'
-          #feedsToUse: 'internal'
+          feedsToUse: 'internal'
           publishDirectory: '$(Build.ArtifactStagingDirectory)'
           vstsFeedPublish: 'ius.database.artifact'
-          vstsFeedPackagePublish: ${{ parameters.project }}.dacpac-artifact
-          versionOption: custom
-          versionPublish: $(semVersion)
+          vstsFeedPackagePublish: '${{ parameters.project }}.dacpac-artifact'
+          versionOption: 'custom'
+          versionPublish: '$(semVersion)'
           packagePublishDescription: '<Package description>'
