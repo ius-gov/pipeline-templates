@@ -35,26 +35,26 @@ jobs:
           Write-Host "Setting semVersion to $(semVersion)"
         displayName: Calculating Version
       - task: UniversalPackages@0
-        condition:
-          and
-          (
-            succeeded(),
-            or
-            (
-              eq(variables['Build.SourceBranch'], 'refs/heads/master'),
-              and
-              (
-                eq(variables['UsingDevelopBranch'], 'true'),
-                eq(variables['Build.SourceBranch'], 'refs/heads/develop')
-              )
-            )
-          )
+        # condition:
+        #   and
+        #   (
+        #     succeeded(),
+        #     or
+        #     (
+        #       eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+        #       and
+        #       (
+        #         eq(variables['UsingDevelopBranch'], 'true'),
+        #         eq(variables['Build.SourceBranch'], 'refs/heads/develop')
+        #       )
+        #     )
+        #   )
         displayName: Universal Publish
         inputs:
           command: 'publish'
           feedsToUse: 'internal'
           publishDirectory: '$(Build.ArtifactStagingDirectory)'
-          vstsFeedPublish: 'ius.database.artifact'
+          vstsFeedPublish: 'ius.database.artifact.test'
           vstsFeedPackagePublish: '${{ parameters.project }}.dacpac-artifact'
           versionOption: 'custom'
           versionPublish: '$(semVersion)'
