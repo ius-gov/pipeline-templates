@@ -44,4 +44,4 @@ jobs:
           vstsFeedPackagePublish: '${{ parameters.project }}.dacpac-artifact'
           versionOption: 'custom'
           versionPublish: '$(semVersion)'
-          packagePublishDescription: '<Package description>'
+          packagePublishDescription: 'dacpac artifact for ${{ parameters.project }}'
