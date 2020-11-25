@@ -58,7 +58,14 @@ steps:
         cat ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/values.yaml
         echo "requirements.yaml"
         cat ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/requirements.yaml
-        helm repo add ${{ parameters.registry }} https://${{ parameters.registry }}.azurecr.io/helm/v1/repo --username ${{ parameters.registry }} --password $(iusiddevchartsPassword)
+        if [ "${{ parameters.registry }}" == "iusdev" ];
+        then
+        echo "adding iusdevcharts to helm repository"
+        registryPassword=$(iusdevPassword)
+        else
+        registryPassword=$(iusiddevchartsPassword)
+        fi
+        helm repo add ${{ parameters.registry }} https://${{ parameters.registry }}.azurecr.io/helm/v1/repo --username ${{ parameters.registry }} --password ${{ registryPassword }}
         registries=("${{ parameters.additionalRegistries }}")
         childCharts=("${{ parameters.childChartsToUpdate }}")
         for i in ${childCharts[@]}; 
@@ -100,7 +107,14 @@ steps:
       scriptLocation: inlineScript
       inlineScript: |
         export HELM_EXPERIMENTAL_OCI=1
-        helm registry login ${{ parameters.registry }}.azurecr.io -u ${{ parameters.registry }} -p $(iusiddevchartsPassword)
+        if [ "${{ parameters.registry }}" == "iusdev" ];
+        then
+        echo "adding iusdevcharts to helm repository"
+        registryPassword=$(iusdevPassword)
+        else
+        registryPassword=$(iusiddevchartsPassword)
+        fi
+        helm registry login ${{ parameters.registry }}.azurecr.io -u ${{ parameters.registry }} -p ${{ registryPassword }}
         helm chart push ${{ parameters.registry }}.azurecr.io/${{ parameters.helmChartName }}:${{ parameters.semVersion }}
   - task: PublishBuildArtifacts@1
     displayName: Publish Helm Chart ${{ parameters.helmChartName }} as a build artifact
