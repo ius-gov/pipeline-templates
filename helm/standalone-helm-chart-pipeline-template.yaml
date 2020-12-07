@@ -3,7 +3,6 @@ parameters:
   helmChartLocation: ''
   helmChartName : ''
   registry: 'iusdev'
-  additionalRegistries: ''
   additionalPublicRegistries: ''
   childChartsToUpdate: ''
   lintYaml: true
@@ -25,6 +24,7 @@ steps:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
       inlineScript: |
+        export HELM_EXPERIMENTAL_OCI=1
         curl -L https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash -s -- --version v3.3.1
         helm version
         helm env
@@ -33,14 +33,11 @@ steps:
         ls /home/vsts/.config/helm
         helm repo add stable https://kubernetes-charts.storage.googleapis.com
         helm repo add bitnami https://charts.bitnami.com/bitnami
-        echo "Adding ${{ parameters.registry }} acr repo"
-        helm repo add ${{ parameters.registry }} https://${{ parameters.registry }}.azurecr.io/helm/v1/repo --username ${{ parameters.registry }} --password $(iusiddevchartsPassword)
-        registries=("${{ parameters.additionalRegistries }}")
-        for i in ${registries[@]}; 
-        do 
-        echo "Adding Helm Repository $i"
-        helm repo add $i https://$i.azurecr.io/helm/v1/repo --username $i --password $(iusdevPassword); 
-        done
+        echo "Adding iusdev acr repo"
+        helm repo add iusdev https://iusdev.azurecr.io/helm/v1/repo --username iusdev --password $(iusdevPassword)
+        echo "Adding iusiddevcharts acr repo"
+        helm repo add iusiddevcharts https://iusiddevcharts.azurecr.io/helm/v1/repo --username iusiddevcharts --password $(iusiddevchartsPassword)
+        helm repo list
   - task: AzureCLI@1
     displayName: package helm chart ${{ parameters.helmChartName }}
     inputs:
@@ -58,8 +55,6 @@ steps:
         cat ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/values.yaml
         echo "requirements.yaml"
         cat ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/requirements.yaml
-        helm repo add ${{ parameters.registry }} https://${{ parameters.registry }}.azurecr.io/helm/v1/repo --username ${{ parameters.registry }} --password $(iusiddevchartsPassword)
-        registries=("${{ parameters.additionalRegistries }}")
         childCharts=("${{ parameters.childChartsToUpdate }}")
         for i in ${childCharts[@]}; 
         do 
@@ -76,7 +71,6 @@ steps:
         ls -la $i/charts
         done
         helm dependency update   ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}
-        #helm package ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}
         helm chart save $(helm package ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }} | grep -o '/.*.tgz' ) ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}:${{ parameters.semVersion }}
         helm chart save ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }} ${{ parameters.registry }}.azurecr.io/${{ parameters.helmChartName }}:${{ parameters.semVersion }}
   - task: AzureCLI@1
@@ -100,7 +94,6 @@ steps:
       scriptLocation: inlineScript
       inlineScript: |
         export HELM_EXPERIMENTAL_OCI=1
-        helm registry login ${{ parameters.registry }}.azurecr.io -u ${{ parameters.registry }} -p $(iusiddevchartsPassword)
         helm chart push ${{ parameters.registry }}.azurecr.io/${{ parameters.helmChartName }}:${{ parameters.semVersion }}
   - task: PublishBuildArtifacts@1
     displayName: Publish Helm Chart ${{ parameters.helmChartName }} as a build artifact
