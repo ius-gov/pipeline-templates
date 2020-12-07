@@ -24,13 +24,13 @@ steps:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
       inlineScript: |
+        export HELM_EXPERIMENTAL_OCI=1
         curl -L https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash -s -- --version v3.3.1
         helm version
         helm env
         mkdir /home/vsts/.config
         mkdir /home/vsts/.config/helm
         ls /home/vsts/.config/helm
-        export HELM_EXPERIMENTAL_OCI=1
         helm repo add stable https://kubernetes-charts.storage.googleapis.com
         helm repo add bitnami https://charts.bitnami.com/bitnami
         echo "Adding iusdev acr repo"
@@ -44,6 +44,7 @@ steps:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
       inlineScript: |
+        export HELM_EXPERIMENTAL_OCI=1
         echo "Setting version to $(semVersion)"
         sed -i 's/0\.0\.0-INTERNAL/$(semVersion)/g' ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/Chart.yaml
         sed -i 's/0\.0\.0-INTERNAL/$(version)/g' ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/values.yaml
