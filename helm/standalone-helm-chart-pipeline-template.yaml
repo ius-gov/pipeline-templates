@@ -94,6 +94,10 @@ steps:
       scriptLocation: inlineScript
       inlineScript: |
         export HELM_EXPERIMENTAL_OCI=1
+        echo "Adding iusdev acr repo"
+        helm repo add iusdev https://iusdev.azurecr.io/helm/v1/repo --username iusdev --password $(iusdevPassword)
+        echo "Adding iusiddevcharts acr repo"
+        helm repo add iusiddevcharts https://iusiddevcharts.azurecr.io/helm/v1/repo --username iusiddevcharts --password $(iusiddevchartsPassword)
         helm chart push ${{ parameters.registry }}.azurecr.io/${{ parameters.helmChartName }}:${{ parameters.semVersion }}
   - task: PublishBuildArtifacts@1
     displayName: Publish Helm Chart ${{ parameters.helmChartName }} as a build artifact
