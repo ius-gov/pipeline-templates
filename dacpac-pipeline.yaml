@@ -3,9 +3,9 @@ parameters:
   dacpacProject: ''
   nugetConfigPath : 'application/NuGet.Config'
   artifactName: ''
-  project: ''
-  majorVersion: 0
-  stateCode: 0
+  project: $(project)
+  majorVersion: $(majorVersion)
+  stateCode: $(stateCode)
 
 jobs:
   - job: ${{ parameters.Name }}
