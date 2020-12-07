@@ -3,7 +3,6 @@ parameters:
   helmChartLocation: ''
   helmChartName : ''
   registry: 'iusdev'
-  additionalRegistries: ''
   additionalPublicRegistries: ''
   childChartsToUpdate: ''
   lintYaml: true
@@ -34,13 +33,8 @@ steps:
         helm repo add stable https://kubernetes-charts.storage.googleapis.com
         helm repo add bitnami https://charts.bitnami.com/bitnami
         echo "Adding ${{ parameters.registry }} acr repo"
-        helm repo add ${{ parameters.registry }} https://${{ parameters.registry }}.azurecr.io/helm/v1/repo --username ${{ parameters.registry }} --password $(iusiddevchartsPassword)
-        registries=("${{ parameters.additionalRegistries }}")
-        for i in ${registries[@]}; 
-        do 
-        echo "Adding Helm Repository $i"
-        helm repo add $i https://$i.azurecr.io/helm/v1/repo --username $i --password $(iusdevPassword); 
-        done
+        helm repo add iusdev https://iusdev.azurecr.io/helm/v1/repo --username ${{ parameters.registry }} --password $(iusdevPassword)
+        helm repo add iusiddevcharts https://iusdev.azurecr.io/helm/v1/repo --username iusiddevcharts --password $(iusiddevchartsPassword)
   - task: AzureCLI@1
     displayName: package helm chart ${{ parameters.helmChartName }}
     inputs:
@@ -59,7 +53,6 @@ steps:
         echo "requirements.yaml"
         cat ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/requirements.yaml
         helm repo add ${{ parameters.registry }} https://${{ parameters.registry }}.azurecr.io/helm/v1/repo --username ${{ parameters.registry }} --password $(iusiddevchartsPassword)
-        registries=("${{ parameters.additionalRegistries }}")
         childCharts=("${{ parameters.childChartsToUpdate }}")
         for i in ${childCharts[@]}; 
         do 
@@ -100,7 +93,6 @@ steps:
       scriptLocation: inlineScript
       inlineScript: |
         export HELM_EXPERIMENTAL_OCI=1
-        helm registry login ${{ parameters.registry }}.azurecr.io -u ${{ parameters.registry }} -p $(iusiddevchartsPassword)
         helm chart push ${{ parameters.registry }}.azurecr.io/${{ parameters.helmChartName }}:${{ parameters.semVersion }}
   - task: PublishBuildArtifacts@1
     displayName: Publish Helm Chart ${{ parameters.helmChartName }} as a build artifact
