@@ -34,7 +34,7 @@ steps:
         helm repo add stable https://kubernetes-charts.storage.googleapis.com
         helm repo add bitnami https://charts.bitnami.com/bitnami
         echo "Adding iusdev and iusiddevcharts acr repo"
-        helm repo add iusdev https://iusdev.azurecr.io/helm/v1/repo --username ${{ parameters.registry }} --password $(iusdevPassword)
+        helm repo add iusdev https://iusdev.azurecr.io/helm/v1/repo --username iusdev --password $(iusdevPassword)
         helm repo add iusiddevcharts https://iusdev.azurecr.io/helm/v1/repo --username iusiddevcharts --password $(iusiddevchartsPassword)
   - task: AzureCLI@1
     displayName: package helm chart ${{ parameters.helmChartName }}
