@@ -98,6 +98,7 @@ steps:
       inlineScript: |
         export HELM_EXPERIMENTAL_OCI=1
         helm chart push ${{ parameters.registry }}.azurecr.io/${{ parameters.helmChartName }}:${{ parameters.semVersion }}
+        az acr helm push -n ${{ parameters.registry }} ${{ parameters.helmChartName }}-$(semVersion).tgz 
   - task: PublishBuildArtifacts@1
     displayName: Publish Helm Chart ${{ parameters.helmChartName }} as a build artifact
     inputs:
