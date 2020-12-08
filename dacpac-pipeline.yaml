@@ -43,5 +43,5 @@ jobs:
           vstsFeedPublish: 'ius.database.artifacts'
           vstsFeedPackagePublish: '${{ parameters.project }}.dacpac-artifact'
           versionOption: 'custom'
-          versionPublish: '$(version)'
+          versionPublish: '$(semVersion)'
           packagePublishDescription: 'dacpac artifact for ${{ parameters.project }}'
