@@ -40,7 +40,7 @@ jobs:
           command: 'publish'
           feedsToUse: 'internal'
           publishDirectory: '$(Build.ArtifactStagingDirectory)'
-          vstsFeedPublish: 'ius.database.artifact'
+          vstsFeedPublish: 'ius.database.artifacts'
           vstsFeedPackagePublish: '${{ parameters.project }}.dacpac-artifact'
           versionOption: 'custom'
           versionPublish: '$(version)'
