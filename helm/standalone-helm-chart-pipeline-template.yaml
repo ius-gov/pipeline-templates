@@ -73,6 +73,7 @@ steps:
         ls -la $i/charts
         done
         helm dependency update   ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}
+        ls -la ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}/charts
         helm chart save $(helm package ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }} | grep -o '/.*.tgz' ) ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }}:${{ parameters.semVersion }}
         helm chart save ${{ parameters.helmChartLocation }}/${{ parameters.helmChartName }} ${{ parameters.registry }}.azurecr.io/${{ parameters.helmChartName }}:${{ parameters.semVersion }}
   - task: AzureCLI@1
