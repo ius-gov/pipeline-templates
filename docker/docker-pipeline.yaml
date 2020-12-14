@@ -21,6 +21,8 @@ steps:
       azureContainerRegistry: ${{ parameters.registry }}
       command: login
   - script: |
+      whoami
+      pwd
       if [[ -f "application/Dockerfile" ]]; then 
         echo "Using included Dockerfile.  Please consider updating to newest pattern"
       elif [[ -f "dockerfile.json" ]]; then
