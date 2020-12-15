@@ -15,9 +15,9 @@ jobs:
   - job: DockerBuilds
     timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
     pool:
-      ${{ if eq(variables['project'], 'Tax.Service') }}:
-      name: selfhosted
       ${{ if eq(variables['project'], ' ') }}:
+      name: selfhosted
+      ${{ if eq(variables['project'], 'Tax.Service') }}:
       vmImage: 'Ubuntu-18.04'
     variables:
       version: 0.0.0.0
