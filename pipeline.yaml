@@ -11,7 +11,7 @@ parameters:
   autorestTemplateType: 'Service'
   timeoutInMinutes: 90
 variables:
-  ${{ if and(eq(paramters.project, 'Tax.Service'),eq(variables['Build.SourceBranch'],'refs/heads/main' )) }}:
+  ${{ if and(eq(paramters.project, 'ius.tax.service'),eq(variables['Build.SourceBranch'],'refs/heads/main' )) }}:
       poolname: 'selfhosted'
       vmImage: 'ubuntu-18.04'
   ${{ if eq(parameters.project,'') }}:
