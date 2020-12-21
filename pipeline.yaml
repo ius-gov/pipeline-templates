@@ -15,7 +15,7 @@ jobs:
   - job: DockerBuilds
     timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
     pool:
-      pool: $(poolname)
+      name: $(poolname)
       vmImage: $(vmImage)
     variables:
       version: 0.0.0.0
