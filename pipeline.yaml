@@ -13,6 +13,8 @@ parameters:
   poolname: ''
   vmimage: ''
 
+variables:
+  test: "test"
 jobs:
   - job: DockerBuilds
     timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
