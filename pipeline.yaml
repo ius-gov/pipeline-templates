@@ -12,11 +12,11 @@ parameters:
   timeoutInMinutes: 90
 variables:
   ${{ if and(eq(paramters.project, 'ius.tax.service'),eq(variables['Build.SourceBranch'],'refs/heads/main' )) }}:
-      poolname: 'selfhosted'
-      vmImage: 'ubuntu-18.04'
+  poolname: 'selfhosted'
+  vmImage: 'ubuntu-18.04'
   ${{ if eq(parameters.project,'') }}:
-      poolname: 'Azure Pipelines'
-      vmImage: 'ubuntu-18.04'
+  poolname: 'Azure Pipelines'
+  vmImage: 'ubuntu-18.04'
 jobs:
   - job: DockerBuilds
     timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
