@@ -10,19 +10,15 @@ parameters:
   autorestProjectName: ''
   autorestTemplateType: 'Service'
   timeoutInMinutes: 90
-variables:
-  ${{ if and(eq(paramters.project, 'ius.tax.service'),eq(variables['Build.SourceBranch'],'refs/heads/main' )) }}:
-  poolname: 'selfhosted'
-  vmImage: 'ubuntu-18.04'
-  ${{ if eq(parameters.project,'') }}:
   poolname: 'Azure Pipelines'
-  vmImage: 'ubuntu-18.04'
+  vmimage: 'ubuntu-18.04'
+
 jobs:
   - job: DockerBuilds
     timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
     pool:
-      pool: ${{ variables.poolname }}
-      vmImage: ${{ variables.vmImage }}
+      pool: ${{ parameters.poolname }}
+      vmImage: ${{ parameters.vmImage }}
     variables:
       version: 0.0.0.0
       semVersion: 0.0.0
