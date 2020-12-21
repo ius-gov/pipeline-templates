@@ -10,8 +10,8 @@ parameters:
   autorestProjectName: ''
   autorestTemplateType: 'Service'
   timeoutInMinutes: 90
-  poolname: 'Azure Pipelines'
-  vmimage: 'ubuntu-18.04'
+  poolname: ''
+  vmimage: ''
 
 jobs:
   - job: DockerBuilds
