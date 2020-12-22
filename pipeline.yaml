@@ -10,12 +10,13 @@ parameters:
   autorestProjectName: ''
   autorestTemplateType: 'Service'
   timeoutInMinutes: 90
-  
+
 jobs:
   - job: DockerBuilds
     timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
     pool:
-      vmImage: 'Ubuntu-18.04'
+      name: $(poolname)
+      vmImage: $(vmImage)
     variables:
       version: 0.0.0.0
       semVersion: 0.0.0
