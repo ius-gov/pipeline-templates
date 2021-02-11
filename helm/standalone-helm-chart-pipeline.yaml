@@ -1,5 +1,5 @@
 parameters:
-  containerServiceEndpoint: 'iUSDevContainer'
+  containerServiceEndpoint: 'iUSDevContainer2'
   helmChartLocation: ''
   helmChartName : ''
   majorVersion: 0
