@@ -129,7 +129,10 @@ steps:
         azureSubscription : ${{ parameters.containerServiceEndpoint }}
         scriptLocation: inlineScript
         inlineScript: |
-          docker run --net=host ${{ parameters.registry }}/${{ parameters.restClientGenerator }}:latest dotnet iUS.RestClientGenerator.dll --project ${{ parameters.autorestProjectName }} --domain ${{ parameters.autorestClientFeed }} --template ${{ parameters.autorestTemplateType }} --version ${{ parameters.version }}
+          docker network create crossChatter
+          docker run -d --name swagger-converter --net crossChatter iusdev.azurecr.io/swagger-converter
+          docker run -d -e "APPSETTING_LOCATION=/data/appsettings" --name ${{ parameters.imageName }} -v $(Build.ArtifactStagingDirectory)/appsettings:/data/appsettings --net=crossChatter ${{ parameters.imageName }}
+          docker run --net=crossChatter ${{ parameters.registry }}/${{ parameters.restClientGenerator }}:latest dotnet iUS.RestClientGenerator.dll --project ${{ parameters.autorestProjectName }} --domain ${{ parameters.autorestClientFeed }} --template ${{ parameters.autorestTemplateType }} --version ${{ parameters.version }} --dockerService http://${{ parameters.imageName }} --dockerSwaggerToAPI http://swagger-converter:8080/api/convert
   - ${{ if ne(parameters.autorestProjectName, '') }}:
     - task: AzureCLI@1
       displayName: Building Autorest Client
