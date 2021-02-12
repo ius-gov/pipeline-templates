@@ -12,7 +12,8 @@ parameters:
   latestName: ''
   imageName: ''
   stateCode: 0
-
+  restClientGenerator: 'rest-client-generator'
+  
 steps:
   - task: Docker@1
     displayName: Container registry login
@@ -119,6 +120,16 @@ steps:
         if [ $healthexitcode != 0 ]; then
           exit $healthexitcode
         fi
+  # Just Tax For Now
+  - ${{ and(if eq(parameters.autorestProjectName, 'Tax'), if eq(parameters.autorestTemplateType, 'Service')) }}:
+    - task: AzureCLI@1
+      displayName: Building New Generation Client
+      condition: succeeded()
+      inputs:
+        azureSubscription : ${{ parameters.containerServiceEndpoint }}
+        scriptLocation: inlineScript
+        inlineScript: |
+          docker run --net=host ${{ parameters.registry }}/${{ parameters.restClientGenerator }}:latest dotnet iUS.RestClientGenerator.dll --project ${{ parameters.autorestProjectName }} --domain ${{ parameters.autorestClientFeed }} --template ${{ parameters.autorestTemplateType }} --version ${{ parameters.version }}
   - ${{ if ne(parameters.autorestProjectName, '') }}:
     - task: AzureCLI@1
       displayName: Building Autorest Client
