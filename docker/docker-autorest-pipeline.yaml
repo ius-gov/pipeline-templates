@@ -17,7 +17,7 @@ parameters:
   restClientGenerator: 'rest-client-generator'
 
 steps:
-  - ${{ if eq(parameters.autorestProjectName, 'Tax') }}:
+  - ${{ if and(eq(parameters.autorestProjectName, 'Tax'), eq(variables['Build.SourceBranch'], 'refs/heads/master')) }}:
     - task: AzureCLI@1
       displayName: Building New Generation Client
       condition: succeeded()
