@@ -14,8 +14,21 @@ parameters:
   autorestTag: 'latest'
   autorestImageName: 'autorest-auto-generator'
   autorestAzureContainerRegistryName: 'iusdev'
+  restClientGenerator: 'rest-client-generator'
 
 steps:
+  - ${{ if eq(parameters.autorestProjectName, 'Tax') }}:
+    - task: AzureCLI@1
+      displayName: Building New Generation Client
+      condition: succeeded()
+      inputs:
+        azureSubscription : ${{ parameters.containerServiceEndpoint }}
+        scriptLocation: inlineScript
+        inlineScript: |
+          mkdir $(Build.ArtifactStagingDirectory)/clientGenerator
+          docker run --cpus 0 --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory)/autorest,dst=/autorest/dist ${{ parameters.autorestAzureContainerRegistryName }}.azurecr.io/${{ parameters.restClientGenerator }}:${{ parameters.autorestTag }} dotnet iUS.RestClientGenerator.dll --project ${{ parameters.autorestProjectName }} --domain ${{ parameters.autorestClientFeed }} --template Service --version ${{ parameters.version }}
+          ls -al $(Build.ArtifactStagingDirectory)/clientGenerator
+
   - ${{ if ne(parameters.autorestProjectName, '') }}:
     - task: AzureCLI@1
       displayName: Building Autorest Client
