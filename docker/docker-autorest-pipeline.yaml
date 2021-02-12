@@ -17,7 +17,7 @@ parameters:
   restClientGenerator: 'rest-client-generator'
 
 steps:
-  - ${{ if and(eq(parameters.autorestProjectName, 'Tax'), eq(variables['Build.SourceBranch'], 'refs/heads/master')) }}:
+  - ${{ if and(eq(parameters.autorestProjectName, 'Tax'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), and(eq(variables['UsingDevelopBranch'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/develop')))) }}:
     - task: AzureCLI@1
       displayName: Building New Generation Client
       condition: succeeded()
@@ -25,9 +25,44 @@ steps:
         azureSubscription : ${{ parameters.containerServiceEndpoint }}
         scriptLocation: inlineScript
         inlineScript: |
-          mkdir $(Build.ArtifactStagingDirectory)/clientGenerator
-          docker run --cpus 0 --net=host --mount type=bind,src=$(Build.ArtifactStagingDirectory)/autorest,dst=/autorest/dist ${{ parameters.autorestAzureContainerRegistryName }}.azurecr.io/${{ parameters.restClientGenerator }}:${{ parameters.autorestTag }} dotnet iUS.RestClientGenerator.dll --project ${{ parameters.autorestProjectName }} --domain ${{ parameters.autorestClientFeed }} --template Service --version ${{ parameters.version }}
-          ls -al $(Build.ArtifactStagingDirectory)/clientGenerator
+          echo 'Creating Appsettings folder at $(Build.ArtifactStagingDirectory)'
+          mkdir $(Build.ArtifactStagingDirectory)/appsettings
+          echo '{
+            "ClientStateID" : 0,
+            "AppSettings" : {
+               "URLs" : {
+                 "IdentityServer" : "https://iusbuildidentityserver.azurewebsites.net"
+               }
+            },
+            "Data": {
+              "Queue": {
+                "GlobalDisable": true
+              },
+              "Identity": {
+                 "ApiScope": "api1"
+               }
+            },
+            "Serilog":{
+              "MinimumLevel": "Information",
+               "Using": [
+                   "Serilog.Sinks.Console"
+               ],
+               "WriteTo": [
+                   {
+                       "Name": "Console"
+                   }
+               ]
+            },
+            "UseIncludedCertificate" : "true",
+            "DoNotFetchDiscovery" : "true",
+            "DoNotRequireHttps" : "true",
+            "BuildServer" : "true",
+            "ConfigurationDump" : "true"
+           }' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
+           docker network create crossChatter
+           docker run -d --name swagger-converter --net crossChatter iusdev.azurecr.io/swagger-converter
+           docker run -d -e "APPSETTING_LOCATION=/data/appsettings" --name ${{ parameters.autorestProjectName }} -v $(Build.ArtifactStagingDirectory)/appsettings:/data/appsettings --net=crossChatter ${{ parameters.imageName }}
+           docker run --net=crossChatter ${{ parameters.registry }}/${{ parameters.restClientGenerator }}:latest dotnet iUS.RestClientGenerator.dll --project ${{ parameters.autorestProjectName }} --domain ${{ parameters.autorestClientFeed }} --template ${{ parameters.autorestTemplateType }} --version ${{ parameters.version }} --dockerService http://${{ parameters.autorestProjectName }} --dockerSwaggerToAPI http://swagger-converter:8080/api/convert
 
   - ${{ if ne(parameters.autorestProjectName, '') }}:
     - task: AzureCLI@1
