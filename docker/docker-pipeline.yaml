@@ -121,7 +121,7 @@ steps:
           exit $healthexitcode
         fi
   # Just Tax For Now
-  - ${{ and(if eq(parameters.autorestProjectName, 'Tax'), if eq(parameters.autorestTemplateType, 'Service')) }}:
+  - ${{ if and(eq(parameters.autorestProjectName, 'Tax'), eq(parameters.autorestTemplateType, 'Service')) }}:
     - task: AzureCLI@1
       displayName: Building New Generation Client
       condition: succeeded()
