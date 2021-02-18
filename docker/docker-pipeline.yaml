@@ -17,7 +17,6 @@ parameters:
 steps:
   - powershell: |
       Write-Host "UsingDevelopBranch: $env:UsingDevelopBranch"
-    displayName: testing env var
     env:
     UsingDevelopBranch: $(UsingDevelopBranch)
 
