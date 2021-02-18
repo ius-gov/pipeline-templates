@@ -20,10 +20,7 @@ steps:
       UsingDevelopBranch: $(UsingDevelopBranch)
   - powershell: echo $env:UsingDevelopBranch
     env:
-      UsingDevelopBranch: $(variables['UsingDevelopBranch'])
-  - powershell: echo $env:UsingDevelopBranch
-    env:
-      UsingDevelopBranch: $(variables['Build.SourceBranch'])
+      UsingDevelopBranch: $(Build.SourceBranch)
   - ${{ if and(eq(parameters.autorestTemplateType, 'Service'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), and(eq(variables.UsingDevelopBranch, 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/develop')))) }}:
     - powershell: echo "Will Build"
   
