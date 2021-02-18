@@ -18,10 +18,7 @@ parameters:
 steps:
   - powershell: echo $env:UsingDevelopBranch
     env:
-      UsingDevelopBranch: $(UsingDevelopBranch)
-  - powershell: echo $env:UsingDevelopBranch
-    env:
-      UsingDevelopBranch: ${{parameters.autorestTemplateType}}
+      UsingDevelopBranch: ${{parameters.usingDevelopBranch}}
   - ${{ if and(eq(parameters.usingDevelopBranch, 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/aw.TestingDeployWithNewClient')) }}:
     - powershell: echo "Will Build"
   
