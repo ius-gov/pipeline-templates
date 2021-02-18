@@ -13,14 +13,8 @@ parameters:
   imageName: ''
   stateCode: 0
   restClientGenerator: 'rest-client-generator'
-  usingDevelopBranch: $(UsingDevelopBranch)
   
 steps:
-  - powershell: echo $env:UsingDevelopBranch
-    env:
-      UsingDevelopBranch: ${{parameters.usingDevelopBranch}}
-  - ${{ if and(eq(parameters.usingDevelopBranch, 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/aw.TestingDeployWithNewClient')) }}:
-    - powershell: echo "Will Build"
   - task: Docker@1
     displayName: Container registry login
     inputs:
@@ -127,18 +121,17 @@ steps:
           exit $healthexitcode
         fi
   # All services as -test
-  - ${{ if and(eq(parameters.autorestTemplateType, 'Service'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), and(eq(variables['UsingDevelopBranch'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/develop')))) }}:
-    - task: AzureCLI@1
-      displayName: Building New Generation Client
-      condition: succeeded()
-      inputs:
-        azureSubscription : ${{ parameters.containerServiceEndpoint }}
-        scriptLocation: inlineScript
-        inlineScript: |
-          docker network create crossChatter
-          docker run -d --name swagger-converter --net crossChatter iusdev.azurecr.io/swagger-converter
-          docker run -d -e "APPSETTING_LOCATION=/data/appsettings" --name ${{ parameters.autorestProjectName }} -v $(Build.ArtifactStagingDirectory)/appsettings:/data/appsettings --net=crossChatter ${{ parameters.imageName }}
-          docker run --net=crossChatter ${{ parameters.registry }}/${{ parameters.restClientGenerator }}:latest dotnet iUS.RestClientGenerator.dll --project ${{ parameters.autorestProjectName }} --domain ${{ parameters.autorestClientFeed }} --template ${{ parameters.autorestTemplateType }} --version ${{ parameters.version }} --swaggerEndpoint http://${{ parameters.autorestProjectName }} --swaggerToOpenAPIEndpoint http://swagger-converter:8080/api/convert
+  - task: AzureCLI@1
+    displayName: Building New Generation Client
+    condition: and(succeeded(), and(eq(parameters.autorestTemplateType, 'Service'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), and(eq(variables['UsingDevelopBranch'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/develop')))))
+    inputs:
+      azureSubscription : ${{ parameters.containerServiceEndpoint }}
+      scriptLocation: inlineScript
+      inlineScript: |
+        docker network create crossChatter
+        docker run -d --name swagger-converter --net crossChatter iusdev.azurecr.io/swagger-converter
+        docker run -d -e "APPSETTING_LOCATION=/data/appsettings" --name ${{ parameters.autorestProjectName }} -v $(Build.ArtifactStagingDirectory)/appsettings:/data/appsettings --net=crossChatter ${{ parameters.imageName }}
+        docker run --net=crossChatter ${{ parameters.registry }}/${{ parameters.restClientGenerator }}:latest dotnet iUS.RestClientGenerator.dll --project ${{ parameters.autorestProjectName }} --domain ${{ parameters.autorestClientFeed }} --template ${{ parameters.autorestTemplateType }} --version ${{ parameters.version }} --swaggerEndpoint http://${{ parameters.autorestProjectName }} --swaggerToOpenAPIEndpoint http://swagger-converter:8080/api/convert
   - ${{ if ne(parameters.autorestProjectName, '') }}:
     - task: AzureCLI@1
       displayName: Building Autorest Client
