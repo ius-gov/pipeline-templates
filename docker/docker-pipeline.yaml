@@ -18,6 +18,8 @@ steps:
   - powershell: |
       Write-Host "UsingDevelopBranch: $env:UsingDevelopBranch"
     displayName: testing env var
+    env:
+    UsingDevelopBranch: $(UsingDevelopBranch)
 
   - task: Docker@1
     displayName: Container registry login
