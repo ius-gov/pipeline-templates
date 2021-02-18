@@ -120,6 +120,9 @@ steps:
         if [ $healthexitcode != 0 ]; then
           exit $healthexitcode
         fi
+  - powershell: |
+    Write-Host "This works: $env:UsingDevelopBranch"
+  env: UsingDevelopBranch: $(UsingDevelopBranch)
   # All services as -test
   - ${{ if and(eq(parameters.autorestTemplateType, 'Service'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), and(eq(variables['UsingDevelopBranch'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/develop')))) }}:
     - task: AzureCLI@1
