@@ -18,7 +18,10 @@ steps:
   - powershell: echo $env:UsingDevelopBranch
     env:
       UsingDevelopBranch: $(UsingDevelopBranch)
-  - ${{ if or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), and(eq(variables['UsingDevelopBranch'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
+  - powershell: echo $env:UsingDevelopBranch
+    env:
+      UsingDevelopBranch: variables['UsingDevelopBranch']
+  - ${{ if and(eq(variables['UsingDevelopBranch'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/develop')) }}:
     - powershell: echo "Will Build"
   
   - task: Docker@1
