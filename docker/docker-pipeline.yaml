@@ -19,7 +19,7 @@ steps:
   - powershell: echo $env:UsingDevelopBranch
     env:
       UsingDevelopBranch: ${{parameters.usingDevelopBranch}}
-  - ${{ if and(eq(parameters.autorestTemplateType, 'Service'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), and(variables['UsingDevelopBranch'], eq(variables['Build.SourceBranch'], 'refs/heads/aw.TestingDeployWithNewClient')))) }}:
+- ${{ if and(eq(parameters.autorestTemplateType, 'Service'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), and(variables['UsingDevelopBranch'], eq(variables['Build.SourceBranch'], 'refs/heads/aw.TestingDeployWithNewClient')))) }}:
     - powershell: echo "Will Build"
   
   - task: Docker@1
