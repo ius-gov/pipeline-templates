@@ -13,7 +13,7 @@ parameters:
   imageName: ''
   stateCode: 0
   restClientGenerator: 'rest-client-generator'
-  usingDevelopBranch: $(UsingDevelopBranch)
+  usingDevelopBranch: false
   
 steps:
   - powershell: echo $env:UsingDevelopBranch
