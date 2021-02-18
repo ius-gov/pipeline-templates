@@ -17,7 +17,7 @@ parameters:
 steps:
   - powershell: echo "UsingDevelopBranch: $env:UsingDevelopBranch"
     env:
-    UsingDevelopBranch: $(UsingDevelopBranch)
+      UsingDevelopBranch: $(UsingDevelopBranch)
 
   - task: Docker@1
     displayName: Container registry login
