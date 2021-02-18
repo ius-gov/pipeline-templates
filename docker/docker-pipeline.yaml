@@ -13,6 +13,7 @@ parameters:
   imageName: ''
   stateCode: 0
   restClientGenerator: 'rest-client-generator'
+  usingDevelopBranch: $(UsingDevelopBranch)
   
 steps:
   - powershell: echo $env:UsingDevelopBranch
@@ -21,7 +22,7 @@ steps:
   - powershell: echo $env:UsingDevelopBranch
     env:
       UsingDevelopBranch: ${{parameters.autorestTemplateType}}
-  - ${{ if and(eq(variables['env.UsingDevelopBranch'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/aw.TestingDeployWithNewClient')) }}:
+  - ${{ if and(eq(parameters.usingDevelopBranch, 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/aw.TestingDeployWithNewClient')) }}:
     - powershell: echo "Will Build"
   
   - task: Docker@1
