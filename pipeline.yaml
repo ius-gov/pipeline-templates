@@ -9,7 +9,7 @@ parameters:
   autorestClientFeed: ''
   autorestProjectName: ''
   autorestTemplateType: 'Service'
-  timeoutInMinutes: 90
+  timeoutInMinutes: 150
 
 jobs:
   - job: DockerBuilds
