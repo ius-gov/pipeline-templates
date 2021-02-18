@@ -16,7 +16,7 @@ parameters:
   usingDevelopBranch: $(UsingDevelopBranch)
   
 steps:
-  - ${{ if and(variables['UsingDevelopBranch'], eq(variables['Build.SourceBranch'], 'refs/heads/aw.TestingDeployWithNewClient')) }}:
+  - ${{ if variables['UsingDevelopBranch'] }}:
     - powershell: echo "Will Build"
 
   - task: Docker@1
