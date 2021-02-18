@@ -16,8 +16,9 @@ parameters:
   usingDevelopBranch: $(UsingDevelopBranch)
   
 steps:
-- ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/aw.TestingDeployWithNewClient') }}:
+  - ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/aw.TestingDeployWithNewClient') }}:
     - powershell: echo "Will Build"
+
   - task: Docker@1
     displayName: Container registry login
     inputs:
