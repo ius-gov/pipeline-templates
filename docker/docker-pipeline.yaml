@@ -15,8 +15,7 @@ parameters:
   restClientGenerator: 'rest-client-generator'
   
 steps:
-  - powershell: |
-      Write-Host "UsingDevelopBranch: $env:UsingDevelopBranch"
+  - powershell: echo "UsingDevelopBranch: $env:UsingDevelopBranch"
     env:
     UsingDevelopBranch: $(UsingDevelopBranch)
 
