@@ -121,7 +121,7 @@ steps:
           exit $healthexitcode
         fi
   # All services as -test
-  - ${{ if or(eq(parameters.autorestTemplateType, 'Service'), eq(parameters.autorestTemplateType, 'Service')) }}:
+  - ${{ if or(eq(parameters.autorestTemplateType, 'Service'), eq(parameters.autorestTemplateType, 'Gateway')) }}:
     - task: AzureCLI@1
       displayName: Building New Generation Client
       condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), and(eq(variables['UsingDevelopBranch'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))))
