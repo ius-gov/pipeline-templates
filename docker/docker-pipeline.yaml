@@ -121,7 +121,7 @@ steps:
           exit $healthexitcode
         fi
   # All services as -test
-  - ${{ if or(eq(parameters.autorestTemplateType, 'Service'), eq(parameters.autorestTemplateType, 'Gateway')) }}:
+  - ${{ if and(not(startsWith(parameters.autorestTemplateType, 'icon')), or(eq(parameters.autorestTemplateType, 'Service'), eq(parameters.autorestTemplateType, 'Gateway'))) }}:
     - task: AzureCLI@1
       displayName: Building New Generation Client
       condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), and(eq(variables['UsingDevelopBranch'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))))
@@ -133,7 +133,7 @@ steps:
           docker run -d --name swagger-converter --net crossChatter iusdev.azurecr.io/swagger-converter
           docker run -d -e "APPSETTING_LOCATION=/data/appsettings" --name ${{ parameters.autorestProjectName }} -v $(Build.ArtifactStagingDirectory)/appsettings:/data/appsettings --net=crossChatter ${{ parameters.imageName }}
           docker run --net=crossChatter ${{ parameters.registry }}/${{ parameters.restClientGenerator }}:latest dotnet iUS.RestClientGenerator.dll --project ${{ parameters.autorestProjectName }} --domain ${{ parameters.autorestClientFeed }} --template ${{ parameters.autorestTemplateType }} --version ${{ parameters.version }} --swaggerEndpoint http://${{ parameters.autorestProjectName }} --swaggerToOpenAPIEndpoint http://swagger-converter:8080/api/convert
-  - ${{ if ne(parameters.autorestProjectName, '') }}:
+  - ${{ if startsWith(parameters.autorestTemplateType, 'icon') }}:
     - task: AzureCLI@1
       displayName: Building Autorest Client
       condition: succeeded()
