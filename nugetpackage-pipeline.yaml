@@ -17,6 +17,7 @@ jobs:
           Write-Host "##vso[task.setvariable variable=version;]${{ parameters.stateCode }}.${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
         displayName: Calculating Version
       - script: echo "Setting csproj Version To $(version)"
+        displayName: Display Version
       - script: |
           find application/ -type f -iname '*.csproj' -exec  sed -i "s/0\.0\.0\-INTERNAL/$(version)/g" "{}" \;
           grep "<VersionPrefix>.*</VersionPrefix>" -R .
