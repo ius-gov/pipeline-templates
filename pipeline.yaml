@@ -63,3 +63,4 @@ jobs:
           autorestProjectName: '${{ parameters.autorestProjectName }}'
           autorestTemplateType: '${{ parameters.autorestTemplateType }}'
           stateCode: ${{ parameters.stateCode }}
+          isNet5: '$(isNet5)'
