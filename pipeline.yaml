@@ -20,6 +20,7 @@ jobs:
     variables:
       version: 0.0.0.0
       semVersion: 0.0.0
+      isNet5: false
     steps:
       - powershell: |
           Write-Host "Attempting to set variable to ${{ parameters.stateCode }}.${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
@@ -37,6 +38,16 @@ jobs:
           find application/ -type f -iname '*.csproj' -exec  sed -i "s/0\.0\.0\-INTERNAL/$(version)/g" "{}" \;
           grep "<VersionPrefix>.*</VersionPrefix>" -R .
         displayName: Set Project Version
+      - script: |
+          find . -type f -name '*.csproj' | xargs grep "net5"
+          if [ $? -eq 0 ] ; then
+            echo net5
+            echo '##vso[task.setvariable variable=isNet5]true'
+          else
+            echo not net 5
+            echo '##vso[task.setvariable variable=isNet5]false'
+          fi
+          
       - template: docker/docker-pipeline.yaml
         parameters:
           version: '$(version)'
