@@ -127,7 +127,7 @@ steps:
           exit $healthexitcode
         fi
   # All services net 2.1.x
-  - ${{ if and(ne(parameters.isNet5), and(not(startsWith(parameters.autorestProjectName, 'icon')), or(eq(parameters.autorestTemplateType, 'Service'), eq(parameters.autorestTemplateType, 'Gateway')))) }}:
+  - ${{ if and(ne(parameters.isNet5, true), and(not(startsWith(parameters.autorestProjectName, 'icon')), or(eq(parameters.autorestTemplateType, 'Service'), eq(parameters.autorestTemplateType, 'Gateway')))) }}:
     - task: AzureCLI@1
       displayName: Building New Generation Client
       condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), and(eq(variables['UsingDevelopBranch'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))))
@@ -140,7 +140,7 @@ steps:
           docker run -d -e "APPSETTING_LOCATION=/data/appsettings" --name ${{ parameters.autorestProjectName }} -v $(Build.ArtifactStagingDirectory)/appsettings:/data/appsettings --net=crossChatter ${{ parameters.imageName }}
           docker run --net=crossChatter ${{ parameters.registry }}/${{ parameters.restClientGenerator }}:latest dotnet iUS.RestClientGenerator.dll --project ${{ parameters.autorestProjectName }} --domain ${{ parameters.autorestClientFeed }} --template ${{ parameters.autorestTemplateType }} --version ${{ parameters.version }} --swaggerEndpoint http://${{ parameters.autorestProjectName }} --swaggerToOpenAPIEndpoint http://swagger-converter:8080/api/convert --isNotATest
   # All services net 5
-  - ${{ if and(eq(parameters.isNet5), and(not(startsWith(parameters.autorestProjectName, 'icon')), or(eq(parameters.autorestTemplateType, 'Service'), eq(parameters.autorestTemplateType, 'Gateway')))) }}:
+  - ${{ if and(eq(parameters.isNet5, true), and(not(startsWith(parameters.autorestProjectName, 'icon')), or(eq(parameters.autorestTemplateType, 'Service'), eq(parameters.autorestTemplateType, 'Gateway')))) }}:
     - task: AzureCLI@1
       displayName: Building New Generation Client
       condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), and(eq(variables['UsingDevelopBranch'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))))
