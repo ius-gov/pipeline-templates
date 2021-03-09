@@ -13,6 +13,7 @@ parameters:
   imageName: ''
   stateCode: 0
   restClientGenerator: 'rest-client-generator'
+  isNet5: false
   
 steps:
   - task: Docker@1
@@ -24,10 +25,15 @@ steps:
   - script: |
       if [[ -f "application/Dockerfile" ]]; then 
         echo "Using included Dockerfile.  Please consider updating to newest pattern"
-      elif [[ -f "dockerfile.json" ]]; then
+      elif [[ -f "dockerfile.json" && "$isNet5" == true ]]; then
         echo "Generating new Dockerfile from the dockerfile.mustache"
         docker run --net=host -v $(Build.SourcesDirectory):/src ${{ parameters.registry }}/dockerfile-template:latest node /data/state_code_updater /src/dockerfile.json ${{ parameters.stateCode }}
         docker run --net=host -v $(Build.SourcesDirectory):/src ${{ parameters.registry }}/dockerfile-template:latest mustache /src/dockerfile.json /data/Dockerfile.mustache > application/Dockerfile
+        cat application/Dockerfile
+      elif [[ -f "dockerfile.json" ]]
+        echo "Generating new Dockerfile from the dockerfile.mustache"
+        docker run --net=host -v $(Build.SourcesDirectory):/src ${{ parameters.registry }}/dockerfile-template-net5:latest node /data/state_code_updater /src/dockerfile.json ${{ parameters.stateCode }}
+        docker run --net=host -v $(Build.SourcesDirectory):/src ${{ parameters.registry }}/dockerfile-template-net5:latest mustache /src/dockerfile.json /data/Dockerfile.mustache > application/Dockerfile
         cat application/Dockerfile
       else
         echo "Dockerfile is not present and neither is a required dockerfile.json"
@@ -120,8 +126,8 @@ steps:
         if [ $healthexitcode != 0 ]; then
           exit $healthexitcode
         fi
-  # All services as -test
-  - ${{ if and(not(startsWith(parameters.autorestProjectName, 'icon')), or(eq(parameters.autorestTemplateType, 'Service'), eq(parameters.autorestTemplateType, 'Gateway'))) }}:
+  # All services net 2.1.x
+  - ${{ if and(ne(parameters.isNet5), and(not(startsWith(parameters.autorestProjectName, 'icon')), or(eq(parameters.autorestTemplateType, 'Service'), eq(parameters.autorestTemplateType, 'Gateway')))) }}:
     - task: AzureCLI@1
       displayName: Building New Generation Client
       condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), and(eq(variables['UsingDevelopBranch'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))))
@@ -133,6 +139,19 @@ steps:
           docker run -d --name swagger-converter --net crossChatter iusdev.azurecr.io/swagger-converter
           docker run -d -e "APPSETTING_LOCATION=/data/appsettings" --name ${{ parameters.autorestProjectName }} -v $(Build.ArtifactStagingDirectory)/appsettings:/data/appsettings --net=crossChatter ${{ parameters.imageName }}
           docker run --net=crossChatter ${{ parameters.registry }}/${{ parameters.restClientGenerator }}:latest dotnet iUS.RestClientGenerator.dll --project ${{ parameters.autorestProjectName }} --domain ${{ parameters.autorestClientFeed }} --template ${{ parameters.autorestTemplateType }} --version ${{ parameters.version }} --swaggerEndpoint http://${{ parameters.autorestProjectName }} --swaggerToOpenAPIEndpoint http://swagger-converter:8080/api/convert --isNotATest
+  # All services net 5
+  - ${{ if and(eq(parameters.isNet5), and(not(startsWith(parameters.autorestProjectName, 'icon')), or(eq(parameters.autorestTemplateType, 'Service'), eq(parameters.autorestTemplateType, 'Gateway')))) }}:
+    - task: AzureCLI@1
+      displayName: Building New Generation Client
+      condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), and(eq(variables['UsingDevelopBranch'], 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))))
+      inputs:
+        azureSubscription : ${{ parameters.containerServiceEndpoint }}
+        scriptLocation: inlineScript
+        inlineScript: |
+          docker network create crossChatter
+          docker run -d --name swagger-converter --net crossChatter iusdev.azurecr.io/swagger-converter
+          docker run -d -e "APPSETTING_LOCATION=/data/appsettings" --name ${{ parameters.autorestProjectName }} -v $(Build.ArtifactStagingDirectory)/appsettings:/data/appsettings --net=crossChatter ${{ parameters.imageName }}
+          docker run --net=crossChatter ${{ parameters.registry }}/${{ parameters.restClientGenerator }}-net5:latest dotnet iUS.RestClientGenerator.dll --project ${{ parameters.autorestProjectName }} --domain ${{ parameters.autorestClientFeed }} --template ${{ parameters.autorestTemplateType }} --version ${{ parameters.version }} --swaggerEndpoint http://${{ parameters.autorestProjectName }} --swaggerToOpenAPIEndpoint http://swagger-converter:8080/api/convert --isNotATest
   - ${{ if startsWith(parameters.autorestProjectName, 'icon') }}:
     - task: AzureCLI@1
       displayName: Building Autorest Client
