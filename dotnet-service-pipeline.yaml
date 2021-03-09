@@ -21,6 +21,11 @@ jobs:
           find application/ -type f -iname '*.csproj' -exec  sed -i "s/0\.0\.0\-INTERNAL/$(version)/g" "{}" \;
           grep "<VersionPrefix>.*</VersionPrefix>" -R .
         displayName: Set Project Version
+      - task: UseDotNet@2
+        displayName: 'Use .NET Core sdk 5.0.100'
+        inputs:
+          packageType: 'sdk'
+          version: '5.0.100'
       - task: DotNetCoreCLI@2
         displayName: Restore
         inputs:
