@@ -73,44 +73,45 @@ steps:
         done
         echo 'Creating Appsettings folder at $(Build.ArtifactStagingDirectory)'
         mkdir $(Build.ArtifactStagingDirectory)/appsettings
-        if [ $found = false ] then;
-        echo '{
+        if [ $found = false ];
+        then
+          echo '{
           "ClientStateID" : 0,
           "AppSettings" : {
-             "URLs" : {
-               "IdentityServer" : "https://iusbuildidentityserver.azurewebsites.net"
-             }
+          "URLs" : {
+          "IdentityServer" : "https://iusbuildidentityserver.azurewebsites.net"
+          }
+        },
+        "Data": {
+          "Queue": {
+            "GlobalDisable": true
           },
-          "Data": {
-            "Queue": {
-              "GlobalDisable": true
-            },
-            "Identity": {
-               "ApiScope": "api1"
-             }
-          },
-          "Serilog":{
-            "MinimumLevel": "Information",
-             "Using": [
-                 "Serilog.Sinks.Console"
-             ],
-             "WriteTo": [
-                 {
-                     "Name": "Console"
-                 }
-             ]
-          },
-          "UseIncludedCertificate" : "true",
-          "DoNotFetchDiscovery" : "true",
-          "DoNotRequireHttps" : "true",
-          "BuildServer" : "true",
-          "ConfigurationDump" : "true"
-        }' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
+          "Identity": {
+            "ApiScope": "api1"
+          }
+        },
+        "Serilog":{
+          "MinimumLevel": "Information",
+          "Using": [
+            "Serilog.Sinks.Console"
+          ],
+          "WriteTo": [
+            {
+              "Name": "Console"
+            }
+          ]
+        },
+        "UseIncludedCertificate" : "true",
+        "DoNotFetchDiscovery" : "true",
+        "DoNotRequireHttps" : "true",
+        "BuildServer" : "true",
+        "ConfigurationDump" : "true"
+        }' > appsettings.Consortium.Production.json
         else
-        echo '{
-          "ClientStateID" : 0,
-          "AppSettings" : {
-             "URLs" : {
+          echo '{
+            "ClientStateID" : 0,
+            "AppSettings" : {
+              "URLs" : {
                "IdentityServer" : "https://iusbuildidentityserver.azurewebsites.net"
              }
           },
@@ -139,7 +140,7 @@ steps:
           "BuildServer" : "true",
           "ConfigurationDump" : "true",
           "ConnectionStrings:$project": $connectionString
-        }' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
+        }' > appsettings.Consortium.Production.json
         fi
         echo 'Using AppSettings'
         cat $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
