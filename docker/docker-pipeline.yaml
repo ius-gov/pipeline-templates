@@ -106,7 +106,7 @@ steps:
         "DoNotRequireHttps" : "true",
         "BuildServer" : "true",
         "ConfigurationDump" : "true"
-        }' > appsettings.Consortium.Production.json
+        }' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
         else
           echo '{
             "ClientStateID" : 0,
@@ -140,7 +140,7 @@ steps:
           "BuildServer" : "true",
           "ConfigurationDump" : "true",
           "ConnectionStrings:$project": $connectionString
-        }' > appsettings.Consortium.Production.json
+        }' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
         fi
         echo 'Using AppSettings'
         cat $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
