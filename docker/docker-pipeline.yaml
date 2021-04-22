@@ -54,19 +54,26 @@ steps:
       arguments: ${{ parameters.imageName }}
   - task: AzureCLI@1
     displayName: Launching docker image
+    env:
+      project: ${{ parameters.project }}
     inputs:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
       inlineScript: |
         docker --version
-        echo 'looking at staging dir... may have what I need'
-        echo $(Build.ArtifactStagingDirectory) 
-        ls $(Build.ArtifactStagingDirectory)
-        echo 'And here'
-        ls .
-        dir
+        for f in $(find . -print | grep -i launchsettings.json)
+        do
+          echo "Searching $f..."
+          if grep -q ConnectionStrings__TaxService  $f; then
+            connectionString=$((grep ConnectionStrings__TaxService $f | grep "Connection Timeout" | cut -d ':' -f2-) | rev | cut -c 3- | rev)
+            found=false
+          else
+            found=false
+          fi
+        done
         echo 'Creating Appsettings folder at $(Build.ArtifactStagingDirectory)'
         mkdir $(Build.ArtifactStagingDirectory)/appsettings
+        if [ $found = false ] then;
         echo '{
           "ClientStateID" : 0,
           "AppSettings" : {
@@ -98,7 +105,41 @@ steps:
           "DoNotRequireHttps" : "true",
           "BuildServer" : "true",
           "ConfigurationDump" : "true"
-         }' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
+        }' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
+        else
+        echo '{
+          "ClientStateID" : 0,
+          "AppSettings" : {
+             "URLs" : {
+               "IdentityServer" : "https://iusbuildidentityserver.azurewebsites.net"
+             }
+          },
+          "Data": {
+            "Queue": {
+              "GlobalDisable": true
+            },
+            "Identity": {
+               "ApiScope": "api1"
+             }
+          },
+          "Serilog":{
+            "MinimumLevel": "Information",
+             "Using": [
+                 "Serilog.Sinks.Console"
+             ],
+             "WriteTo": [
+                 {
+                     "Name": "Console"
+                 }
+             ]
+          },
+          "UseIncludedCertificate" : "true",
+          "DoNotFetchDiscovery" : "true",
+          "DoNotRequireHttps" : "true",
+          "BuildServer" : "true",
+          "ConfigurationDump" : "true",
+          "ConnectionStrings:$project": $connectionString
+        }' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
         echo 'Using AppSettings'
         cat $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
         echo 'Starting Docker Image ${{ parameters.latestName }}'
