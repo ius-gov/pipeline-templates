@@ -76,7 +76,7 @@ steps:
           fi
         done
         
-        echo $"Found = $found"
+        echo $"Found for $project = $found"
         
         echo 'Creating Appsettings folder at $(Build.ArtifactStagingDirectory)'
         mkdir $(Build.ArtifactStagingDirectory)/appsettings
