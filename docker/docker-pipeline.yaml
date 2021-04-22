@@ -68,8 +68,8 @@ steps:
         for f in $(find . -print | grep -i launchsettings.json)
         do
           echo "Searching $f..."
-          echo "testing grep -q ConnectionStrings__$project  $f"
-          if grep -q ConnectionStrings__$project  $f; then
+          echo "testing grep -q 'ConnectionStrings__$project' $f"
+          if grep -q "ConnectionStrings__$project" $f; then
             connectionString=$((grep ConnectionStrings__$project $f | grep "Connection Timeout" | cut -d ':' -f2-) | rev | cut -c 3- | rev)
             found=false
           else
