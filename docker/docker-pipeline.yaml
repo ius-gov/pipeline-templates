@@ -140,6 +140,7 @@ steps:
           "ConfigurationDump" : "true",
           "ConnectionStrings:$project": $connectionString
         }' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
+        fi
         echo 'Using AppSettings'
         cat $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
         echo 'Starting Docker Image ${{ parameters.latestName }}'
