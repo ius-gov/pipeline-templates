@@ -111,8 +111,9 @@ steps:
         echo 'Testing Health'
         curl http://localhost/health -o health.json
         echo 'health result:'
-        python -m json.tool health.json
-        healthexitcode=$?
+        healthexitcode=$(grep status_code health.json | tail -1)
+        healthexitcode=$(echo $healthexitcode | cut -d ' ' -f 2)
+        healthexitcode=$(echo $healthexitcode | cut -d ',' -f 1)
         docker ps -a
         latest_guid="$(docker ps -a | grep "${{ parameters.imageName }}" | awk '{print $1}')"
         echo "Checking logs for $latest_guid"
