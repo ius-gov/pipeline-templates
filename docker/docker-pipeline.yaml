@@ -60,7 +60,11 @@ steps:
       inlineScript: |
         docker --version
         echo 'looking at staging dir... may have what I need'
+        echo $(Build.ArtifactStagingDirectory) 
         ls $(Build.ArtifactStagingDirectory)
+        echo 'And here'
+        ls .
+        dir
         echo 'Creating Appsettings folder at $(Build.ArtifactStagingDirectory)'
         mkdir $(Build.ArtifactStagingDirectory)/appsettings
         echo '{
