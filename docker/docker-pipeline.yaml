@@ -61,9 +61,6 @@ steps:
       scriptLocation: inlineScript
       inlineScript: |
         docker --version
-        echo 'more ls to launchSettings'
-        ls ./application/iUS.Tax.Service/Properties
-        cat ./application/iUS.Tax.Service/Properties/launchSettings.json
         
         for f in $(find . -print | grep -i launchsettings.json)
         do
