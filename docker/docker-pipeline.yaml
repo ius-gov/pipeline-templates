@@ -59,6 +59,8 @@ steps:
       scriptLocation: inlineScript
       inlineScript: |
         docker --version
+        echo 'looking at staging dir... may have what I need'
+        ls $(Build.ArtifactStagingDirectory)
         echo 'Creating Appsettings folder at $(Build.ArtifactStagingDirectory)'
         mkdir $(Build.ArtifactStagingDirectory)/appsettings
         echo '{
@@ -111,9 +113,8 @@ steps:
         echo 'Testing Health'
         curl http://localhost/health -o health.json
         echo 'health result:'
-        healthexitcode=$(grep status_code health.json | tail -1)
-        healthexitcode=$(echo $healthexitcode | cut -d ' ' -f 2)
-        healthexitcode=$(echo $healthexitcode | cut -d ',' -f 1)
+        python -m json.tool health.json
+        healthexitcode=$?
         docker ps -a
         latest_guid="$(docker ps -a | grep "${{ parameters.imageName }}" | awk '{print $1}')"
         echo "Checking logs for $latest_guid"
