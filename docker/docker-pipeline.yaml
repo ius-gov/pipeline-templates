@@ -55,9 +55,9 @@ steps:
   - task: AzureCLI@1
     displayName: Launching docker image
     env:
-      project: ${{ parameters.autorestProjectName }}
+      project: ${{ parameters.autorestProjectName }}${{ parameters.autorestTemplateType }}
     inputs:
-      azureSubscription : ${{ parameters.containerServiceEndpoint }}${{ parameters.autorestTemplateType }}
+      azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
       inlineScript: |
         docker --version
