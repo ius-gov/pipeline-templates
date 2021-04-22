@@ -75,6 +75,9 @@ steps:
             found=false
           fi
         done
+        
+        echo $"Found = $found"
+        
         echo 'Creating Appsettings folder at $(Build.ArtifactStagingDirectory)'
         mkdir $(Build.ArtifactStagingDirectory)/appsettings
         if [ $found = false ];
