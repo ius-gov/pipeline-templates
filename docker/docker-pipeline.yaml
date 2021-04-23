@@ -67,7 +67,7 @@ steps:
           echo "Searching $f..."
           echo "testing grep -q 'ConnectionStrings__$project' $f"
           if grep -q "ConnectionStrings__$project" $f ; then
-            connectionString=$((grep ConnectionStrings__$project $f | grep "Connection Timeout" | cut -d ':' -f2-) | rev | cut -c 2- | rev)
+            connectionString=$((grep ConnectionStrings__$project $f | grep "Connection Timeout" -m 1 | cut -d ':' -f2-) | rev | cut -c 2- | rev)
             found=true
           else
             found=false
@@ -80,7 +80,7 @@ steps:
           echo "Searching for 'ConnectionStrings:$project' $f..."
           echo "testing grep -q 'ConnectionStrings:$project' $f"
           if grep -q "ConnectionStrings:$project" $f ; then
-            connectionString=$(grep ConnectionStrings:$project $f | grep "Connection Timeout" | cut -d ':' -f3-)
+            connectionString=$(grep ConnectionStrings:$project $f | grep "Connection Timeout" -m 1 | cut -d ':' -f3-)
             found=true
           else
             found=false
