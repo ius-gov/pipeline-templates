@@ -147,6 +147,7 @@ steps:
           \"ConnectionStrings:$project\": $connectionString
         }" > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
         fi
+        dos2unix $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
         echo 'Using AppSettings'
         cat $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
         echo 'Starting Docker Image ${{ parameters.latestName }}'
