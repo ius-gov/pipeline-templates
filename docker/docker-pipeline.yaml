@@ -163,11 +163,11 @@ steps:
       scriptLocation: inlineScript
       inlineScript: |
         echo 'Testing Health'
-        curl http://localhost/health -o health.json
+        curl http://localhost/health -o health.json -m 50
         echo 'health result:'
-        healthexitcode=$(grep status_code health.json | tail -1)
-        healthexitcode=$(echo $healthexitcode | cut -d ' ' -f 2)
-        healthexitcode=$(echo $healthexitcode | cut -d ',' -f 1)
+        health=$(cat health.json)
+        health=$(printf "%s\n" "${health##*status_code}")
+        healthexitcode=$(echo ${health:2:1})
         docker ps -a
         latest_guid="$(docker ps -a | grep "${{ parameters.imageName }}" | awk '{print $1}')"
         echo "Checking logs for $latest_guid"
