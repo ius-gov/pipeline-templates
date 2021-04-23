@@ -74,11 +74,25 @@ steps:
           fi
         done
         
+        if [ $found == false ]; then
+        for f in $(find . -print | grep -i launchsettings.json)
+        do
+          echo "Searching for 'ConnectionStrings:$project' $f..."
+          echo "testing grep -q 'ConnectionStrings:$project' $f"
+          if grep -q "ConnectionStrings:$project" $f ; then
+            connectionString=$((grep ConnectionStrings:$project $f | grep "Connection Timeout" | cut -d ':' -f2-) | rev | cut -c 2- | rev)
+            found=true
+          else
+            found=false
+          fi
+        done
+        fi
+        
         echo $"Found for $project = $found"
         
         echo 'Creating Appsettings folder at $(Build.ArtifactStagingDirectory)'
         mkdir $(Build.ArtifactStagingDirectory)/appsettings
-        if [ $found = false ];
+        if [ $found == false ];
         then
           echo '{
           "ClientStateID" : 0,
