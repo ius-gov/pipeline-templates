@@ -80,7 +80,7 @@ steps:
           echo "Searching for 'ConnectionStrings:$project' $f..."
           echo "testing grep -q 'ConnectionStrings:$project' $f"
           if grep -q "ConnectionStrings:$project" $f ; then
-            connectionString=$((grep ConnectionStrings:$project $f | grep "Connection Timeout" | cut -d ':' -f3-) | rev | cut -c 2- | rev)
+            connectionString=$(grep ConnectionStrings:$project $f | grep "Connection Timeout" | cut -d ':' -f3-)
             found=true
           else
             found=false
