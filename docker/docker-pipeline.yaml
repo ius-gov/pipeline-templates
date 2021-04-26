@@ -129,7 +129,7 @@ steps:
         }' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
         else
           echo "{
-          \"CanonicalApplicationName\": "$project",
+          \"CanonicalApplicationName\": \"$project\",
           \"ClientStateID\" : 0,
           \"AppSettings\" : {
             \"URLs\" : {
