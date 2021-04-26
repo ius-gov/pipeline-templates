@@ -95,6 +95,7 @@ steps:
         if [ $found == false ];
         then
           echo '{
+          "CanonicalApplicationName": "$project",
           "ClientStateID" : 0,
           "AppSettings" : {
           "URLs" : {
@@ -128,11 +129,12 @@ steps:
         }' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
         else
           echo "{
-            \"ClientStateID\" : 0,
-            \"AppSettings\" : {
-              \"URLs\" : {
-               \"IdentityServer\" : \"https://iusbuildidentityserver.azurewebsites.net\"
-             }
+          \"CanonicalApplicationName\": "$project",
+          \"ClientStateID\" : 0,
+          \"AppSettings\" : {
+            \"URLs\" : {
+             \"IdentityServer\" : \"https://iusbuildidentityserver.azurewebsites.net\"
+           }
           },
           \"Data\": {
             \"Queue\": {
