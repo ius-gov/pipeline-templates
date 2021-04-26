@@ -54,45 +54,115 @@ steps:
       arguments: ${{ parameters.imageName }}
   - task: AzureCLI@1
     displayName: Launching docker image
+    env:
+      project: ${{ parameters.autorestProjectName }}${{ parameters.autorestTemplateType }}
     inputs:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
       inlineScript: |
         docker --version
+        
+        for f in $(find . -print | grep -i launchsettings.json)
+        do
+          echo "Searching $f..."
+          echo "testing grep -q 'ConnectionStrings__$project' $f"
+          if grep -q "ConnectionStrings__$project" $f ; then
+            connectionString=$((grep ConnectionStrings__$project $f | grep "Connection Timeout" -m 1 | cut -d ':' -f2-) | sed 's/,*\r*$//')
+            found=true
+          else
+            found=false
+          fi
+        done
+        
+        if [ $found == false ]; then
+        for f in $(find . -print | grep -i launchsettings.json)
+        do
+          echo "Searching for 'ConnectionStrings:$project' $f..."
+          echo "testing grep -q 'ConnectionStrings:$project' $f"
+          if grep -q "ConnectionStrings:$project" $f ; then
+            connectionString=$(grep ConnectionStrings:$project $f | grep "Connection Timeout" -m 1 | cut -d ':' -f3- | sed 's/,*\r*$//')
+            found=true
+          else
+            found=false
+          fi
+        done
+        fi
+        
+        echo $"Found for $project = $found"
+        
         echo 'Creating Appsettings folder at $(Build.ArtifactStagingDirectory)'
         mkdir $(Build.ArtifactStagingDirectory)/appsettings
-        echo '{
+        if [ $found == false ];
+        then
+          echo '{
+          "CanonicalApplicationName": "$project",
           "ClientStateID" : 0,
           "AppSettings" : {
-             "URLs" : {
-               "IdentityServer" : "https://iusbuildidentityserver.azurewebsites.net"
-             }
+          "URLs" : {
+          "IdentityServer" : "https://iusbuildidentityserver.azurewebsites.net"
+          }
+        },
+        "Data": {
+          "Queue": {
+            "GlobalDisable": true
           },
-          "Data": {
-            "Queue": {
-              "GlobalDisable": true
+          "Identity": {
+            "ApiScope": "api1"
+          }
+        },
+        "Serilog":{
+          "MinimumLevel": "Information",
+          "Using": [
+            "Serilog.Sinks.Console"
+          ],
+          "WriteTo": [
+            {
+              "Name": "Console"
+            }
+          ]
+        },
+        "UseIncludedCertificate" : "true",
+        "DoNotFetchDiscovery" : "true",
+        "DoNotRequireHttps" : "true",
+        "BuildServer" : "true",
+        "ConfigurationDump" : "true"
+        }' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
+        else
+          echo "{
+          \"CanonicalApplicationName\": \"$project\",
+          \"ClientStateID\" : 0,
+          \"AppSettings\" : {
+            \"URLs\" : {
+             \"IdentityServer\" : \"https://iusbuildidentityserver.azurewebsites.net\"
+           }
+          },
+          \"Data\": {
+            \"Queue\": {
+              \"GlobalDisable\": true
             },
-            "Identity": {
-               "ApiScope": "api1"
+            \"Identity\": {
+               \"ApiScope\": \"api1\"
              }
           },
-          "Serilog":{
-            "MinimumLevel": "Information",
-             "Using": [
-                 "Serilog.Sinks.Console"
+          \"Serilog\":{
+            \"MinimumLevel\": \"Information\",
+             \"Using\": [
+                 \"Serilog.Sinks.Console\"
              ],
-             "WriteTo": [
+             \"WriteTo\": [
                  {
-                     "Name": "Console"
+                     \"Name\": \"Console\"
                  }
              ]
           },
-          "UseIncludedCertificate" : "true",
-          "DoNotFetchDiscovery" : "true",
-          "DoNotRequireHttps" : "true",
-          "BuildServer" : "true",
-          "ConfigurationDump" : "true"
-         }' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
+          \"UseIncludedCertificate\" : \"true\",
+          \"DoNotFetchDiscovery\" : \"true\",
+          \"DoNotRequireHttps\" : \"true\",
+          \"BuildServer\" : \"true\",
+          \"ConfigurationDump\" : \"true\",\"ConnectionStrings:$project\": $connectionString
+        }" > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
+        fi
+        dos2unix $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
         echo 'Using AppSettings'
         cat $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
         echo 'Starting Docker Image ${{ parameters.latestName }}'
@@ -109,10 +179,11 @@ steps:
       scriptLocation: inlineScript
       inlineScript: |
         echo 'Testing Health'
-        curl http://localhost/health -o health.json
+        curl http://localhost/health -o health.json -m 90
         echo 'health result:'
-        python -m json.tool health.json
-        healthexitcode=$?
+        health=$(cat health.json)
+        health=$(printf "%s\n" "${health##*status_code}")
+        healthexitcode=$(echo ${health:2:1})
         docker ps -a
         latest_guid="$(docker ps -a | grep "${{ parameters.imageName }}" | awk '{print $1}')"
         echo "Checking logs for $latest_guid"
