@@ -102,6 +102,9 @@ steps:
           \"IdentityServer\" : \"https://iusbuildidentityserver.azurewebsites.net\"
           }
         },
+        \"ConfigurationSettings\": {
+          \"ManifestLocation\": \"WithAppSettings\"
+        },
         \"Data\": {
           \"Queue\": {
             \"GlobalDisable\": true
@@ -135,6 +138,9 @@ steps:
             \"URLs\" : {
              \"IdentityServer\" : \"https://iusbuildidentityserver.azurewebsites.net\"
            }
+          },
+          \"ConfigurationSettings\": {
+            \"ManifestLocation\": \"WithAppSettings\"
           },
           \"Data\": {
             \"Queue\": {
