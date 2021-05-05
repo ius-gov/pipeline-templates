@@ -179,6 +179,7 @@ steps:
       scriptLocation: inlineScript
       inlineScript: |
         echo 'Testing Health'
+        curl http://localhost/health -o health.json -m 90
         sleep 65
         curl http://localhost/health -o health.json -m 90
         echo 'health result:'
