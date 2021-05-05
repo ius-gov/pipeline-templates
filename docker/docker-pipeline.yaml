@@ -167,7 +167,7 @@ steps:
         cat $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
         echo 'Starting Docker Image ${{ parameters.latestName }}'
         docker run -d -e "APPSETTING_LOCATION=/data/appsettings" -v $(Build.ArtifactStagingDirectory)/appsettings:/data/appsettings --net=host -p 80:80 ${{ parameters.imageName }}
-        sleep 5
+        sleep 65
         docker ps -a
         latest_guid="$(docker ps -a | grep "${{ parameters.imageName }}" | awk '{print $1}')"
         echo "Checking logs for $latest_guid"
