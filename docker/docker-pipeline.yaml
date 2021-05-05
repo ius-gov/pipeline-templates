@@ -186,8 +186,6 @@ steps:
       inlineScript: |
         echo 'Testing Health'
         curl http://localhost/health -o health.json -m 90
-        sleep 65
-        curl http://localhost/health -o health.json -m 90
         echo 'health result:'
         health=$(cat health.json)
         health=$(printf "%s\n" "${health##*status_code}")
