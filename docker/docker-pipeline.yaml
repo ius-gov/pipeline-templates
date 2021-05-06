@@ -178,6 +178,7 @@ steps:
         latest_guid="$(docker ps -a | grep "${{ parameters.imageName }}" | awk '{print $1}')"
         echo "Checking logs for $latest_guid"
         docker logs $latest_guid
+        sleep 90
   - task: AzureCLI@1
     displayName: Running Health Check
     inputs:
