@@ -94,39 +94,42 @@ steps:
         mkdir $(Build.ArtifactStagingDirectory)/appsettings
         if [ $found == false ];
         then
-          echo '{
-          "CanonicalApplicationName": "$project",
-          "ClientStateID" : 0,
-          "AppSettings" : {
-          "URLs" : {
-          "IdentityServer" : "https://iusbuildidentityserver.azurewebsites.net"
+          echo "{
+          \"CanonicalApplicationName\": \"$project\",
+          \"ClientStateID\" : 0,
+          \"AppSettings\" : {
+          \"URLs\" : {
+          \"IdentityServer\" : \"https://iusbuildidentityserver.azurewebsites.net\"
           }
         },
-        "Data": {
-          "Queue": {
-            "GlobalDisable": true
+        \"ConfigurationSettings\": {
+          \"ManifestLocation\": \"WithAppSettings\"
+        },
+        \"Data\": {
+          \"Queue\": {
+            \"GlobalDisable\": true
           },
-          "Identity": {
-            "ApiScope": "api1"
+          \"Identity\": {
+            \"ApiScope\": \"api1\"
           }
         },
-        "Serilog":{
-          "MinimumLevel": "Information",
-          "Using": [
-            "Serilog.Sinks.Console"
+        \"Serilog\":{
+          \"MinimumLevel\": \"Information\",
+          \"Using\": [
+            \"Serilog.Sinks.Console\"
           ],
-          "WriteTo": [
+          \"WriteTo\": [
             {
-              "Name": "Console"
+              \"Name\": \"Console\"
             }
           ]
         },
-        "UseIncludedCertificate" : "true",
-        "DoNotFetchDiscovery" : "true",
-        "DoNotRequireHttps" : "true",
-        "BuildServer" : "true",
-        "ConfigurationDump" : "true"
-        }' > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
+        \"UseIncludedCertificate\" : \"true\",
+        \"DoNotFetchDiscovery\" : \"true\",
+        \"DoNotRequireHttps\" : \"true\",
+        \"BuildServer\" : \"true\",
+        \"ConfigurationDump\" : \"true\"
+        }" > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
         else
           echo "{
           \"CanonicalApplicationName\": \"$project\",
@@ -135,6 +138,9 @@ steps:
             \"URLs\" : {
              \"IdentityServer\" : \"https://iusbuildidentityserver.azurewebsites.net\"
            }
+          },
+          \"ConfigurationSettings\": {
+            \"ManifestLocation\": \"WithAppSettings\"
           },
           \"Data\": {
             \"Queue\": {
