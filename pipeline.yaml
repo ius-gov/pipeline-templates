@@ -12,7 +12,7 @@ parameters:
   timeoutInMinutes: 150
 
 jobs:
-  - job: ${{ parameters.project }}
+  - job: ${ parameters.project }DockerBuilds
     timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
     pool:
       name: $(poolname)
