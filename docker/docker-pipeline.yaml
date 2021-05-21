@@ -25,7 +25,7 @@ steps:
       azureContainerRegistry: ${{ parameters.registry }}
       command: login
   - script: |
-      if [[ -f $dockerfilePathAndName]]; then
+      if [ -f $dockerfilePathAndName ]; then
         echo "Using Dockerfile at $dockerfilePathAndName"
       elif [[ -f "application/Dockerfile" ]]; then 
         echo "Using included Dockerfile.  Please consider updating to newest pattern"
