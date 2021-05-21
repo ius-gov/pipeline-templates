@@ -26,7 +26,7 @@ steps:
       command: login
   - script: |
       if [ -f $dockerfilePathAndName ]; then
-        echo "Using Dockerfile at $dockerfilePathAndName"
+        echo "Using Dockerfile at '$dockerfilePathAndName'"
       elif [[ -f "application/Dockerfile" ]]; then 
         echo "Using included Dockerfile.  Please consider updating to newest pattern"
       elif [[ -f "dockerfile.json" ]]; then
