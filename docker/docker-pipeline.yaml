@@ -13,16 +13,21 @@ parameters:
   imageName: ''
   stateCode: 0
   restClientGenerator: 'rest-client-generator'
+  dockerfilePathAndName: ''
   
 steps:
   - task: Docker@1
     displayName: Container registry login
+    env:
+      dockerfilePathAndName: ${{ parameters.dockerfilePathAndName }}
     inputs:
       azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
       azureContainerRegistry: ${{ parameters.registry }}
       command: login
   - script: |
-      if [[ -f "application/Dockerfile" ]]; then 
+      if [[ -f $dockerfilePathAndName]]; then
+        echo "Using Dockerfile at $dockerfilePathAndName"
+      elif [[ -f "application/Dockerfile" ]]; then 
         echo "Using included Dockerfile.  Please consider updating to newest pattern"
       elif [[ -f "dockerfile.json" ]]; then
         echo "Generating new Dockerfile from the dockerfile.mustache"
@@ -34,16 +39,30 @@ steps:
         exit 1
       fi
     displayName: Check for Dockerfile
-  - task: Docker@1
-    displayName: Build image
-    inputs:
-      command: build
-      azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
-      azureContainerRegistry: ${{ parameters.registry }}
-      dockerFile: application/Dockerfile
-      imageName: ${{ parameters.project }}
-      arguments: --build-arg version=${{ parameters.version}}
-      addDefaultLabels: false
+  - ${{ if eq(parameters.dockerfilePathAndName, '') }}:
+    - task: Docker@1
+      displayName: Build image
+      inputs:
+        command: build
+        azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
+        azureContainerRegistry: ${{ parameters.registry }}
+        dockerFile: application/Dockerfile
+        imageName: ${{ parameters.project }}
+        arguments: --build-arg version=${{ parameters.version}}
+        addDefaultLabels: false
+        
+  - ${{ if neq(parameters.dockerfilePathAndName, '') }}:
+    - task: Docker@1
+      displayName: Build image
+      inputs:
+        command: build
+        azureSubscriptionEndpoint: ${{ parameters.containerServiceEndpoint }}
+        azureContainerRegistry: ${{ parameters.registry }}
+        dockerFile: ${{ parameters.dockerfilePathAndName }}
+        imageName: ${{ parameters.project }}
+        arguments: --build-arg version=${{ parameters.version}}
+        addDefaultLabels: false      
+      
   - task: Docker@1
     displayName: Tag image
     inputs:
