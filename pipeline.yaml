@@ -10,6 +10,7 @@ parameters:
   autorestProjectName: ''
   autorestTemplateType: 'Service'
   timeoutInMinutes: 150
+  dockerfilePathAndName: ''
 
 jobs:
   - job: DockerBuilds
@@ -52,3 +53,4 @@ jobs:
           autorestProjectName: '${{ parameters.autorestProjectName }}'
           autorestTemplateType: '${{ parameters.autorestTemplateType }}'
           stateCode: ${{ parameters.stateCode }}
+          dockerfilePathAndName: ${{ parameters.dockerfilePathAndName }}
