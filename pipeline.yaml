@@ -13,7 +13,7 @@ parameters:
   dockerfilePathAndName: ''
 
 jobs:
-  - job: DockerBuilds
+  - job: ${{ parameters.project }}_DockerBuilds
     timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
     pool:
       name: $(poolname)
