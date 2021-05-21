@@ -51,7 +51,7 @@ steps:
         arguments: --build-arg version=${{ parameters.version}}
         addDefaultLabels: false
         
-  - ${{ if neq(parameters.dockerfilePathAndName, '') }}:
+  - ${{ if ne(parameters.dockerfilePathAndName, '') }}:
     - task: Docker@1
       displayName: Build image
       inputs:
