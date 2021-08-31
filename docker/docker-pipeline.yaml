@@ -177,14 +177,16 @@ steps:
         docker ps -a
         latest_guid="$(docker ps -a | grep "${{ parameters.imageName }}" | awk '{print $1}')"
         echo "Checking logs for $latest_guid"
-        docker logs -f $latest_guid
+        docker logs $latest_guid
   - task: AzureCLI@1
     displayName: Running Health Check
     inputs:
       azureSubscription : ${{ parameters.containerServiceEndpoint }}
       scriptLocation: inlineScript
       inlineScript: |
+        set -x
         echo 'Testing Health'
+        curl -vvv http://localhost/health
         curl http://localhost/health -o health.json -m 90
         echo 'health result:'
         health=$(cat health.json)
