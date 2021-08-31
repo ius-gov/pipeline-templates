@@ -5,6 +5,7 @@ parameters:
   Feed: '' # The Feed name to publish to
   majorVersion: 0
   stateCode: 0
+  nugetConfigPath : 'application/NuGet.Config'
 
 jobs:
   - job: ${{ parameters.Name }}
