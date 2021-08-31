@@ -33,11 +33,12 @@ jobs:
           nugetConfigPath: ${{ parameters.nugetConfigPath }}
       - task: DotNetCoreCLI@2
         displayName: Run Tests
+        continueOnError: false
         inputs:
           command: test
           projects: 'application/**/test/**/*.csproj'
           arguments: '--configuration Release'
-      - ${{if and(succeeded(), $(isMain))}}:
+      - ${{if $(isMain)}}:
         - template: nugetpackage-task-pipeline.yaml            
           parameters:
             Name: ${{ parameters.Name }}
