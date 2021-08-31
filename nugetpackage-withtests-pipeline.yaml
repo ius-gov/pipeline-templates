@@ -13,7 +13,6 @@ jobs:
       vmImage: 'Ubuntu-18.04'
     variables:
       version: 0.0.0.0
-      isMain: $[or(eq(variables['Build.SourceBranch'], 'refs/heads/master'),and(eq(variables['UsingDevelopBranch'], 'true'),eq(variables['Build.SourceBranch'], 'refs/heads/develop')))]
     steps:
       - powershell: |
           Write-Host "##vso[task.setvariable variable=version;]${{ parameters.stateCode }}.${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
@@ -38,7 +37,7 @@ jobs:
           command: test
           projects: 'application/**/test/**/*.csproj'
           arguments: '--configuration Release'
-      - ${{if $(isMain)}}:
+      - ${{if or(eq(variables['Build.SourceBranch'], 'refs/heads/master'),and(eq(variables['UsingDevelopBranch'], 'true'),eq(variables['Build.SourceBranch'], 'refs/heads/develop')))}}:
         - template: nugetpackage-task-pipeline.yaml            
           parameters:
             Name: ${{ parameters.Name }}
