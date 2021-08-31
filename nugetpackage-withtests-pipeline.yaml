@@ -1,5 +1,5 @@
 parameters:
-  Name : 'NugetPackage'
+  Name : 'NugetPackageWithTests'
   Project: '' # The full path to the csproj (including the *.cspoj name)
   FeedName: '' # DEPRECATED
   Feed: '' # The Feed name to publish to
