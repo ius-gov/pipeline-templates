@@ -37,7 +37,7 @@ jobs:
           command: test
           projects: 'application/**/test/**/*.csproj'
           arguments: '--configuration Release'
-      - ${{if or(eq(variables['Build.SourceBranch'], 'refs/heads/jc_validator'), eq(variables['Build.SourceBranch'], 'refs/heads/master'), and(eq(variables['UsingDevelopBranch'], 'true'),eq(variables['Build.SourceBranch'], 'refs/heads/develop')))}}:
+      - ${{if or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), and(eq(variables['UsingDevelopBranch'], 'true'),eq(variables['Build.SourceBranch'], 'refs/heads/develop')))}}:
         - template: nugetpackage-task-pipeline.yaml            
           parameters:
             Name: ${{ parameters.Name }}
