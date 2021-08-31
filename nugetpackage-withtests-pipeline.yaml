@@ -36,9 +36,7 @@ jobs:
           command: test
           projects: 'application/**/test/**/*.csproj'
           arguments: '--configuration Release'
-      - template: nugetpackage-task-pipeline.yaml
-        condition:
-            and
+      - ${{if and
             (
               succeeded(),
               or
@@ -50,9 +48,10 @@ jobs:
                   eq(variables['Build.SourceBranch'], 'refs/heads/develop')
                 )
               )
-            )
-        parameters:
-          Name: ${{ parameters.Name }}
-          Project: ${{ parameters.Project }}
-          Feed: ${{ parameters.Feed }}
+            )}}
+        - template: nugetpackage-task-pipeline.yaml            
+          parameters:
+            Name: ${{ parameters.Name }}
+            Project: ${{ parameters.Project }}
+            Feed: ${{ parameters.Feed }}
           
