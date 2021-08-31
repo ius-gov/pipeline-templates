@@ -1,0 +1,43 @@
+parameters:
+  Name : 'NugetPackage'
+  Project: '' # The full path to the csproj (including the *.cspoj name)
+  FeedName: '' # DEPRECATED
+  Feed: '' # The Feed name to publish to
+  majorVersion: 0
+  stateCode: 0
+
+jobs:
+  - job: ${{ parameters.Name }}
+    pool:
+      vmImage: 'Ubuntu-18.04'
+    variables:
+      version: 0.0.0.0
+    steps:
+      - powershell: |
+          Write-Host "##vso[task.setvariable variable=version;]${{ parameters.stateCode }}.${{ parameters.majorVersion }}.$([math]::floor($(build.buildId)/10000)).$($(build.buildId)%10000)"
+        displayName: Calculating Version
+      - script: echo "Setting csproj Version To $(version)"
+        displayName: Display Version
+      - script: |
+          find application/ -type f -iname '*.csproj' -exec  sed -i "s/0\.0\.0\-INTERNAL/$(version)/g" "{}" \;
+          grep "<VersionPrefix>.*</VersionPrefix>" -R .
+        displayName: Set Project Version
+      - task: DotNetCoreCLI@2
+        displayName: Restore
+        inputs:
+          command: restore
+          projects: 'application/**/*.csproj'
+          feedsToUse: config
+          nugetConfigPath: ${{ parameters.nugetConfigPath }}
+      - task: DotNetCoreCLI@2
+        displayName: Run Tests
+        inputs:
+          command: test
+          projects: 'application/**/test/**/*.csproj'
+          arguments: '--configuration Release'
+      - template: nugetpackage-task-pipeline.yaml
+        parameters:
+          Name: ${{ parameters.Name }}
+          Project: ${{ parameters.Project }}
+          Feed: ${{ parameters.Feed }}
+          
