@@ -5,6 +5,7 @@ parameters:
   Feed: '' # The Feed name to publish to
   majorVersion: 0
   stateCode: 0
+  nugetConfigPath : 'application/NuGet.Config'
 
 jobs:
   - job: ${{ parameters.Name }}
@@ -36,6 +37,20 @@ jobs:
           projects: 'application/**/test/**/*.csproj'
           arguments: '--configuration Release'
       - template: nugetpackage-task-pipeline.yaml
+        condition:
+            and
+            (
+              succeeded(),
+              or
+              (
+                eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+                and
+                (
+                  eq(variables['UsingDevelopBranch'], 'true'),
+                  eq(variables['Build.SourceBranch'], 'refs/heads/develop')
+                )
+              )
+            )
         parameters:
           Name: ${{ parameters.Name }}
           Project: ${{ parameters.Project }}
