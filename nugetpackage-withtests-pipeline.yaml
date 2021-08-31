@@ -5,7 +5,7 @@ parameters:
   Feed: '' # The Feed name to publish to
   majorVersion: 0
   stateCode: 0
-  nugetConfigPath : 'application/NuGet.Config'
+  nugetConfigPath : 'application/NuGet.Config' 
 
 jobs:
   - job: ${{ parameters.Name }}
@@ -32,27 +32,15 @@ jobs:
           nugetConfigPath: ${{ parameters.nugetConfigPath }}
       - task: DotNetCoreCLI@2
         displayName: Run Tests
+        continueOnError: false
         inputs:
           command: test
           projects: 'application/**/test/**/*.csproj'
           arguments: '--configuration Release'
-      - template: nugetpackage-task-pipeline.yaml
-        condition:
-            and
-            (
-              succeeded(),
-              or
-              (
-                eq(variables['Build.SourceBranch'], 'refs/heads/master'),
-                and
-                (
-                  eq(variables['UsingDevelopBranch'], 'true'),
-                  eq(variables['Build.SourceBranch'], 'refs/heads/develop')
-                )
-              )
-            )
-        parameters:
-          Name: ${{ parameters.Name }}
-          Project: ${{ parameters.Project }}
-          Feed: ${{ parameters.Feed }}
+      - ${{if or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), and(eq(variables['UsingDevelopBranch'], 'true'),eq(variables['Build.SourceBranch'], 'refs/heads/develop')))}}:
+        - template: nugetpackage-task-pipeline.yaml            
+          parameters:
+            Name: ${{ parameters.Name }}
+            Project: ${{ parameters.Project }}
+            Feed: ${{ parameters.Feed }}
           
