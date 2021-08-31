@@ -7,6 +7,9 @@ parameters:
   stateCode: 0
   nugetConfigPath : 'application/NuGet.Config'
 
+variables:
+  isMain: $[or(eq(variables['Build.SourceBranch'], 'refs/heads/master'),and(eq(variables['UsingDevelopBranch'], 'true'),eq(variables['Build.SourceBranch'], 'refs/heads/develop')))]
+
 jobs:
   - job: ${{ parameters.Name }}
     pool:
@@ -36,7 +39,7 @@ jobs:
           command: test
           projects: 'application/**/test/**/*.csproj'
           arguments: '--configuration Release'
-      - ${{if and(succeeded(),or(eq(variables['Build.SourceBranch'], 'refs/heads/master'),and(eq(variables['UsingDevelopBranch'], 'true'),eq(variables['Build.SourceBranch'], 'refs/heads/develop'))))}}:
+      - ${{if and(succeeded(), $(isMain))}}:
         - template: nugetpackage-task-pipeline.yaml            
           parameters:
             Name: ${{ parameters.Name }}
