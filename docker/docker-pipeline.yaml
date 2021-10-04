@@ -178,25 +178,7 @@ steps:
         latest_guid="$(docker ps -a | grep "${{ parameters.imageName }}" | awk '{print $1}')"
         echo "Checking logs for $latest_guid"
         docker logs $latest_guid
-  - task: AzureCLI@1
-    displayName: Running Health Check
-    inputs:
-      azureSubscription : ${{ parameters.containerServiceEndpoint }}
-      scriptLocation: inlineScript
-      inlineScript: |
-        echo 'Testing Health'
-        curl http://localhost/health -o health.json -m 90
-        echo 'health result:'
-        health=$(cat health.json)
-        health=$(printf "%s\n" "${health##*status_code}")
-        healthexitcode=$(echo ${health:2:1})
-        docker ps -a
-        latest_guid="$(docker ps -a | grep "${{ parameters.imageName }}" | awk '{print $1}')"
-        echo "Checking logs for $latest_guid"
-        docker logs $latest_guid
-        if [ $healthexitcode != 0 ]; then
-          exit $healthexitcode
-        fi
+
   # All services as -test
   - ${{ if and(not(startsWith(parameters.autorestProjectName, 'icon')), or(eq(parameters.autorestTemplateType, 'Service'), eq(parameters.autorestTemplateType, 'Gateway'))) }}:
     - task: AzureCLI@1
