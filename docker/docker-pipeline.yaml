@@ -95,6 +95,7 @@ steps:
         if [ $found == false ];
         then
           echo "{
+          \"UseIncludedCertificate\": \"true\",
           \"CanonicalApplicationName\": \"$project\",
           \"ClientStateID\" : 0,
           \"AppSettings\" : {
@@ -132,6 +133,7 @@ steps:
         }" > $(Build.ArtifactStagingDirectory)/appsettings/appsettings.Consortium.Production.json
         else
           echo "{
+          \"UseIncludedCertificate\": \"true\",
           \"CanonicalApplicationName\": \"$project\",
           \"ClientStateID\" : 0,
           \"AppSettings\" : {
